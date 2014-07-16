@@ -2,7 +2,8 @@
 <resources>
 
     <string name="app_name">Чайка</string>
-    <string name="sms_text_placeholder"></string>
+    <string name="seagull_name">Имя чайки</string>
+    <string name="seagull_ussd">USSD-запрос</string>
     <string name="send_coords_text">Добавить координаты к SMS</string>
     <string name="send_button_text">Отправить SMS</string>
     <string name="select_contact_btn_txt">Выбрать контакт</string>
@@ -19,7 +20,7 @@
 	<string name="gps_state_in_progress">Определение координат...</string>
 	<string name="gps_state_unavialable">Данные о местоположении недоступны</string>
 	
-	<string name="menu_item_settings">Настройки</string>
+	<string name="menu_item_settings">Добавить чайку</string>
 	<string name="menu_item_rules">Правила</string>
 	
 	<string name="phone_edit_text_placeholder"> </string>
@@ -34,10 +35,10 @@
 	
 	<string name="default_sms_msg">Я тут</string>
 	
-	<string name="info_sms_txt">Текст SMS</string>
+	<string name="info_seagull_props">Данные чайки</string>
 	
 	<string name="save_btn_txt">Сохранить</string>
-	<string name="cancel_btn_txt">Отменить</string>
+	<string name="cancel_btn_txt">Удалить</string>
 	
 	<string name="info_print1">Координаты получены, точность:</string>
 	<string name="info_print2">м</string>

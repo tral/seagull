@@ -1,6 +1,5 @@
 package ru.perm.trubnikov.seagull;
 
-import java.util.Locale;
 import java.util.Random;
 
 import android.app.Activity;
@@ -16,9 +15,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
-import android.location.LocationListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,11 +30,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
 	
 	// Dialogs
     private static final int SEND_SMS_DIALOG_ID = 0;
-    private final static int PHONE_DIALOG_ID = 1;
+    private final static int SEAGULL_PROPS_DIALOG_ID = 1;
 	ProgressDialog mSMSProgressDialog;
 
 	// My GPS states
@@ -69,7 +69,7 @@ public class MainActivity extends Activity {
 	Button btnSelContact;
 	
 	// Globals
-	private String coordsToSend;
+	private int seagullId;
 	private String coordsToShare;
 	
     // Database
@@ -130,85 +130,10 @@ public class MainActivity extends Activity {
      };  
 
 
-	// Location events (we use GPS only)
-	private LocationListener locListener = new LocationListener() {
-		
-		public void onLocationChanged(Location argLocation) {
-			printLocation(argLocation, GPS_GOT_COORDINATES);
-		}
-	
-		@Override
-		public void onProviderDisabled(String arg0) {
-			printLocation(null, GPS_PROVIDER_DISABLED);
-		}
-	
-		@Override
-		public void onProviderEnabled(String arg0) {
-		}
-	
-		@Override
-		public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-		}
-	};
 	
 	
 	
-	 
 	
-	private void printLocation(Location loc, int state) {
-		
-		String accuracy;
-		
-		switch (state) {
-		case GPS_PROVIDER_DISABLED :
-			GPSstate.setText(R.string.gps_state_disabled);
-			GPSstate.setTextColor(Color.RED);
-			enableGPSBtn.setVisibility(View.VISIBLE);
-			break;
-		case GPS_GETTING_COORDINATES :
-			GPSstate.setText(R.string.gps_state_in_progress);
-			GPSstate.setTextColor(Color.YELLOW);
-			enableGPSBtn.setVisibility(View.INVISIBLE);
-			break;
-		case GPS_PAUSE_SCANNING :
-			GPSstate.setText("");
-			enableGPSBtn.setVisibility(View.INVISIBLE);
-			break;	
-		case GPS_GOT_COORDINATES :
-			if (loc != null) {
-
-				// Accuracy
-				if (loc.getAccuracy() < 0.0001) {accuracy = "?"; }
-					else if (loc.getAccuracy() > 99) {accuracy = "> 99";}
-						else {accuracy = String.format(Locale.US, "%2.0f", loc.getAccuracy());};
-
-				String la = String.format(Locale.US , "%2.7f", loc.getLatitude());
-				String lo = String.format(Locale.US ,"%3.7f", loc.getLongitude());
-				
-				coordsToSend = la + " " + lo;
-				coordsToShare = getString(R.string.info_latitude) + " " + la 
-						+ "\t\n" + getString(R.string.info_longitude) + " " + lo
-						+ "\t\n" + getString(R.string.info_accuracy) + " " + accuracy + " " +getString(R.string.info_print2) 
-						+ "\t\n\t\n" + "https://maps.google.com?q=" + la + "," + lo; 
-				
-				GPSstate.setText(getString(R.string.info_print1) + " " + accuracy + " " + getString(R.string.info_print2)
-						+ "\t\n" + getString(R.string.info_latitude) + " " + String.format(Locale.US , "%2.7f", loc.getLatitude()) 
-						+ "\t\n" + getString(R.string.info_longitude) + " " + String.format(Locale.US ,"%3.7f", loc.getLongitude()));
-				GPSstate.setTextColor(Color.GREEN);
-				sendBtn.setEnabled(true);
-				//setImageButtonEnabled(getApplicationContext(), true, shareBtn, R.drawable.share);
-				enableGPSBtn.setVisibility(View.INVISIBLE);
-				
-			}
-			else {
-				GPSstate.setText(R.string.gps_state_unavialable);
-				GPSstate.setTextColor(Color.RED);
-				enableGPSBtn.setVisibility(View.VISIBLE);
-			}
-			break;
-		}
-	
-	}
 		
 	// Menu
 	@Override
@@ -221,6 +146,63 @@ public class MainActivity extends Activity {
 		return(super.onCreateOptionsMenu(menu));
 	}
 		
+	protected AlertDialog seagullProps() {
+		
+		
+		 LayoutInflater inflater = getLayoutInflater();
+         View layout = inflater.inflate(R.layout.seagull_props, (ViewGroup)findViewById(R.id.rel1));
+         
+         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+         builder.setView(layout);
+         
+         // Stored msg
+         /*
+         final EditText keyDlgEdit = (EditText) layout.findViewById(R.id.msg_edit_text);
+ 		dbHelper = new DBHelper(this);
+      	keyDlgEdit.setText(dbHelper.getSmsMsg());
+ 		dbHelper.close();
+ 		*/
+         
+         builder.setMessage(getString(R.string.info_seagull_props));
+         
+         builder.setPositiveButton(getString(R.string.save_btn_txt), new DialogInterface.OnClickListener() {
+             public void onClick(DialogInterface dialog, int id) {
+/*
+             	// update 
+             	dbHelper = new DBHelper(MainActivity.this);
+	        		SQLiteDatabase db = dbHelper.getWritableDatabase();
+	        		ContentValues cv = new ContentValues();
+	                cv.put("msg", keyDlgEdit.getText().toString());
+	                db.update("msg", cv, "_id = ?", new String[] { "1" });
+	                dbHelper.close();
+	                keyDlgEdit.selectAll(); // чтобы при повторном открытии текст был выделен
+	                */
+            	 
+             }
+         });
+         
+         builder.setNegativeButton(getString(R.string.cancel_btn_txt), new DialogInterface.OnClickListener() {
+             public void onClick(DialogInterface dialog, int id) {
+             	//keyDlgEdit.selectAll(); // чтобы при повторном открытии текст был выделен
+                 dialog.cancel();
+                 
+                 }
+         });
+         
+         //if (seagullId > 0) {
+	         
+         //}
+         
+	         MainActivity.this.ShowToastT("id: "+seagullId, Toast.LENGTH_SHORT);
+         
+         builder.setCancelable(false);
+
+         AlertDialog dialog = builder.create();
+         // show keyboard automatically
+         //keyDlgEdit.selectAll();
+         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+         return dialog;
+	}
 		
 	// Dialogs
     @Override
@@ -236,61 +218,58 @@ public class MainActivity extends Activity {
         	  mSMSProgressDialog.setMessage(getString(R.string.info_please_wait));
         	  return mSMSProgressDialog;
         	  
-        case PHONE_DIALOG_ID:
-            LayoutInflater inflater = getLayoutInflater();
-            View layout = inflater.inflate(R.layout.phone_dialog, (ViewGroup)findViewById(R.id.phone_dialog_layout));
-            
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setView(layout);
-            
-            // Stored msg
-            final EditText keyDlgEdit = (EditText) layout.findViewById(R.id.msg_edit_text);
-    		dbHelper = new DBHelper(this);
-         	keyDlgEdit.setText(dbHelper.getSmsMsg());
-    		dbHelper.close();
-    		
-            builder.setMessage(getString(R.string.info_sms_txt));
-            
-            builder.setPositiveButton(getString(R.string.save_btn_txt), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-
-                	// update 
-                	dbHelper = new DBHelper(MainActivity.this);
-	        		SQLiteDatabase db = dbHelper.getWritableDatabase();
-	        		ContentValues cv = new ContentValues();
-	                cv.put("msg", keyDlgEdit.getText().toString());
-	                db.update("msg", cv, "_id = ?", new String[] { "1" });
-	                dbHelper.close();
-	                keyDlgEdit.selectAll(); // чтобы при повторном открытии текст был выделен
-                }
-            });
-            
-            builder.setNegativeButton(getString(R.string.cancel_btn_txt), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                	keyDlgEdit.selectAll(); // чтобы при повторном открытии текст был выделен
-                    dialog.cancel();
-                    }
-            });
-            
-            builder.setCancelable(false);
-
-            AlertDialog dialog = builder.create();
-            // show keyboard automatically
-            keyDlgEdit.selectAll();
-            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-            return dialog;
+        case SEAGULL_PROPS_DIALOG_ID:
+          
+            return seagullProps();
 
         }
         return null;
     }
 		
+    // Update DialogData
+    protected void onPrepareDialog(int id, Dialog dialog) {
+        // получаем доступ к адаптеру списка диалога
+        //AlertDialog aDialog = (AlertDialog) dialog;
+        //ListAdapter lAdapter = aDialog.getListView().getAdapter();
+     
+        switch (id) {
+        
+        case SEAGULL_PROPS_DIALOG_ID:
+        	EditText e1 = (EditText) dialog.findViewById(R.id.seagull_name);
+        	EditText e2 = (EditText) dialog.findViewById(R.id.seagull_ussd);
+        	
+        	if (seagullId == -1) {
+        		e1.setText("");
+        		e2.setText("");	
+        	} else {
+        		e1.setText("name id: " + seagullId);
+        		e2.setText("ussd id: " + seagullId);
+        	}
+        	
+        	 
+            // проверка возможности преобразования
+          //if (lAdapter instanceof BaseAdapter) {
+            // преобразование и вызов метода-уведомления о новых данных
+            //BaseAdapter bAdapter = (BaseAdapter) lAdapter;
+            //bAdapter.notifyDataSetChanged();
+            
+          //}
+          break;
+        
+        default:
+          break;
+        }
+      };
+    
+    
     // Menu
  	@Override
  	public boolean onOptionsItemSelected(MenuItem item) {
         
         switch (item.getItemId()) {
             case IDM_SETTINGS:
-            	showDialog(PHONE_DIALOG_ID);
+            	seagullId = -1;
+            	showDialog(SEAGULL_PROPS_DIALOG_ID);
                 break;    
             default:
                 return false;
@@ -503,7 +482,7 @@ public class MainActivity extends Activity {
                 
                 int pixels = (int) TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_DIP,
-                        64, 
+                        96, 
                         r.getDisplayMetrics()
                 );
                 
@@ -534,17 +513,35 @@ public class MainActivity extends Activity {
                 int randomColor = Color.rgb(rc,g,b);
                 
                 btnTag.setBackgroundColor(randomColor);
+                           
+                btnTag.setOnLongClickListener(new View.OnLongClickListener() {
+                    public boolean onLongClick(View v) {
+                    	seagullId = v.getId();
+                        showDialog(SEAGULL_PROPS_DIALOG_ID);
+                        return true;
+                    }
+                });
                 
                 btnTag.setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
                     	//MainActivity.this.ShowToastT("sss"+v.getId()+" - " + phones[v.getId()], Toast.LENGTH_SHORT);
+                    	
+                    	
+                    	ColorDrawable buttonColor = (ColorDrawable) v.getBackground();
+                    	//int colorId = buttonColor.getColor();
+                    	
+                    	//v.setBackgroundColor(0xFF00FF00);
+                    	
                     	phones[v.getId()] = phones[v.getId()].replaceAll("(#| )", "");
      	        		String cToSend = "tel:" +phones[v.getId()] + Uri.encode("#");
       	                startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse(cToSend)), 1);
+      	                //v.setBackgroundColor(colorId);
                      }
-                    });
+                });
+                
+                
                 
                 
                 row.addView(btnTag);
