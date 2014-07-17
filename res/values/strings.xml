@@ -33,7 +33,15 @@
 	
 	<string name="error_contact_is_not_selected">Выберите контакт!</string>
 	
-	<string name="default_sms_msg">Я тут</string>
+	
+	<string name="default_seagull_name1">Пример: баланс «Ростелеком»</string>
+	<string name="default_seagull_name2">Пример: баланс «МТС»</string>
+	<string name="default_seagull_name3">Пример: баланс «Билайн»</string>
+	<string name="default_seagull_name4">Пример: баланс «Мегафон»</string>
+	<string name="default_seagull_ussd1">*102#</string>
+	<string name="default_seagull_ussd2">*100#</string>
+	<string name="default_seagull_ussd3">*102#</string>
+	<string name="default_seagull_ussd4">*100#</string>
 	
 	<string name="info_seagull_props">Данные чайки</string>
 	

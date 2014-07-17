@@ -76,6 +76,7 @@ public class MainActivity extends Activity {
     DBHelper dbHelper;
     
     String[] phones;
+    int[] ids;
     
 	
     
@@ -466,98 +467,108 @@ public class MainActivity extends Activity {
         */
     	
 
-        int itemCnt = 5;
-        phones = new String[itemCnt];
         
         LinearLayout layout = (LinearLayout) findViewById(R.id.linearLayoutSum);
-        layout.setOrientation(LinearLayout.VERTICAL);  //Can also be done in xml by android:orientation="vertical"
-
-        for (int i = 0; i < itemCnt; i++) {
-            LinearLayout row = new LinearLayout(this);
-            row.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-
-                Button btnTag = new Button(this);
-                
-                Resources r = getApplicationContext().getResources();
-                
-                int pixels = (int) TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_DIP,
-                        96, 
-                        r.getDisplayMetrics()
-                );
-                
-                
-                LayoutParams params = new LayoutParams(LayoutParams.FILL_PARENT, pixels);
-                
-                //pixels = (int) (8 * scale + 0.5f);
-                pixels = (int) TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_DIP,
-                        4, 
-                        r.getDisplayMetrics()
-                );
-                
-                params.setMargins(-pixels, -pixels, -pixels, -pixels);
-                
-                btnTag.setLayoutParams(params);
-                btnTag.setText("Button " + i);
-                btnTag.setId(i);
-                
-                // generate the random integers for r, g and b value
-                Random rand = new Random();
-                int rc = rand.nextInt(255);
-                int g = rand.nextInt(255);
-                int b = rand.nextInt(255);
-                
-                phones[i] = "*102#";
-
-                int randomColor = Color.rgb(rc,g,b);
-                
-                btnTag.setBackgroundColor(randomColor);
-                           
-                btnTag.setOnLongClickListener(new View.OnLongClickListener() {
-                    public boolean onLongClick(View v) {
-                    	seagullId = v.getId();
-                        showDialog(SEAGULL_PROPS_DIALOG_ID);
-                        return true;
-                    }
-                });
-                
-                btnTag.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                    	//MainActivity.this.ShowToastT("sss"+v.getId()+" - " + phones[v.getId()], Toast.LENGTH_SHORT);
-                    	
-                    	
-                    	ColorDrawable buttonColor = (ColorDrawable) v.getBackground();
-                    	//int colorId = buttonColor.getColor();
-                    	
-                    	//v.setBackgroundColor(0xFF00FF00);
-                    	
-                    	phones[v.getId()] = phones[v.getId()].replaceAll("(#| )", "");
-     	        		String cToSend = "tel:" +phones[v.getId()] + Uri.encode("#");
-      	                startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse(cToSend)), 1);
-      	                //v.setBackgroundColor(colorId);
-                     }
-                });
-                
-                
-                
-                
-                row.addView(btnTag);
-
-                layout.addView(row);
-            
-
-            
-        }
+        Resources r = getApplicationContext().getResources();
         
-        
-        
+        // число пикселей для высоты кнопок (относительно dp)
+    	int pixels_b = (int) TypedValue.applyDimension(
+		         TypedValue.COMPLEX_UNIT_DIP,
+		         96, 
+		         r.getDisplayMetrics()
+		);
 
+    	// число пикселей для margin'ов (относительно dp)
+    	int pixels_m = (int) TypedValue.applyDimension(
+	             TypedValue.COMPLEX_UNIT_DIP,
+	             4, 
+	             r.getDisplayMetrics()
+	    );
+    	
+    	try {
+    	
+			dbHelper = new DBHelper(this);
+	     	SQLiteDatabase db = dbHelper.getWritableDatabase();
+	     	
+	     	Cursor mCur = db.rawQuery("select id_, name, ussd, color, order_by FROM seagulls ORDER BY order_by", null);
+	     	
+	     	phones = new String[mCur.getCount()];
+	        ids = new int[mCur.getCount()];
+	     	
+	     	int i=0;
+	     	if (mCur.moveToFirst()) {
+	     		
+	     		int idColIndex = mCur.getColumnIndex("id_");
+	 	        int nameColIndex = mCur.getColumnIndex("name");
+	 	        int ussdColIndex = mCur.getColumnIndex("ussd");
+	 	        int colorColIndex = mCur.getColumnIndex("color");
+	 	        
+	 	        do {
+	 	        	initOneSeagull( layout, 
+			 	        			i, 
+			 	        			pixels_b, 
+			 	        			pixels_m, 
+			 	        			mCur.getString(nameColIndex), 
+			 	        			mCur.getString(ussdColIndex), 
+			 	        			mCur.getInt(idColIndex), 
+			 	        			mCur.getInt(colorColIndex) );
+	 	        	
+	 	        	i++;
+	 	        } while (mCur.moveToNext());
+	    	} 
+	     	
+	     	mCur.close();
+			dbHelper.close();
+    	
+     	}
+    	 catch (Exception e) {
+	        	MainActivity.this.ShowToastT("EXCEPTION! " + e.toString() +" Message:" +e.getMessage(), Toast.LENGTH_LONG);
+	    }
+ 
         
     }
     
 	// ------------------------------------------------------------------------------------------
+    
+    protected void initOneSeagull(LinearLayout layout, int i, int pixels_b, int pixels_m, String name, String ussd, int id, int color) {
+    	 
+    	LinearLayout row = new LinearLayout(this);
+    	row.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+
+    	Button btnTag = new Button(this);
+	     
+    	LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, pixels_b);
+
+    	params.setMargins(-pixels_m, -pixels_m, -pixels_m, -pixels_m);
+	     
+	     btnTag.setLayoutParams(params);
+	     btnTag.setText(name);
+	     btnTag.setId(i);
+	     btnTag.setBackgroundColor(color);	     
+	     
+	     phones[i] = ussd;
+	     ids[i] = id;
+	                
+	     btnTag.setOnLongClickListener(new View.OnLongClickListener() {
+	         public boolean onLongClick(View v) {
+	         	seagullId = v.getId();
+	             showDialog(SEAGULL_PROPS_DIALOG_ID);
+	             return true;
+	         }
+	     });
+	     
+	     btnTag.setOnClickListener(new View.OnClickListener() {
+	
+	         @Override
+	         public void onClick(View v) {
+	         	phones[v.getId()] = phones[v.getId()].replaceAll("(#| )", "");
+	    		String cToSend = "tel:" +phones[v.getId()] + Uri.encode("#");
+	            startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse(cToSend)), 1);
+	          }
+	     });
+	     
+	     row.addView(btnTag);
+	     layout.addView(row);
+    }    
     
 }
