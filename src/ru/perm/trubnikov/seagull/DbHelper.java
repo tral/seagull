@@ -34,47 +34,40 @@ import android.graphics.Color;
     }
 
     
-    public String getPhone() {
+    public void deleteSeagull(int id) {
     	SQLiteDatabase db = this.getWritableDatabase();
-    	Cursor c = db.query("phone", null, "_id=1", null, null, null, null);
+		db.delete("seagulls", "id_ = " + id, null);
+    }
+    
+    
+    public String getName(int id) {
+    	SQLiteDatabase db = this.getWritableDatabase();
+    	Cursor c = db.query("seagulls", null, "id_ = "+id, null, null, null, null);
     	
     	if (c.moveToFirst()) {
-            int idx = c.getColumnIndex("phone");
-            String phone = c.getString(idx);
-            return phone;
+            int idx = c.getColumnIndex("name");
+            String r = c.getString(idx);
+            return r;
 		}
     	
     	return "";
     }
 
     
-    public String getName() {
+    public String getUSSD(int id) {
     	SQLiteDatabase db = this.getWritableDatabase();
-    	Cursor c = db.query("contact", null, "_id=1", null, null, null, null);
+    	Cursor c = db.query("seagulls", null, "id_ = "+id, null, null, null, null);
     	
     	if (c.moveToFirst()) {
-            int idx = c.getColumnIndex("contact");
-            String contact = c.getString(idx);
-            return contact;
+            int idx = c.getColumnIndex("ussd");
+            String r = c.getString(idx);
+            return r;
 		}
     	
     	return "";
-    }
+    } 
 
     
-    public String getSmsMsg() {
-    	SQLiteDatabase db = this.getWritableDatabase();
-    	Cursor c = db.query("msg", null, "_id=1", null, null, null, null);
-    	
-    	if (c.moveToFirst()) {
-            int idx = c.getColumnIndex("msg");
-            String msg = c.getString(idx);
-            return msg;
-		}
-    	
-    	return "";
-    }    
-
     @Override
     public void onCreate(SQLiteDatabase db) {
       
@@ -100,27 +93,27 @@ import android.graphics.Color;
       cv.put("name", s_name2);
       cv.put("ussd", s_ussd2);
       cv.put("color", getRndColor());
-      cv.put("order_by", 0);
+      cv.put("order_by", 1);
       db.insert("seagulls", null, cv);
       
       cv.clear();
       cv.put("name", s_name3);
       cv.put("ussd", s_ussd3);
       cv.put("color", getRndColor());
-      cv.put("order_by", 0);
+      cv.put("order_by", 2);
       db.insert("seagulls", null, cv);
       
       cv.clear();
       cv.put("name", s_name4);
       cv.put("ussd", s_ussd4);
       cv.put("color", getRndColor());
-      cv.put("order_by", 0);
+      cv.put("order_by", 3);
       db.insert("seagulls", null, cv);
-      
       
     }
 
-    private int getRndColor() {
+    
+    public int getRndColor() {
     	 Random rand = new Random();
          int rc = rand.nextInt(255);
          int g = rand.nextInt(255);
@@ -129,6 +122,7 @@ import android.graphics.Color;
          int randomColor = Color.rgb(rc,g,b);
          return randomColor;
     }
+    
     
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

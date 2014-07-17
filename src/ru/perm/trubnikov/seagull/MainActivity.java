@@ -1,27 +1,16 @@
 package ru.perm.trubnikov.seagull;
 
-import java.util.Random;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
-import android.graphics.PorterDuff.Mode;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.provider.ContactsContract;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,55 +18,30 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
 	// Menu
-	public static final int IDM_SETTINGS = 101;
+	public static final int IDM_SEAGULL_PROPS = 101;
+	public static final int IDM_HELP = 102;
 	
 	// Dialogs
-    private static final int SEND_SMS_DIALOG_ID = 0;
     private final static int SEAGULL_PROPS_DIALOG_ID = 1;
-	ProgressDialog mSMSProgressDialog;
-
-	// My GPS states
-	public static final int GPS_PROVIDER_DISABLED = 1;
-	public static final int GPS_GETTING_COORDINATES = 2;
-	public static final int GPS_GOT_COORDINATES = 3;
-	public static final int GPS_PROVIDER_UNAVIALABLE = 4;
-	public static final int GPS_PROVIDER_OUT_OF_SERVICE = 5;
-	public static final int GPS_PAUSE_SCANNING = 6;
-	
-	// SMS thread
-    ThreadSendSMS mThreadSendSMS;
-	
-	// Views
-	TextView GPSstate;
-	Button sendBtn;
-	//ImageButton shareBtn; 
-	Button enableGPSBtn ;
-	Button btnSelContact;
+    private final static int HELP_DIALOG_ID = 2;
 	
 	// Globals
 	private int seagullId;
-	private String coordsToShare;
+	private int[] ids;
+	private String[] phones;
 	
     // Database
     DBHelper dbHelper;
-    
-    String[] phones;
-    int[] ids;
-    
 	
     
 	// Small util to show text messages by resource id
@@ -86,6 +50,7 @@ public class MainActivity extends Activity {
 	    toast.setGravity(Gravity.TOP, 0, 0);
 	    toast.show();
 	}
+
 	
 	// Small util to show text messages
 	protected void ShowToastT(String txt, int lng) {
@@ -94,47 +59,6 @@ public class MainActivity extends Activity {
 	    toast.show();
 	}
     
-	/*
-	protected void HideKeyboard() {
-		InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-        //	check if no view has focus:
-        View v=this.getCurrentFocus();
-        if(v!=null)
-        	inputManager.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-	}
-
-	protected void ShowKeyboard() {
-		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.showSoftInput(smsEdit, InputMethodManager.SHOW_IMPLICIT);
-	}
-	 */
-	
-    // Define the Handler that receives messages from the thread and update the progress
- 	// SMS send thread. Result handling
-     final Handler handler = new Handler() {
-         public void handleMessage(Message msg) {
-
-        	 String res_send = msg.getData().getString("res_send");
-             //String res_deliver = msg.getData().getString("res_deliver");
-
-        	 dismissDialog(SEND_SMS_DIALOG_ID);
-        	 
-        	 if (res_send.equalsIgnoreCase(getString(R.string.info_sms_sent))) {
-        		//HideKeyboard();
-        		Intent intent = new Intent(MainActivity.this, AnotherMsgActivity.class);
-     	     	startActivity(intent);
-        	 } else {
-            	 MainActivity.this.ShowToastT(res_send, Toast.LENGTH_SHORT);
-        	 }
-        	 
-         }
-     };  
-
-
-	
-	
-	
-	
 		
 	// Menu
 	@Override
@@ -143,12 +67,37 @@ public class MainActivity extends Activity {
 		//getMenuInflater().inflate(R.menu.main, menu);
 		//return true;
 		
-		menu.add(Menu.NONE, IDM_SETTINGS, Menu.NONE, R.string.menu_item_settings);
+		menu.add(Menu.NONE, IDM_SEAGULL_PROPS, Menu.NONE, R.string.menu_item_settings);
+		menu.add(Menu.NONE, IDM_HELP, Menu.NONE, R.string.menu_item_help);
 		return(super.onCreateOptionsMenu(menu));
 	}
+
+	
+	protected AlertDialog helpDialog() {
 		
+		 LayoutInflater inflater_rules = getLayoutInflater();
+         View layout_help = inflater_rules.inflate(R.layout.help_dialog, (ViewGroup)findViewById(R.id.help_dialog_layout));
+         
+         AlertDialog.Builder builder_help = new AlertDialog.Builder(this);
+         builder_help.setView(layout_help);
+         
+         TextView rulesView = (TextView) layout_help.findViewById(R.id.textView1);
+         rulesView.setText(R.string.help_str);
+ 		
+         builder_help.setNegativeButton(getString(R.string.info_btn_ok), new DialogInterface.OnClickListener() {
+             public void onClick(DialogInterface dialog, int id) {
+                 dialog.cancel();
+                 }
+         });
+         
+         builder_help.setCancelable(false);
+         
+         return builder_help.create();
+	}
+	
+	
+	
 	protected AlertDialog seagullProps() {
-		
 		
 		 LayoutInflater inflater = getLayoutInflater();
          View layout = inflater.inflate(R.layout.seagull_props, (ViewGroup)findViewById(R.id.rel1));
@@ -156,81 +105,70 @@ public class MainActivity extends Activity {
          AlertDialog.Builder builder = new AlertDialog.Builder(this);
          builder.setView(layout);
          
-         // Stored msg
-         /*
-         final EditText keyDlgEdit = (EditText) layout.findViewById(R.id.msg_edit_text);
- 		dbHelper = new DBHelper(this);
-      	keyDlgEdit.setText(dbHelper.getSmsMsg());
- 		dbHelper.close();
- 		*/
+         final EditText nameEdit = (EditText) layout.findViewById(R.id.seagull_name);
+         final EditText ussdEdit = (EditText) layout.findViewById(R.id.seagull_ussd);
          
          builder.setMessage(getString(R.string.info_seagull_props));
          
          builder.setPositiveButton(getString(R.string.save_btn_txt), new DialogInterface.OnClickListener() {
              public void onClick(DialogInterface dialog, int id) {
-/*
+
              	// update 
              	dbHelper = new DBHelper(MainActivity.this);
-	        		SQLiteDatabase db = dbHelper.getWritableDatabase();
-	        		ContentValues cv = new ContentValues();
-	                cv.put("msg", keyDlgEdit.getText().toString());
-	                db.update("msg", cv, "_id = ?", new String[] { "1" });
-	                dbHelper.close();
-	                keyDlgEdit.selectAll(); // чтобы при повторном открытии текст был выделен
-	                */
+        		SQLiteDatabase db = dbHelper.getWritableDatabase();
+        		ContentValues cv = new ContentValues();
+                cv.put("name", nameEdit.getText().toString());
+                cv.put("ussd", ussdEdit.getText().toString());
+                
+                if (seagullId == -1) {
+                	cv.put("color", dbHelper.getRndColor());
+                	long rowID = db.insert("seagulls", null, cv);
+                	// порядок сделаем равным только что вставленному id
+                	cv.clear();
+                	cv.put("order_by", rowID);
+                	db.update("seagulls", cv, "id_ = ?", new String[] { ""+rowID });
+                }	
+                else
+                	db.update("seagulls", cv, "id_ = ?", new String[] { ""+seagullId });
+                
+                dbHelper.close();
+
+                refillMainScreen();
             	 
              }
          });
          
-         builder.setNegativeButton(getString(R.string.cancel_btn_txt), new DialogInterface.OnClickListener() {
+         builder.setNegativeButton(getString(R.string.del_btn_txt), new DialogInterface.OnClickListener() {
              public void onClick(DialogInterface dialog, int id) {
-             	//keyDlgEdit.selectAll(); // чтобы при повторном открытии текст был выделен
+            	 dbHelper = new DBHelper(MainActivity.this);
+            	 dbHelper.deleteSeagull(seagullId);
+            	 dbHelper.close();
+            	 refillMainScreen();
                  dialog.cancel();
-                 
-                 }
+             }
          });
          
-         //if (seagullId > 0) {
-	         
-         //}
-         
-	         MainActivity.this.ShowToastT("id: "+seagullId, Toast.LENGTH_SHORT);
+         builder.setNeutralButton(getString(R.string.cancel_btn_txt), new DialogInterface.OnClickListener() {
+             public void onClick(DialogInterface dialog, int id) {
+                 dialog.cancel();
+             }
+         });
          
          builder.setCancelable(false);
 
          AlertDialog dialog = builder.create();
          // show keyboard automatically
          //keyDlgEdit.selectAll();
-         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+         //dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
          return dialog;
 	}
 		
-	// Dialogs
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        switch (id) {
-        
-        case SEND_SMS_DIALOG_ID:
-        	  mSMSProgressDialog = new ProgressDialog(MainActivity.this);
-        	  //mCatProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        	  mSMSProgressDialog.setCanceledOnTouchOutside(false);
-        	  mSMSProgressDialog.setCancelable(false);
-        	  mSMSProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        	  mSMSProgressDialog.setMessage(getString(R.string.info_please_wait));
-        	  return mSMSProgressDialog;
-        	  
-        case SEAGULL_PROPS_DIALOG_ID:
-          
-            return seagullProps();
 
-        }
-        return null;
-    }
 		
     // Update DialogData
     protected void onPrepareDialog(int id, Dialog dialog) {
         // получаем доступ к адаптеру списка диалога
-        //AlertDialog aDialog = (AlertDialog) dialog;
+        AlertDialog aDialog = (AlertDialog) dialog;
         //ListAdapter lAdapter = aDialog.getListView().getAdapter();
      
         switch (id) {
@@ -238,13 +176,20 @@ public class MainActivity extends Activity {
         case SEAGULL_PROPS_DIALOG_ID:
         	EditText e1 = (EditText) dialog.findViewById(R.id.seagull_name);
         	EditText e2 = (EditText) dialog.findViewById(R.id.seagull_ussd);
+
+        	e1.requestFocus();
         	
         	if (seagullId == -1) {
         		e1.setText("");
-        		e2.setText("");	
+        		e2.setText("");
+                aDialog.getButton(Dialog.BUTTON_NEGATIVE).setEnabled(false);
         	} else {
-        		e1.setText("name id: " + seagullId);
-        		e2.setText("ussd id: " + seagullId);
+        		dbHelper = new DBHelper(this);
+        		e1.setText(dbHelper.getName(seagullId));
+        		e2.setText(dbHelper.getUSSD(seagullId));
+                dbHelper.close();
+                aDialog.getButton(Dialog.BUTTON_NEGATIVE).setEnabled(true);
+           	            		
         	}
         	
         	 
@@ -262,16 +207,31 @@ public class MainActivity extends Activity {
         }
       };
     
+  	// Dialogs
+      @Override
+      protected Dialog onCreateDialog(int id) {
+          switch (id) {
+	          case SEAGULL_PROPS_DIALOG_ID:
+	              return seagullProps();
+	          case HELP_DIALOG_ID:
+	              return helpDialog();
+          }
+          return null;
+      }
+      
     
     // Menu
  	@Override
  	public boolean onOptionsItemSelected(MenuItem item) {
         
         switch (item.getItemId()) {
-            case IDM_SETTINGS:
+            case IDM_SEAGULL_PROPS:
             	seagullId = -1;
             	showDialog(SEAGULL_PROPS_DIALOG_ID);
-                break;    
+                break;
+            case IDM_HELP:
+            	showDialog(HELP_DIALOG_ID);
+                break;
             default:
                 return false;
         }
@@ -279,111 +239,113 @@ public class MainActivity extends Activity {
         return true;
     }
     
-    
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
-		
-	
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-	
-	
-	public void showSelectedNumber(String number, String name) {
-		/*if (number.equalsIgnoreCase("") && name.equalsIgnoreCase("")) {
-			btnSelContact.setText(getString(R.string.select_contact_btn_txt));
-		} else {
-			btnSelContact.setText(name + " (" + number + ")");
-		}*/
-	}
-	
-	
-	@Override
-	public void onActivityResult(int reqCode, int resultCode, Intent data) {
-	  super.onActivityResult(reqCode, resultCode, data);
+ 	
+ 	 protected void refillMainScreen() {
+    	 
+         LinearLayout layout = (LinearLayout) findViewById(R.id.linearLayoutSum);
+         
+         if(((LinearLayout) layout).getChildCount() > 0) 
+             ((LinearLayout) layout).removeAllViews(); 
+         
+         Resources r = getApplicationContext().getResources();
+         
+         // число пикселей для высоты кнопок (относительно dp)
+     	int pixels_b = (int) TypedValue.applyDimension(
+ 		         TypedValue.COMPLEX_UNIT_DIP,
+ 		         96, 
+ 		         r.getDisplayMetrics()
+ 		);
 
-	  switch (reqCode) {
-	    case (1001) :
-	    	String number = "";
-	        String name = "";
-	        //int type = 0;
-	        if (data != null) {
-	            Uri uri = data.getData();
+     	// число пикселей для margin'ов (относительно dp)
+     	int pixels_m = (int) TypedValue.applyDimension(
+ 	             TypedValue.COMPLEX_UNIT_DIP,
+ 	             4, 
+ 	             r.getDisplayMetrics()
+ 	    );
+     	
+     	try {
+     	
+ 			dbHelper = new DBHelper(this);
+ 	     	SQLiteDatabase db = dbHelper.getWritableDatabase();
+ 	     	
+ 	     	Cursor mCur = db.rawQuery("select id_, name, ussd, color, order_by FROM seagulls ORDER BY order_by", null);
+ 	     	
+ 	     	phones = new String[mCur.getCount()];
+ 	        ids = new int[mCur.getCount()];
+ 	     	
+ 	     	int i=0;
+ 	     	if (mCur.moveToFirst()) {
+ 	     		
+ 	     		int idColIndex = mCur.getColumnIndex("id_");
+ 	 	        int nameColIndex = mCur.getColumnIndex("name");
+ 	 	        int ussdColIndex = mCur.getColumnIndex("ussd");
+ 	 	        int colorColIndex = mCur.getColumnIndex("color");
+ 	 	        
+ 	 	        do {
+ 	 	        	initOneSeagull( layout, 
+ 			 	        			i, 
+ 			 	        			pixels_b, 
+ 			 	        			pixels_m, 
+ 			 	        			mCur.getString(nameColIndex), 
+ 			 	        			mCur.getString(ussdColIndex), 
+ 			 	        			mCur.getInt(idColIndex), 
+ 			 	        			mCur.getInt(colorColIndex) );
+ 	 	        	
+ 	 	        	i++;
+ 	 	        } while (mCur.moveToNext());
+ 	    	} 
+ 	     	
+ 	     	mCur.close();
+ 			dbHelper.close();
+     	
+      	}
+     	 catch (Exception e) {
+ 	        	MainActivity.this.ShowToastT("EXCEPTION! " + e.toString() +" Message:" +e.getMessage(), Toast.LENGTH_LONG);
+ 	    }
+     }
+     
+     
+     protected void initOneSeagull(LinearLayout layout, int i, int pixels_b, int pixels_m, String name, String ussd, int id, int color) {
+     	 
+     	LinearLayout row = new LinearLayout(this);
+     	row.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
-	            if (uri != null) {
-	                Cursor c = null;
-	                try {
-	                	
-	                    c = getContentResolver().query(uri, new String[]{ 
-	                                ContactsContract.CommonDataKinds.Phone.NUMBER,  
-	                                ContactsContract.CommonDataKinds.Phone.TYPE,
-	                                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME },
-	                            null, null, null);
+     	Button btnTag = new Button(this);
+ 	     
+     	LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, pixels_b);
 
-	                    if (c != null && c.moveToFirst()) {
-	                        number = c.getString(0);
-	                        number = number.replaceAll("(-| )", "");
-	                        //type = c.getInt(1);
-	                        name = c.getString(2);
-	                        showSelectedNumber(number, name);
-
-	                    	// update 
-	                    	dbHelper = new DBHelper(MainActivity.this);
-	    	        		SQLiteDatabase db = dbHelper.getWritableDatabase();
-	    	        		ContentValues cv = new ContentValues();
-	    	                cv.put("contact", name);
-	    	                db.update("contact", cv, "_id = ?", new String[] { "1" });
-	    	                cv.clear();
-	    	                cv.put("phone", number);
-	    	                db.update("phone", cv, "_id = ?", new String[] { "1" });
-	    	                dbHelper.close();
-	                        
-	                    }
-	                } finally {
-	                    if (c != null) { c.close(); }
-	                }
-	            }
-	        }
-	    	
-	    
-	      break;
-	  }
-	}
-
-	/**
-	 * Sets the image button to the given state and grays-out the icon.
-	 * 
-	 * @param enabled The state of the button
-	 * @param item The button item to modify
-	 * @param iconResId The button's icon ID
-	 */
-	public static void setImageButtonEnabled(Context ctxt, boolean enabled, 
-	        ImageButton item, int iconResId) {
-
-	    item.setEnabled(enabled);
-	    Drawable originalIcon = ctxt.getResources().getDrawable(iconResId);
-	    Drawable icon = enabled ? originalIcon : convertDrawableToGrayScale(originalIcon);
-	    item.setImageDrawable(icon);
-	}
-	
-	/**
-	 * Mutates and applies a filter that converts the given drawable to a Gray
-	 * image. This method may be used to simulate the color of disable icons in
-	 * Honeycomb's ActionBar.
-	 * 
-	 * @return a mutated version of the given drawable with a color filter applied.
-	 */
-	public static Drawable convertDrawableToGrayScale(Drawable drawable) {
-	    if (drawable == null) 
-	        return null;
-
-	    Drawable res = drawable.mutate();
-	    res.setColorFilter(Color.GRAY, Mode.SRC_IN);
-	    return res;
-	}
+     	params.setMargins(-pixels_m, -pixels_m, -pixels_m, -pixels_m);
+ 	     
+ 	     btnTag.setLayoutParams(params);
+ 	     btnTag.setText(name);
+ 	     btnTag.setId(i);
+ 	     btnTag.setBackgroundColor(color);	     
+ 	     
+ 	     phones[i] = ussd;
+ 	     ids[i] = id;
+ 	                
+ 	     btnTag.setOnLongClickListener(new View.OnLongClickListener() {
+ 	         public boolean onLongClick(View v) {
+ 	        	 seagullId = ids[v.getId()];
+ 	             showDialog(SEAGULL_PROPS_DIALOG_ID);
+ 	             return true;
+ 	         }
+ 	     });
+ 	     
+ 	     btnTag.setOnClickListener(new View.OnClickListener() {
+ 	
+ 	         @Override
+ 	         public void onClick(View v) {
+ 	         	phones[v.getId()] = phones[v.getId()].replaceAll("(#| )", "");
+ 	    		String cToSend = "tel:" +phones[v.getId()] + Uri.encode("#");
+ 	            startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse(cToSend)), 1);
+ 	          }
+ 	     });
+ 	     
+ 	     row.addView(btnTag);
+ 	     layout.addView(row);
+     }
+ 	
 
 	// ------------------------------------------------------------------------------------------
     @Override
@@ -391,184 +353,13 @@ public class MainActivity extends Activity {
         
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        /*
-        // Select contact
- 		btnSelContact = (Button)findViewById(R.id.button2);
- 		btnSelContact.setOnClickListener(new OnClickListener() {
 
- 	        	@Override
- 	            public void onClick(View v) {
- 	        		
- 	        	   //String cToSend = "tel:*135*number" +  Uri.encode("#");
- 	        		String cToSend = "tel:*102" +  Uri.encode("#");
- 	               startActivityForResult(new Intent("android.intent.action.CALL",
- 	                          Uri.parse(cToSend)), 1);
- 	        		
- 	        		//Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
- 	        		//intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
- 	        		//startActivityForResult(intent, 1001);
- 	            }
- 	        });
-        */
-        // Stored phone number & name -> to button
-		/*dbHelper = new DBHelper(this);
-     	showSelectedNumber(dbHelper.getPhone(), dbHelper.getName());
-		dbHelper.close();
-        
-        //Prepare SMS Listeners, prepare Send button 
-        sendBtn = (Button)findViewById(R.id.button1);
-        sendBtn.setEnabled(false);
-        
-        sendBtn.setOnClickListener(new OnClickListener() {
-
-        	@Override
-            public void onClick(View v) {
-        		
-        		dbHelper = new DBHelper(MainActivity.this);
-        		String smsMsg = dbHelper.getSmsMsg() + " " + coordsToSend;
-        		String phNum = dbHelper.getPhone();
-        		dbHelper.close();
-
-        		if (phNum.equalsIgnoreCase("")) {
-        			MainActivity.this.ShowToast(R.string.error_contact_is_not_selected, Toast.LENGTH_LONG);
-        		} else {
-                	showDialog(SEND_SMS_DIALOG_ID);
-
-					// Запускаем новый поток для отправки SMS
-					mThreadSendSMS = new ThreadSendSMS(handler, getApplicationContext());
-					mThreadSendSMS.setMsg(smsMsg);
-					mThreadSendSMS.setPhone(phNum);
-					mThreadSendSMS.setState(ThreadSendSMS.STATE_RUNNING);
-					mThreadSendSMS.start();
-        		}
-                
-            }
-        	
-        });
-     */
-        
-        // Share button
-        /*shareBtn = (ImageButton)findViewById(R.id.ShareButton);
-        setImageButtonEnabled(getApplicationContext(), false, shareBtn, R.drawable.share);
-        
-        shareBtn.setOnClickListener(new OnClickListener() {
-
-        	@Override
-            public void onClick(View v) {
-        		Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND); 
-        	    sharingIntent.setType("text/plain");
-        	    String shareBody = coordsToShare;
-        	    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_topic));
-        	    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-        	    startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_via)));
-            }
-        	
-        });
-        */
-    	
-
-        
-        LinearLayout layout = (LinearLayout) findViewById(R.id.linearLayoutSum);
-        Resources r = getApplicationContext().getResources();
-        
-        // число пикселей для высоты кнопок (относительно dp)
-    	int pixels_b = (int) TypedValue.applyDimension(
-		         TypedValue.COMPLEX_UNIT_DIP,
-		         96, 
-		         r.getDisplayMetrics()
-		);
-
-    	// число пикселей для margin'ов (относительно dp)
-    	int pixels_m = (int) TypedValue.applyDimension(
-	             TypedValue.COMPLEX_UNIT_DIP,
-	             4, 
-	             r.getDisplayMetrics()
-	    );
-    	
-    	try {
-    	
-			dbHelper = new DBHelper(this);
-	     	SQLiteDatabase db = dbHelper.getWritableDatabase();
-	     	
-	     	Cursor mCur = db.rawQuery("select id_, name, ussd, color, order_by FROM seagulls ORDER BY order_by", null);
-	     	
-	     	phones = new String[mCur.getCount()];
-	        ids = new int[mCur.getCount()];
-	     	
-	     	int i=0;
-	     	if (mCur.moveToFirst()) {
-	     		
-	     		int idColIndex = mCur.getColumnIndex("id_");
-	 	        int nameColIndex = mCur.getColumnIndex("name");
-	 	        int ussdColIndex = mCur.getColumnIndex("ussd");
-	 	        int colorColIndex = mCur.getColumnIndex("color");
-	 	        
-	 	        do {
-	 	        	initOneSeagull( layout, 
-			 	        			i, 
-			 	        			pixels_b, 
-			 	        			pixels_m, 
-			 	        			mCur.getString(nameColIndex), 
-			 	        			mCur.getString(ussdColIndex), 
-			 	        			mCur.getInt(idColIndex), 
-			 	        			mCur.getInt(colorColIndex) );
-	 	        	
-	 	        	i++;
-	 	        } while (mCur.moveToNext());
-	    	} 
-	     	
-	     	mCur.close();
-			dbHelper.close();
-    	
-     	}
-    	 catch (Exception e) {
-	        	MainActivity.this.ShowToastT("EXCEPTION! " + e.toString() +" Message:" +e.getMessage(), Toast.LENGTH_LONG);
-	    }
- 
+        refillMainScreen();
         
     }
     
 	// ------------------------------------------------------------------------------------------
     
-    protected void initOneSeagull(LinearLayout layout, int i, int pixels_b, int pixels_m, String name, String ussd, int id, int color) {
-    	 
-    	LinearLayout row = new LinearLayout(this);
-    	row.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-
-    	Button btnTag = new Button(this);
-	     
-    	LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, pixels_b);
-
-    	params.setMargins(-pixels_m, -pixels_m, -pixels_m, -pixels_m);
-	     
-	     btnTag.setLayoutParams(params);
-	     btnTag.setText(name);
-	     btnTag.setId(i);
-	     btnTag.setBackgroundColor(color);	     
-	     
-	     phones[i] = ussd;
-	     ids[i] = id;
-	                
-	     btnTag.setOnLongClickListener(new View.OnLongClickListener() {
-	         public boolean onLongClick(View v) {
-	         	seagullId = v.getId();
-	             showDialog(SEAGULL_PROPS_DIALOG_ID);
-	             return true;
-	         }
-	     });
-	     
-	     btnTag.setOnClickListener(new View.OnClickListener() {
-	
-	         @Override
-	         public void onClick(View v) {
-	         	phones[v.getId()] = phones[v.getId()].replaceAll("(#| )", "");
-	    		String cToSend = "tel:" +phones[v.getId()] + Uri.encode("#");
-	            startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse(cToSend)), 1);
-	          }
-	     });
-	     
-	     row.addView(btnTag);
-	     layout.addView(row);
-    }    
+   
     
 }
