@@ -26,6 +26,12 @@
 	<string name="cancel_btn_txt">Отменить</string>
 	<string name="info_btn_ok">Понятно</string>
 	
-	
+	<string name="authenticating">Аутентификация</string>
+	<string name="ACCOUNT_TYPE">ru.perm.trubnikov.seagull.account</string>
+	<string name="username">Username:</string>
+    <string name="username_hint">efudd</string>
+    <string name="password">Password:</string>
+    <string name="password_hint">w4bb1ts!</string>
+    <string name="login">Login</string>
 	
 </resources>

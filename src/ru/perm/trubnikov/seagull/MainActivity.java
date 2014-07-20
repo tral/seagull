@@ -367,6 +367,10 @@ public class MainActivity extends Activity {
 
         refillMainScreen();
         
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+	    startActivity(intent);        
+        
+        
     }
     
 	// ------------------------------------------------------------------------------------------
