@@ -1,12 +1,8 @@
 package ru.perm.trubnikov.seagull;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ContentProviderOperation;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,7 +11,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -48,8 +43,6 @@ public class MainActivity extends Activity {
     // Database
     DBHelper dbHelper;
 	
-    private static final String IM_LABEL = "Test protocol";
-    
 	// Small util to show text messages by resource id
 	protected void ShowToast(int txt, int lng) {
 		Toast toast = Toast.makeText(MainActivity.this, txt, lng);
