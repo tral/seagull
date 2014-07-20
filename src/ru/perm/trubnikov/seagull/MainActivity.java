@@ -1,8 +1,12 @@
 package ru.perm.trubnikov.seagull;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentProviderOperation;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +15,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -43,6 +48,7 @@ public class MainActivity extends Activity {
     // Database
     DBHelper dbHelper;
 	
+    private static final String IM_LABEL = "Test protocol";
     
 	// Small util to show text messages by resource id
 	protected void ShowToast(int txt, int lng) {
@@ -59,7 +65,7 @@ public class MainActivity extends Activity {
 	    toast.show();
 	}
     
-		
+    		
 	// Menu
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -336,10 +342,22 @@ public class MainActivity extends Activity {
  	
  	         @Override
  	         public void onClick(View v) {
- 	         	phones[v.getId()] = phones[v.getId()].replaceAll("(#| )", "");
- 	    		String cToSend = "tel:" +phones[v.getId()] + Uri.encode("#");
- 	            startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse(cToSend)), 1);
- 	          }
+
+ 	        	try {
+ 	        		String cToSend = "tel:" +phones[v.getId()].replaceAll("(#)", Uri.encode("#"));
+ 	        		startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse(cToSend)), 1);
+ 	            
+ 	        		// This works too
+ 	        		//Intent intent = new Intent(Intent.ACTION_CALL).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);;
+ 	        		//intent.setData(Uri.parse(cToSend));
+ 	        		//getApplicationContext().startActivity(intent);
+ 	        	}
+ 	        	catch (Exception e) {
+ 	        		MainActivity.this.ShowToastT("EXCEPTION! " + e.toString() +" Message:" +e.getMessage(), Toast.LENGTH_LONG);
+ 	        	}
+
+ 	         }
+
  	     });
  	     
  	     row.addView(btnTag);
