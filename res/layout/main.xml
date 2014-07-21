@@ -23,6 +23,7 @@
 <EditText android:layout_height="wrap_content" android:id="@+id/username" android:layout_width="fill_parent" android:inputType="textNoSuggestions"></EditText>
 <TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/password"/>
 <EditText android:layout_height="wrap_content" android:id="@+id/password" android:layout_width="fill_parent" android:inputType="textPassword"></EditText>
- -->
+ 
 <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/login" android:text="@string/login" android:layout_gravity="center"></Button>
+-->
 </LinearLayout>

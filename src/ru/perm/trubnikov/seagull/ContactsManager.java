@@ -19,7 +19,7 @@ public class ContactsManager  {
 
     
 
-	public static void addSeagullContact(Context context, Account account, String name, String username, int RawContactIdToMerge) {
+	public static void addSeagullContact(Context context, Account account, String name, long RawContactIdToMerge) {
 		
 		//Log.i(TAG, "Adding contact: " + name);
 		ArrayList<ContentProviderOperation> operationList = new ArrayList<ContentProviderOperation>();
@@ -27,7 +27,7 @@ public class ContactsManager  {
 		ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(RawContacts.CONTENT_URI);
 		builder.withValue(RawContacts.ACCOUNT_NAME, account.name);
 		builder.withValue(RawContacts.ACCOUNT_TYPE, account.type);
-		builder.withValue(RawContacts.SYNC1, username);
+		builder.withValue(RawContacts.SYNC1, account.name);
 		operationList.add(builder.build());
 
 		builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);

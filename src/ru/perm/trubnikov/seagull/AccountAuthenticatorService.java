@@ -34,6 +34,8 @@ public class AccountAuthenticatorService extends Service {
 	public AccountAuthenticatorService() {
 		super();
 	}
+	
+	
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -65,14 +67,19 @@ public class AccountAuthenticatorService extends Service {
 		 * accounts.AccountAuthenticatorResponse, java.lang.String,
 		 * java.lang.String, java.lang.String[], android.os.Bundle)
 		 */
+		
 		@Override
 		public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String authTokenType, String[] requiredFeatures, Bundle options)
 				throws NetworkErrorException {
+			
 			Bundle result = new Bundle();
 			Intent i = new Intent(mContext, LoginActivity.class);
 			i.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
 			result.putParcelable(AccountManager.KEY_INTENT, i);
 			return result;
+			
+						
+			
 		}
 
 		/*
@@ -163,4 +170,6 @@ public class AccountAuthenticatorService extends Service {
 			return null;
 		}
 	}
+	
+	
 }

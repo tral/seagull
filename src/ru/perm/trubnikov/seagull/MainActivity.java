@@ -1,5 +1,7 @@
 package ru.perm.trubnikov.seagull;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -358,6 +360,18 @@ public class MainActivity extends Activity {
      }
  	
 
+     protected void ManageAccounts() {
+    	 AccountManager accountManager = AccountManager.get(MainActivity.this);
+         Account[] accounts = accountManager.getAccountsByType(getString(R.string.ACCOUNT_TYPE));
+         
+         if (accounts.length>0) {
+         } else {
+         	Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+         	startActivity(intent);
+         }
+     }
+     
+     
 	// ------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -367,9 +381,7 @@ public class MainActivity extends Activity {
 
         refillMainScreen();
         
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-	    startActivity(intent);        
-        
+        ManageAccounts();
         
     }
     

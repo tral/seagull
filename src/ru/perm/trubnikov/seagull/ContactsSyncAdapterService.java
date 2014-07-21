@@ -15,7 +15,6 @@
  ******************************************************************************/
 package ru.perm.trubnikov.seagull;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -31,15 +30,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SyncResult;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.BaseColumns;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.RawContacts;
 import android.provider.ContactsContract.RawContacts.Entity;
 import android.util.Log;
@@ -188,12 +186,37 @@ public class ContactsSyncAdapterService extends Service {
 
 	private static void performSync(Context context, Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult)
 			throws OperationCanceledException {
-		HashMap<String, SyncEntry> localContacts = new HashMap<String, SyncEntry>();
-		mContentResolver = context.getContentResolver();
+		
+//		HashMap<String, SyncEntry> localContacts = new HashMap<String, SyncEntry>();
+	//	mContentResolver = context.getContentResolver();
 
 
 		Log.d("seagull", "performSync: " + account.toString());
-		ContactsManager.addSeagullContact(context, account, "ChaykaLogin", "chaykauser", 154);
+		//ContactsManager.addSeagullContact(context, account, "ChaykaLogin", "chaykauser", 154);
+/*
+		 long last_cid = -1;
+		 Cursor c = context.getContentResolver().query(
+			        Data.CONTENT_URI, 
+			        null, 
+			        Data.HAS_PHONE_NUMBER + " != 0 AND " + Data.MIMETYPE + "=? ", 
+			        new String[]{Phone.CONTENT_ITEM_TYPE},
+			        Data.CONTACT_ID);
+		 
+			while (c.moveToNext()) {
+			    //long id = c.getLong(c.getColumnIndex(Data.CONTACT_ID));
+			    //long raw_id = c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID));
+			    //String name = c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY));
+			    //String data1 = c.getString(c.getColumnIndex(Data.DATA1));
+
+			    //System.out.println(id + ", name=" + name + ", data1=" + data1);
+			    if (last_cid != c.getLong(c.getColumnIndex(Data.CONTACT_ID))) {
+			    	
+			    	Log.d("seagull", "c_id = " + c.getLong(c.getColumnIndex(Data.CONTACT_ID)) +", raw_id = " +c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID))+ ", name = " + c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY)));
+			    	ContactsManager.addSeagullContact(context, account, c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY)), c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID)));
+			    	last_cid  = c.getLong(c.getColumnIndex(Data.CONTACT_ID));
+			    }
+			}
+		*/
 		
 		
 		
