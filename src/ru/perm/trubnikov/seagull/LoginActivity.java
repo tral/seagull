@@ -36,6 +36,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 	//	Button mLoginButton;
 	//	private static ContentResolver mContentResolver = null;
 
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -160,10 +161,8 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 		*/
 		
 		
-	
-		
-		LoginTask t = new LoginTask(LoginActivity.this);
-		t.execute(getString(R.string.dummy_username), getString(R.string.dummy_password));
+			LoginTask t = new LoginTask(LoginActivity.this);
+			t.execute(getString(R.string.dummy_username), getString(R.string.dummy_password));
 		
 		
 		/*
@@ -246,28 +245,34 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 				
 				// Добавляем апп в контакты, у которых есть телефонный номер
 				 long last_cid = -1;
-				 Cursor c = getContentResolver().query(
-					        Data.CONTENT_URI, 
-					        null, 
-					        Data.HAS_PHONE_NUMBER + " != 0 AND " + Data.MIMETYPE + "=? ", 
-					        new String[]{Phone.CONTENT_ITEM_TYPE},
-					        Data.CONTACT_ID);
+				 try {
+					 Cursor c = getContentResolver().query(
+						        Data.CONTENT_URI, 
+						        null, 
+						        Data.HAS_PHONE_NUMBER + " != 0 AND " + Data.MIMETYPE + "=?  AND " + 
+						        Data.CONTACT_ID +" > 400 AND " +Data.CONTACT_ID+ "<500", 
+						        new String[]{Phone.CONTENT_ITEM_TYPE},
+						        Data.CONTACT_ID);
+					 
+						while (c.moveToNext()) {
+						    //long id = c.getLong(c.getColumnIndex(Data.CONTACT_ID));
+						    //long raw_id = c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID));
+						    //String name = c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY));
+						    //String data1 = c.getString(c.getColumnIndex(Data.DATA1));
+	
+						    //System.out.println(id + ", name=" + name + ", data1=" + data1);
+						    if (last_cid != c.getLong(c.getColumnIndex(Data.CONTACT_ID))) {
+						    	
+						    	Log.d("seagull", "c_id = " + c.getLong(c.getColumnIndex(Data.CONTACT_ID)) +", raw_id = " +c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID))+ ", name = " + c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY)));
+						    	ContactsManager.addSeagullContact(LoginActivity.this, account, c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY)), c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID)));
+						    	last_cid  = c.getLong(c.getColumnIndex(Data.CONTACT_ID));
+						    }
+						}
+				 	}
+				   catch (Exception e) {
+	 	        		Log.d("seagull", "initial insert: EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
+	 	        	}
 				 
-					while (c.moveToNext()) {
-					    //long id = c.getLong(c.getColumnIndex(Data.CONTACT_ID));
-					    //long raw_id = c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID));
-					    //String name = c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY));
-					    //String data1 = c.getString(c.getColumnIndex(Data.DATA1));
-
-					    //System.out.println(id + ", name=" + name + ", data1=" + data1);
-					    if (last_cid != c.getLong(c.getColumnIndex(Data.CONTACT_ID))) {
-					    	
-					    	Log.d("seagull", "c_id = " + c.getLong(c.getColumnIndex(Data.CONTACT_ID)) +", raw_id = " +c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID))+ ", name = " + c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY)));
-					    	ContactsManager.addSeagullContact(LoginActivity.this, account, c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY)), c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID)));
-					    	last_cid  = c.getLong(c.getColumnIndex(Data.CONTACT_ID));
-					    }
-					}
-				
 					try {
 						dbHelper = new DBHelper(LoginActivity.this);
 				        dbHelper.setSettingsParamInt("syncfrom", last_cid);

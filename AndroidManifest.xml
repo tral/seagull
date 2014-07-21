@@ -33,7 +33,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             
-            
+            <!-- 
             <intent-filter>
             <action
                 android:name="android.intent.action.SENDTO" />
@@ -44,7 +44,7 @@
             <category
                 android:name="android.intent.category.DEFAULT" />
 </intent-filter>
-            
+             -->
         </activity>
         
 		<activity android:name=".ProfileActivity"
@@ -55,16 +55,26 @@
 				<data android:mimeType="vnd.android.cursor.item/vnd.ru.perm.trubnikov.seagull.profile" />
 			</intent-filter>
 		</activity>
-		
-		
         
 		<activity android:name=".LoginActivity"
-                  android:label="@string/app_name">
+                  android:label="@string/app_name"
+                  android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-        
+
+		<activity
+            android:name=".SelectOperatorActivity"
+            android:label="@string/app_name" 
+            android:screenOrientation="portrait" 
+            android:windowSoftInputMode="stateAlwaysHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.CATEGORY_ALTERNATE" />
+                
+            </intent-filter>
+        </activity>
 
 		<service android:name=".AccountAuthenticatorService"
 			android:exported="true" android:process=":auth">

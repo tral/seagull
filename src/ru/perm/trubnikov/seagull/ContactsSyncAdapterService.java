@@ -222,6 +222,11 @@ public class ContactsSyncAdapterService extends Service {
 		Log.d("seagull", "sync: finish");
 		
 		
+		
+		
+		
+		
+		
 		//Log.d("seagull", "performSync: " + account.toString());
 		//ContactsManager.addSeagullContact(context, account, "ChaykaLogin", "chaykauser", 154);
 /*

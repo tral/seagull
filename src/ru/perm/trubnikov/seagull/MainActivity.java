@@ -33,6 +33,7 @@ public class MainActivity extends Activity {
 	// Menu
 	public static final int IDM_SEAGULL_PROPS = 101;
 	public static final int IDM_HELP = 102;
+	public static final int IDM_SEL_OP = 103;
 	
 	// Dialogs
     private final static int SEAGULL_PROPS_DIALOG_ID = 1;
@@ -70,7 +71,9 @@ public class MainActivity extends Activity {
 		//return true;
 		
 		menu.add(Menu.NONE, IDM_SEAGULL_PROPS, Menu.NONE, R.string.menu_item_settings);
+		menu.add(Menu.NONE, IDM_SEL_OP, Menu.NONE, R.string.menu_sel_op);
 		menu.add(Menu.NONE, IDM_HELP, Menu.NONE, R.string.menu_item_help);
+		
 		return(super.onCreateOptionsMenu(menu));
 	}
 
@@ -234,6 +237,10 @@ public class MainActivity extends Activity {
             case IDM_HELP:
             	showDialog(HELP_DIALOG_ID);
                 break;
+            case IDM_SEL_OP:
+            	Intent intent = new Intent(MainActivity.this, SelectOperatorActivity.class);
+             	startActivity(intent);
+             	break;
             default:
                 return false;
         }
@@ -381,9 +388,19 @@ public class MainActivity extends Activity {
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        refillMainScreen();
+        try{
+        	refillMainScreen();
+        }
+        catch (Exception e) {
+     		Log.d("seagull", "refillMainScreen(): EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
+     	}
         
-        ManageAccounts();
+        try{
+       		ManageAccounts();
+        }
+        catch (Exception e) {
+     		Log.d("seagull", "ManageAccounts(): EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
+     	}
     
         try{
 	        dbHelper = new DBHelper(MainActivity.this);
