@@ -80,10 +80,30 @@ import android.graphics.Color;
     	return 0;
     }
     
+    public String getSettingsParamTxt(String param) {
+    	SQLiteDatabase db = this.getWritableDatabase();
+    	Cursor c = db.query("settings", null, "param = '"+param+"'", null, null, null, null);
+    	
+    	if (c.moveToFirst()) {
+            int idx = c.getColumnIndex("val_txt");
+            String r = c.getString(idx);
+            return r;
+		}
+    	
+    	return "";
+    }
+    
     public void setSettingsParamInt(String param, long val) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues cv = new ContentValues();
 	    cv.put("val_int", val);
+	    db.update("settings", cv, "param = ?", new String[] { param });
+    }
+    
+    public void setSettingsParamTxt(String param, String val) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues cv = new ContentValues();
+	    cv.put("val_txt", val);
 	    db.update("settings", cv, "param = ?", new String[] { param });
     }
     
@@ -144,10 +164,26 @@ import android.graphics.Color;
       cv.put("val_int", 0);
       db.insert("settings", null, cv);
       
+      cv.clear();
+      cv.put("param", "op_prefix");
+      cv.put("val_txt", "");
+      cv.put("val_int", 0);
+      db.insert("settings", null, cv);
+      cv.clear();
+      cv.put("param", "op_num"); // формат номера
+      cv.put("val_txt", "");
+      cv.put("val_int", 0);
+      db.insert("settings", null, cv);
+      cv.clear();
+      cv.put("param", "op"); // оператор
+      cv.put("val_txt", "");
+      cv.put("val_int", 0);
+      db.insert("settings", null, cv);
+      
     }
 
     
-    public int getRndColor() {
+    public static int getRndColor() {
     	 Random rand = new Random();
          int rc = rand.nextInt(255);
          int g = rand.nextInt(255);
@@ -176,6 +212,22 @@ import android.graphics.Color;
     	      
     	      cv.clear();
     	      cv.put("param", "syncfrom"); // С какого id синхронизировать контакты (имеется в виду CONTACT_ID), для оптимизации синхронизации
+    	      cv.put("val_txt", "");
+    	      cv.put("val_int", 0);
+    	      db.insert("settings", null, cv);
+    	      
+    	      cv.clear();
+    	      cv.put("param", "op_prefix");
+    	      cv.put("val_txt", "");
+    	      cv.put("val_int", 0);
+    	      db.insert("settings", null, cv);
+    	      cv.clear();
+    	      cv.put("param", "op_num");
+    	      cv.put("val_txt", "");
+    	      cv.put("val_int", 0);
+    	      db.insert("settings", null, cv);
+    	      cv.clear();
+    	      cv.put("param", "op"); // оператор
     	      cv.put("val_txt", "");
     	      cv.put("val_int", 0);
     	      db.insert("settings", null, cv);

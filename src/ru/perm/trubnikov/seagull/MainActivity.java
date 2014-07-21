@@ -101,7 +101,6 @@ public class MainActivity extends Activity {
 	}
 	
 	
-	
 	protected AlertDialog seagullProps() {
 		
 		 LayoutInflater inflater = getLayoutInflater();
@@ -126,7 +125,7 @@ public class MainActivity extends Activity {
                 cv.put("ussd", ussdEdit.getText().toString());
                 
                 if (seagullId == -1) {
-                	cv.put("color", dbHelper.getRndColor());
+                	cv.put("color", DBHelper.getRndColor());
                 	long rowID = db.insert("seagulls", null, cv);
                 	// порядок сделаем равным только что вставленному id
                 	cv.clear();
@@ -376,6 +375,7 @@ public class MainActivity extends Activity {
          } else {
          	Intent intent = new Intent(MainActivity.this, LoginActivity.class);
          	startActivity(intent);
+         	
          }
      }
      
@@ -400,15 +400,6 @@ public class MainActivity extends Activity {
         }
         catch (Exception e) {
      		Log.d("seagull", "ManageAccounts(): EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
-     	}
-    
-        try{
-	        dbHelper = new DBHelper(MainActivity.this);
-	        Log.d("seagull", "" + dbHelper.getSettingsParamInt("syncfrom"));
-	        dbHelper.close();
-        }
-        catch (Exception e) {
-     		Log.d("seagull", "EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
      	}
     
     }
