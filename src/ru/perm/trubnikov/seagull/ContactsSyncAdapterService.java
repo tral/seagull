@@ -15,31 +15,19 @@
  ******************************************************************************/
 package ru.perm.trubnikov.seagull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import android.accounts.Account;
 import android.accounts.OperationCanceledException;
 import android.app.Service;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
-import android.content.ContentProviderOperation;
-import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SyncResult;
 import android.database.Cursor;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.provider.BaseColumns;
-import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Data;
-import android.provider.ContactsContract.RawContacts;
-import android.provider.ContactsContract.RawContacts.Entity;
 import android.util.Log;
 
 /**
@@ -47,11 +35,12 @@ import android.util.Log;
  * 
  */
 public class ContactsSyncAdapterService extends Service {
-	private static final String TAG = "ContactsSyncAdapterService";
+	
+	//private static final String TAG = "ContactsSyncAdapterService";
 	private static SyncAdapterImpl sSyncAdapter = null;
-	private static ContentResolver mContentResolver = null;
-	private static String UsernameColumn = ContactsContract.RawContacts.SYNC1;
-	private static String PhotoTimestampColumn = ContactsContract.RawContacts.SYNC2;
+	//private static ContentResolver mContentResolver = null;
+	//private static String UsernameColumn = ContactsContract.RawContacts.SYNC1;
+	//private static String PhotoTimestampColumn = ContactsContract.RawContacts.SYNC2;
 
 	public ContactsSyncAdapterService() {
 		super();
@@ -86,7 +75,7 @@ public class ContactsSyncAdapterService extends Service {
 			sSyncAdapter = new SyncAdapterImpl(this);
 		return sSyncAdapter;
 	}
-
+/*
 	private static void addContact(Account account, String name, String username) {
 		Log.i(TAG, "Adding contact: " + name);
 		ArrayList<ContentProviderOperation> operationList = new ArrayList<ContentProviderOperation>();
@@ -114,7 +103,7 @@ public class ContactsSyncAdapterService extends Service {
 		try {
 			mContentResolver.applyBatch(ContactsContract.AUTHORITY, operationList);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 	}
@@ -174,24 +163,66 @@ public class ContactsSyncAdapterService extends Service {
 				operationList.add(builder.build());
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
-	}
-	
+	}*/
+	/*
 	private static class SyncEntry {
 		public Long raw_id = 0L;
 		public Long photo_timestamp = null;
-	}
+	}*/
 
+	
 	private static void performSync(Context context, Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult)
 			throws OperationCanceledException {
 		
-//		HashMap<String, SyncEntry> localContacts = new HashMap<String, SyncEntry>();
-	//	mContentResolver = context.getContentResolver();
+		DBHelper dbHelper;
+		dbHelper = new DBHelper(context);
+		
+		try {
+			
+			Log.d("seagull", "sync: start");
 
+	        long startFromId = dbHelper.getSettingsParamInt("syncfrom");
+			
+	        Log.d("seagull", "sync: startFromId = " + startFromId);
+        
+	        // Обновляем контакты без чаек
+	        long last_cid = -1;
+	        Cursor c = context.getContentResolver().query(
+			        Data.CONTENT_URI, 
+			        null, 
+			        Data.HAS_PHONE_NUMBER + " != 0 AND " + Data.MIMETYPE + "=? AND " + Data.CONTACT_ID + " > " + startFromId, 
+			        new String[]{Phone.CONTENT_ITEM_TYPE},
+			        Data.CONTACT_ID);
+		 
+			while (c.moveToNext()) {
 
-		Log.d("seagull", "performSync: " + account.toString());
+			    if (last_cid != c.getLong(c.getColumnIndex(Data.CONTACT_ID))) {
+			    	
+			    	Log.d("seagull", "sync: c_id = " + c.getLong(c.getColumnIndex(Data.CONTACT_ID)) +", raw_id = " +c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID))+ ", name = " + c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY)));
+			    	ContactsManager.addSeagullContact(context, account, c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY)), c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID)));
+			    	last_cid  = c.getLong(c.getColumnIndex(Data.CONTACT_ID));
+			    }
+			}
+        
+			if (last_cid > 0) {
+				dbHelper.setSettingsParamInt("syncfrom", last_cid);
+			}
+		
+		}
+        catch (Exception e) {
+     		Log.d("seagull", "sync: EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
+     	}
+		finally {
+			dbHelper.close();
+		}
+		
+		Log.d("seagull", "sync: finish");
+		
+		
+		//Log.d("seagull", "performSync: " + account.toString());
 		//ContactsManager.addSeagullContact(context, account, "ChaykaLogin", "chaykauser", 154);
 /*
 		 long last_cid = -1;
@@ -251,7 +282,7 @@ public class ContactsSyncAdapterService extends Service {
 			if (operationList.size() > 0)
 				mContentResolver.applyBatch(ContactsContract.AUTHORITY, operationList);
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
+			
 			e1.printStackTrace();
 		}*/
 	}

@@ -13,6 +13,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -372,6 +373,7 @@ public class MainActivity extends Activity {
      }
      
      
+     
 	// ------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -382,7 +384,16 @@ public class MainActivity extends Activity {
         refillMainScreen();
         
         ManageAccounts();
-        
+    
+        try{
+	        dbHelper = new DBHelper(MainActivity.this);
+	        Log.d("seagull", "" + dbHelper.getSettingsParamInt("syncfrom"));
+	        dbHelper.close();
+        }
+        catch (Exception e) {
+     		Log.d("seagull", "EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
+     	}
+    
     }
     
 	// ------------------------------------------------------------------------------------------

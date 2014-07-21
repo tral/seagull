@@ -28,6 +28,7 @@ import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Data;
 import android.util.Log;
+import android.widget.Toast;
 
 public class LoginActivity extends AccountAuthenticatorActivity {
 	//	EditText mUsername;
@@ -218,6 +219,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 	private class LoginTask extends AsyncTask<String, Void, Boolean> {
 		Context mContext;
 		ProgressDialog mDialog;
+		DBHelper dbHelper;
 
 		LoginTask(Context c) {
 			mContext = c;
@@ -266,8 +268,14 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 					    }
 					}
 				
-				
-				
+					try {
+						dbHelper = new DBHelper(LoginActivity.this);
+				        dbHelper.setSettingsParamInt("syncfrom", last_cid);
+				        dbHelper.close();
+					}
+			        catch (Exception e) {
+	 	        		Log.d("seagull", "EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
+	 	        	}
 				
 				
 				/*

@@ -16,9 +16,7 @@ import android.provider.ContactsContract.AggregationExceptions;
 import android.provider.ContactsContract.RawContacts;
 
 public class ContactsManager  {
-
-    
-
+	
 	public static void addSeagullContact(Context context, Account account, String name, long RawContactIdToMerge) {
 		
 		//Log.i(TAG, "Adding contact: " + name);

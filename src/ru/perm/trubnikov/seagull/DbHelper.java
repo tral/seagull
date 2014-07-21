@@ -22,7 +22,7 @@ import android.graphics.Color;
 	  
     public DBHelper(Context context) {
       // конструктор суперкласса
-      super(context, "rupermtrubnikovseagullDB", null, 1);
+      super(context, "rupermtrubnikovseagullDB", null, 2);  // Версия БД тут!
       s_name1 = context.getString(R.string.default_seagull_name1);
       s_name2 = context.getString(R.string.default_seagull_name2);
       s_name3 = context.getString(R.string.default_seagull_name3);
@@ -67,6 +67,25 @@ import android.graphics.Color;
     	return "";
     } 
 
+    public long getSettingsParamInt(String param) {
+    	SQLiteDatabase db = this.getWritableDatabase();
+    	Cursor c = db.query("settings", null, "param = '"+param+"'", null, null, null, null);
+    	
+    	if (c.moveToFirst()) {
+            int idx = c.getColumnIndex("val_int");
+            Long r = c.getLong(idx);
+            return r;
+		}
+    	
+    	return 0;
+    }
+    
+    public void setSettingsParamInt(String param, long val) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues cv = new ContentValues();
+	    cv.put("val_int", val);
+	    db.update("settings", cv, "param = ?", new String[] { param });
+    }
     
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -110,6 +129,21 @@ import android.graphics.Color;
       cv.put("order_by", 3);
       db.insert("seagulls", null, cv);
       
+      // Появилось с БД версии 2
+      // таблица настроек
+      db.execSQL("create table settings ("
+              + "id_ integer primary key autoincrement," 
+              + "param text,"
+              + "val_txt text,"
+              + "val_int integer"
+              + ");");
+      
+      cv.clear();
+      cv.put("param", "syncfrom"); // С какого id синхронизировать контакты (имеется в виду CONTACT_ID), для оптимизации синхронизации
+      cv.put("val_txt", "");
+      cv.put("val_int", 0);
+      db.insert("settings", null, cv);
+      
     }
 
     
@@ -127,5 +161,25 @@ import android.graphics.Color;
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+    	ContentValues cv = new ContentValues();
+    	
+    	if (oldVersion == 1 && newVersion == 2) {
+
+    		// Появилось с БД версии 2
+    	    // таблица настроек
+    	      db.execSQL("create table settings ("
+    	              + "id_ integer primary key autoincrement," 
+    	              + "param text,"
+    	              + "val_txt text,"
+    	              + "val_int integer"
+    	              + ");");
+    	      
+    	      cv.clear();
+    	      cv.put("param", "syncfrom"); // С какого id синхронизировать контакты (имеется в виду CONTACT_ID), для оптимизации синхронизации
+    	      cv.put("val_txt", "");
+    	      cv.put("val_int", 0);
+    	      db.insert("settings", null, cv);
+    	}
+    	
     }
   }
