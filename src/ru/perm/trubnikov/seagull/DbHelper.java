@@ -107,6 +107,30 @@ import android.graphics.Color;
 	    db.update("settings", cv, "param = ?", new String[] { param });
     }
     
+    
+    public void InsertSeagull(String name, String ussd) {
+    	SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues cv = new ContentValues();
+        cv.put("name", name);
+        cv.put("ussd", ussd);
+    	cv.put("color", DBHelper.getRndColor());
+    	
+    	long rowID = db.insert("seagulls", null, cv);
+    	// порядок сделаем равным только что вставленному id
+    	cv.clear();
+    	cv.put("order_by", rowID);
+    	db.update("seagulls", cv, "id_ = ?", new String[] { ""+rowID });
+    }
+    
+    public void UpdateSeagull(int id, String name, String ussd) {
+    	SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues cv = new ContentValues();
+        cv.put("name", name);
+        cv.put("ussd", ussd);
+    	cv.put("color", DBHelper.getRndColor());
+    	db.update("seagulls", cv, "id_ = ?", new String[] { ""+id });
+    }
+    
     @Override
     public void onCreate(SQLiteDatabase db) {
       
@@ -193,6 +217,15 @@ import android.graphics.Color;
          return randomColor;
     }
     
+    
+    public static String getNormalizedPhone(String phone, String  op_num) {
+    	if (phone.length() == 12) {phone = phone.substring(2);}
+		if (phone.length() == 11) {phone = phone.substring(1);}
+		
+		if (op_num.equalsIgnoreCase("11_8")) {phone = "8" + phone;}
+        return phone;
+   }
+   
     
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

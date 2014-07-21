@@ -41,123 +41,14 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 		//setContentView(R.layout.main);
+		
+		LoginTask t = new LoginTask(LoginActivity.this);
+		t.execute(getString(R.string.dummy_username), getString(R.string.dummy_password));
 
-		//mUsername = (EditText) findViewById(R.id.username);
-		//mPassword = (EditText) findViewById(R.id.password);
-
-		/*
-		Cursor cursor = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-		if(cursor.moveToFirst())
-		{
-		    //ArrayList<String> alContacts = new ArrayList<String>();
-		    do
-		    {
-		        String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-
-		        if(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0)
-		        {
-		            Cursor pCur = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",new String[]{ id }, null);
-		            while (pCur.moveToNext()) 
-		            {
-		                String contactNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-		                //alContacts.add(contactNumber);
-		                Log.d("seagull", contactNumber);
-		                break;
-		            }
-		            pCur.close();
-		        }
-
-		    } while (cursor.moveToNext()) ;
-		    
-		}
-		
-		*/
-		
-		/*
-		Cursor c = getContentResolver().query(
-		        Data.CONTENT_URI, 
-		        null, 
-		        Data.HAS_PHONE_NUMBER + "!=0 AND (" + Data.MIMETYPE + "=? OR " + Data.MIMETYPE + "=?)", 
-		        new String[]{Email.CONTENT_ITEM_TYPE, Phone.CONTENT_ITEM_TYPE},
-		        Data.CONTACT_ID);
-*/
-		
-		/*Cursor c = getContentResolver().query(
-		        Data.CONTENT_URI, 
-		        null, 
-		        Data.CONTACT_ID + " > 10000", 
-		        null,
-		        Data.CONTACT_ID);*/
-		/*
-		Cursor c = getContentResolver().query(
-				Data.CONTENT_URI, 
-		        null, 
-		        Data.HAS_PHONE_NUMBER + "!=0 AND (" +  Data.MIMETYPE + "=?)", 
-		        new String[]{"vnd.android.cursor.item/vnd.ru.perm.trubnikov.seagull.profile"},
-		        Data._ID);*/
-		
-		/*
-		 Cursor c = getContentResolver().query(
-		        Data.CONTENT_URI, 
-		        null, 
-		        Data.HAS_PHONE_NUMBER + " != 0 AND " + Data.MIMETYPE + "=? ", 
-		        new String[]{Phone.CONTENT_ITEM_TYPE},
-		        Data.CONTACT_ID);
-		while (c.moveToNext()) {
-		    long id = c.getLong(c.getColumnIndex(Data.CONTACT_ID));
-		    long raw_id = c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID));
-		    String name = c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY));
-		    String data1 = c.getString(c.getColumnIndex(Data.DATA1));
-
-		    //System.out.println(id + ", name=" + name + ", data1=" + data1);
-		    Log.d("seagull", "c_id = " + id +", raw_id = " +raw_id+ ", name_p = " + name + ", data1 = " + data1);
-		    
-		}*/
-		
-		
-		
-		
-		
-			LoginTask t = new LoginTask(LoginActivity.this);
-			t.execute(getString(R.string.dummy_username), getString(R.string.dummy_password));
-		
-		
-	
-
-				
-			/*
-				ContentResolver cr = getContentResolver();
-		        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-		                null, null, null, null);
-		        if (cur.getCount() > 0) {
-		            while (cur.moveToNext()) {
-		                  String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-		                  String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-		                  if (Integer.parseInt(cur.getString(
-		                        cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-		                     Cursor pCur = cr.query(
-		                               ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-		                               null,
-		                               ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
-		                               new String[]{id}, null);
-		                     while (pCur.moveToNext()) {
-		                         String phoneNo = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-		                         Toast.makeText(LoginActivity.this, "id" + id + ", Name: " + name + ", Phone No: " + phoneNo, Toast.LENGTH_SHORT).show();
-		                     }
-		                    pCur.close();
-		                }
-		            }
-		        }
-				*/
-			
-	//		}
-		//});
 	}
 
-	
-	
+
 	private class LoginTask extends AsyncTask<String, Void, Boolean> {
 		Context mContext;
 		ProgressDialog mDialog;
@@ -165,7 +56,6 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 
 		LoginTask(Context c) {
 			mContext = c;
-			//mLoginButton.setEnabled(false);
 			mDialog = ProgressDialog.show(c, "", getString(R.string.authenticating), true, false);
 			mDialog.setCancelable(false);
 		}

@@ -5,7 +5,6 @@ import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -13,6 +12,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -34,6 +34,7 @@ public class MainActivity extends Activity {
 	public static final int IDM_SEAGULL_PROPS = 101;
 	public static final int IDM_HELP = 102;
 	public static final int IDM_SEL_OP = 103;
+	public static final int IDM_SEAGULL_FROM_CONTACTS = 104;
 	
 	// Dialogs
     private final static int SEAGULL_PROPS_DIALOG_ID = 1;
@@ -66,10 +67,8 @@ public class MainActivity extends Activity {
 	// Menu
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		//getMenuInflater().inflate(R.menu.main, menu);
-		//return true;
-		
+
+		menu.add(Menu.NONE, IDM_SEAGULL_FROM_CONTACTS, Menu.NONE, R.string.menu_item_seagull_from_contacts);
 		menu.add(Menu.NONE, IDM_SEAGULL_PROPS, Menu.NONE, R.string.menu_item_settings);
 		menu.add(Menu.NONE, IDM_SEL_OP, Menu.NONE, R.string.menu_sel_op);
 		menu.add(Menu.NONE, IDM_HELP, Menu.NONE, R.string.menu_item_help);
@@ -117,24 +116,14 @@ public class MainActivity extends Activity {
          builder.setPositiveButton(getString(R.string.save_btn_txt), new DialogInterface.OnClickListener() {
              public void onClick(DialogInterface dialog, int id) {
 
-             	// update 
-             	dbHelper = new DBHelper(MainActivity.this);
-        		SQLiteDatabase db = dbHelper.getWritableDatabase();
-        		ContentValues cv = new ContentValues();
-                cv.put("name", nameEdit.getText().toString());
-                cv.put("ussd", ussdEdit.getText().toString());
-                
-                if (seagullId == -1) {
-                	cv.put("color", DBHelper.getRndColor());
-                	long rowID = db.insert("seagulls", null, cv);
-                	// порядок сделаем равным только что вставленному id
-                	cv.clear();
-                	cv.put("order_by", rowID);
-                	db.update("seagulls", cv, "id_ = ?", new String[] { ""+rowID });
-                }	
-                else
-                	db.update("seagulls", cv, "id_ = ?", new String[] { ""+seagullId });
-                
+            	 dbHelper = new DBHelper(MainActivity.this);
+            	 
+            	 if (seagullId == -1) {
+            		 dbHelper.InsertSeagull(nameEdit.getText().toString(), ussdEdit.getText().toString());
+            	 } else {
+            		 dbHelper.UpdateSeagull(seagullId, nameEdit.getText().toString(), ussdEdit.getText().toString());
+            	 }
+
                 dbHelper.close();
 
                 refillMainScreen();
@@ -240,6 +229,19 @@ public class MainActivity extends Activity {
             	Intent intent = new Intent(MainActivity.this, SelectOperatorActivity.class);
              	startActivity(intent);
              	break;
+            case IDM_SEAGULL_FROM_CONTACTS:
+            	
+            	dbHelper = new DBHelper(MainActivity.this);
+                String op = dbHelper.getSettingsParamTxt("op");
+                dbHelper.close();
+                if (op.equalsIgnoreCase("")) {
+                	MainActivity.this.ShowToastT(getString(R.string.err_empty_op), Toast.LENGTH_LONG);
+                } else {
+	            	Intent intent1 = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+		        	intent1.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
+		        	startActivityForResult(intent1, 1001);
+	        	}
+            	break;
             default:
                 return false;
         }
@@ -247,6 +249,66 @@ public class MainActivity extends Activity {
         return true;
     }
     
+ 	@Override
+	public void onActivityResult(int reqCode, int resultCode, Intent data) {
+	  super.onActivityResult(reqCode, resultCode, data);
+
+	  switch (reqCode) {
+	    case (1001) :
+	    	String number = "";
+	        String name = "";
+	        //int type = 0;
+	        if (data != null) {
+	            Uri uri = data.getData();
+
+	            if (uri != null) {
+	                Cursor c = null;
+	                try {
+	                	
+	                    c = getContentResolver().query(uri, new String[]{ 
+	                                ContactsContract.CommonDataKinds.Phone.NUMBER,  
+	                                ContactsContract.CommonDataKinds.Phone.TYPE,
+	                                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME },
+	                            null, null, null);
+
+	                    if (c != null && c.moveToFirst()) {
+	                        number = c.getString(0);
+	                        number = number.replace("-", "").replace(" ", "");
+	                        //type = c.getInt(1);
+	                        name = c.getString(2);
+
+	                        dbHelper = new DBHelper(MainActivity.this);
+	                        String op_num = dbHelper.getSettingsParamTxt("op_num");
+	                        String op_prefix = dbHelper.getSettingsParamTxt("op_prefix");
+	                        number = DBHelper.getNormalizedPhone(number, op_num);
+	                   	 	dbHelper.InsertSeagull(name, op_prefix + number + "#");
+	                        dbHelper.close();
+	                        
+	                        refillMainScreen();
+	                        
+	                    	// update 
+	                    	/*dbHelper = new DBHelper(MainActivity.this);
+	    	        		SQLiteDatabase db = dbHelper.getWritableDatabase();
+	    	        		ContentValues cv = new ContentValues();
+	    	                cv.put("contact", name);
+	    	                db.update("contact", cv, "_id = ?", new String[] { "1" });
+	    	                cv.clear();
+	    	                cv.put("phone", number);
+	    	                db.update("phone", cv, "_id = ?", new String[] { "1" });
+	    	                dbHelper.close();*/
+	                        
+	                    }
+	                } finally {
+	                    if (c != null) { c.close(); }
+	                }
+	            }
+	        }
+	    	
+	    
+	      break;
+	  }
+	}
+ 	
  	
  	 protected void refillMainScreen() {
     	 
@@ -346,7 +408,7 @@ public class MainActivity extends Activity {
  	         public void onClick(View v) {
 
  	        	try {
- 	        		String cToSend = "tel:" +phones[v.getId()].replaceAll("(#)", Uri.encode("#"));
+ 	        		String cToSend = "tel:" +phones[v.getId()].replace("#", Uri.encode("#"));
  	        		startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse(cToSend)), 1);
  	            
  	        		// This works too
@@ -368,15 +430,26 @@ public class MainActivity extends Activity {
  	
 
      protected void ManageAccounts() {
-    	 AccountManager accountManager = AccountManager.get(MainActivity.this);
-         Account[] accounts = accountManager.getAccountsByType(getString(R.string.ACCOUNT_TYPE));
+    	 
+    	 try{
+        
+	    	 AccountManager accountManager = AccountManager.get(MainActivity.this);
+	         Account[] accounts = accountManager.getAccountsByType(getString(R.string.ACCOUNT_TYPE));
+	         
+	         //Log.d("seagull", accounts.length+"");
+	         
+	         if (accounts.length>0) {
+	         } else {
+	         	Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+	         	startActivity(intent);
+	         	
+	         }
          
-         if (accounts.length>0) {
-         } else {
-         	Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-         	startActivity(intent);
-         	
-         }
+    	 }
+         catch (Exception e) {
+      		Log.d("seagull", "ManageAccounts(): EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
+      	}
+         
      }
      
      

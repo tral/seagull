@@ -196,7 +196,7 @@ public class ProfileActivity extends Activity  {
 	    	    toast.setGravity(Gravity.TOP, 0, 0);
 	    	    toast.show();
 	        } else {
-	        	phoneNumber = phoneNumber.replaceAll("(-| )", "");
+	        	phoneNumber = phoneNumber.replace("-", "").replace(" ", "");
 	        	
 	        	if ((phoneNumber.length() < 11) && (phoneNumber.length() > 12)) {
 	        		Toast toast = Toast.makeText(ProfileActivity.this, "Некорректный телефонный номер! ("+phoneNumber+")", Toast.LENGTH_LONG);
@@ -205,11 +205,8 @@ public class ProfileActivity extends Activity  {
 	        	} else {
 	        		
 	        		// Приведение формата номера для оператора
-	        		if (phoneNumber.length() == 12) {phoneNumber = phoneNumber.substring(2);}
-	        		if (phoneNumber.length() == 11) {phoneNumber = phoneNumber.substring(1);}
-	        		
-	        		if (op_num.equalsIgnoreCase("11_8")) {phoneNumber = "8" + phoneNumber;}
-	        		
+	        		phoneNumber = DBHelper.getNormalizedPhone(phoneNumber, op_num);
+
 	        		Log.d("seagull", " sending ---> " + op_prefix + phoneNumber);
 	        		
 	        		String cToSend = "tel:" + op_prefix + phoneNumber + Uri.encode("#"); 

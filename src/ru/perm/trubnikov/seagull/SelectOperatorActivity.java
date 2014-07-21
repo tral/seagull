@@ -10,16 +10,7 @@ public class SelectOperatorActivity extends Activity {
     
 	OnClickListener radioListener;
 	DBHelper dbHelper;
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
 		
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-	
 	
 	// ------------------------------------------------------------------------------------------
     @Override
