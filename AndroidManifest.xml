@@ -70,8 +70,8 @@
             android:screenOrientation="portrait" 
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.CATEGORY_ALTERNATE" />
+				<action android:name="android.intent.action.PICK" />
+				<category android:name="android.intent.category.DEFAULT" />
                 
             </intent-filter>
         </activity>
