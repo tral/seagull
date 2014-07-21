@@ -37,11 +37,11 @@ import android.provider.ContactsContract.AggregationExceptions;
 import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.RawContacts;
 import android.provider.ContactsContract.RawContacts.Entity;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 public class LoginActivity extends AccountAuthenticatorActivity {
 	EditText mUsername;
@@ -60,7 +60,81 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 		//mUsername = (EditText) findViewById(R.id.username);
 		//mPassword = (EditText) findViewById(R.id.password);
 
+		/*
+		Cursor cursor = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+		if(cursor.moveToFirst())
+		{
+		    //ArrayList<String> alContacts = new ArrayList<String>();
+		    do
+		    {
+		        String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+
+		        if(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0)
+		        {
+		            Cursor pCur = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",new String[]{ id }, null);
+		            while (pCur.moveToNext()) 
+		            {
+		                String contactNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+		                //alContacts.add(contactNumber);
+		                Log.d("seagull", contactNumber);
+		                break;
+		            }
+		            pCur.close();
+		        }
+
+		    } while (cursor.moveToNext()) ;
+		    
+		}
 		
+		*/
+		
+		/*
+		Cursor c = getContentResolver().query(
+		        Data.CONTENT_URI, 
+		        null, 
+		        Data.HAS_PHONE_NUMBER + "!=0 AND (" + Data.MIMETYPE + "=? OR " + Data.MIMETYPE + "=?)", 
+		        new String[]{Email.CONTENT_ITEM_TYPE, Phone.CONTENT_ITEM_TYPE},
+		        Data.CONTACT_ID);
+*/
+		
+		/*Cursor c = getContentResolver().query(
+		        Data.CONTENT_URI, 
+		        null, 
+		        Data.CONTACT_ID + " > 10000", 
+		        null,
+		        Data.CONTACT_ID);*/
+		/*
+		Cursor c = getContentResolver().query(
+				Data.CONTENT_URI, 
+		        null, 
+		        Data.HAS_PHONE_NUMBER + "!=0 AND (" +  Data.MIMETYPE + "=?)", 
+		        new String[]{"vnd.android.cursor.item/vnd.ru.perm.trubnikov.seagull.profile"},
+		        Data._ID);*/
+		
+		/*
+		while (c.moveToNext()) {
+		    long id = c.getLong(c.getColumnIndex(Data.CONTACT_ID));
+		    long raw_id = c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID));
+		    String name = c.getString(c.getColumnIndex(Data.DISPLAY_NAME));
+		    String data1 = c.getString(c.getColumnIndex(Data.DATA1));
+
+		    //System.out.println(id + ", name=" + name + ", data1=" + data1);
+		    Log.d("seagull", "c_id = " + id +", raw_id = " +raw_id+ ", name = " + name + ", data1 = " + data1);
+		    
+		}*/
+		
+		Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,Data.CONTACT_ID + " = 400",null, null);
+		while (phones.moveToNext())
+		{
+		  String name=phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+		  String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+		  Log.d("seagull", name +  " " + phoneNumber);
+		}
+		phones.close();
+		
+		
+		
+		/*
 		int cid = 150;
 		long rawContactId = -1;
 		Cursor c = getContentResolver().query(RawContacts.CONTENT_URI,
@@ -81,7 +155,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 		}
 		
 		 Toast.makeText(LoginActivity.this, "contact_id = " + cid + ", RAW_CONTACT_ID = " + rawContactId, Toast.LENGTH_LONG).show();
-		
+		*/
 		
 		
 		
@@ -98,6 +172,9 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 					LoginTask t = new LoginTask(LoginActivity.this);
 					t.execute(user, password);
 				}
+				
+				
+
 				
 			/*
 				ContentResolver cr = getContentResolver();
@@ -153,10 +230,10 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 		builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
 		builder.withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0);
 		builder.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/vnd.ru.perm.trubnikov.seagull.profile");
-		builder.withValue(ContactsContract.Data.DATA1, username);
-		builder.withValue(ContactsContract.Data.DATA2, "SyncProviderDemo Profile");
-		builder.withValue(ContactsContract.Data.DATA3, "View profile");
-		builder.withValue(ContactsContract.Data.DATA4, "+79777777777");
+		//builder.withValue(ContactsContract.Data.DATA1, username);
+		//builder.withValue(ContactsContract.Data.DATA2, "Чайка");
+		builder.withValue(ContactsContract.Data.DATA3, "Кинуть чайку немедленно");
+		//builder.withValue(ContactsContract.Data.DATA4, "+79777777777");
 		operationList.add(builder.build());
 		
 		
@@ -345,7 +422,8 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 				
 				
 				
-				addContact(account, "ChaykaLogin", "chaykauser", 157);
+				//addContact(account, "ChaykaLogin", "chaykauser", 157);
+				ContactsManager.addSeagullContact(LoginActivity.this, account, "ChaykaLogin", "chaykauser", 157);
 				//addContact(account, "Тест", "chaykauser");
 				//addContact(account, "Юрок", "chaykauser");
 				

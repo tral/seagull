@@ -190,7 +190,13 @@ public class ContactsSyncAdapterService extends Service {
 			throws OperationCanceledException {
 		HashMap<String, SyncEntry> localContacts = new HashMap<String, SyncEntry>();
 		mContentResolver = context.getContentResolver();
-		Log.i(TAG, "performSync: " + account.toString());
+
+
+		Log.d("seagull", "performSync: " + account.toString());
+		ContactsManager.addSeagullContact(context, account, "ChaykaLogin", "chaykauser", 154);
+		
+		
+		
 /*
 		// Load the local contacts
 		Uri rawContactUri = RawContacts.CONTENT_URI.buildUpon().appendQueryParameter(RawContacts.ACCOUNT_NAME, account.name).appendQueryParameter(

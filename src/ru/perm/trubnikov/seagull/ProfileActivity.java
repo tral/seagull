@@ -20,6 +20,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.Data;
+import android.util.Log;
 import android.widget.TextView;
 
 public class ProfileActivity extends Activity {
@@ -32,12 +35,36 @@ public class ProfileActivity extends Activity {
 		if (getIntent().getData() != null) {
 			Cursor cursor = managedQuery(getIntent().getData(), null, null, null, null);
 			if (cursor.moveToNext()) {
-				String username = cursor.getString(cursor.getColumnIndex("DATA4"));
+				String cid = cursor.getString(cursor.getColumnIndex("CONTACT_ID"));
+				//String username = cursor.getString(cursor.getColumnIndex("DATA4"));
+				
 				TextView tv = (TextView) findViewById(R.id.profiletext);
-				tv.setText("This is the profile for " + username);
-				String cToSend = "tel:*102" + Uri.encode("#");
-	        	startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse(cToSend)), 1);
-				finish();
+				tv.setText("This is the profile for Cid : " + cid);
+				
+				/*
+				 * TODO!!! Сделать диалог выбора номера для броска чайки!
+				 * 
+				 * */
+				
+				Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, 
+						null,Data.CONTACT_ID + " = " + cid, 
+						null, 
+						null);
+				String phoneNumber="";
+				while (phones.moveToNext())
+				{
+				  String name=phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+				  phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+				  Log.d("seagull", name +  " " + phoneNumber);
+				}
+				phones.close();
+				startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse("tel:"+phoneNumber)), 1);
+				
+				
+				/*
+				String cToSend = "tel:*102" + Uri.encode("#");   	
+				startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse(cToSend)), 1);
+				finish();*/
 			}
 		} else {
 			// How did we get here without data?
