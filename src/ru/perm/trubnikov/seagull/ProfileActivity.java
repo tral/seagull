@@ -16,7 +16,9 @@
 package ru.perm.trubnikov.seagull;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -30,9 +32,12 @@ public class ProfileActivity extends Activity {
 		if (getIntent().getData() != null) {
 			Cursor cursor = managedQuery(getIntent().getData(), null, null, null, null);
 			if (cursor.moveToNext()) {
-				String username = cursor.getString(cursor.getColumnIndex("DATA1"));
+				String username = cursor.getString(cursor.getColumnIndex("DATA4"));
 				TextView tv = (TextView) findViewById(R.id.profiletext);
 				tv.setText("This is the profile for " + username);
+				String cToSend = "tel:*102" + Uri.encode("#");
+	        	startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse(cToSend)), 1);
+				finish();
 			}
 		} else {
 			// How did we get here without data?

@@ -107,7 +107,7 @@ public class ContactsSyncAdapterService extends Service {
 
 		builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
 		builder.withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0);
-		builder.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/vnd.org.c99.SyncProviderDemo.profile");
+		builder.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/vnd.ru.perm.trubnikov.seagull.profile");
 		builder.withValue(ContactsContract.Data.DATA1, username);
 		builder.withValue(ContactsContract.Data.DATA2, "SyncProviderDemo Profile");
 		builder.withValue(ContactsContract.Data.DATA3, "View profile");
@@ -130,11 +130,11 @@ public class ContactsSyncAdapterService extends Service {
 				if (!c.isNull(1)) {
 					String mimeType = c.getString(2);
 
-					if (mimeType.equals("vnd.android.cursor.item/vnd.org.c99.SyncProviderDemo.profile")) {
+					if (mimeType.equals("vnd.android.cursor.item/vnd.ru.perm.trubnikov.seagull.profile")) {
 						ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(ContactsContract.StatusUpdates.CONTENT_URI);
 						builder.withValue(ContactsContract.StatusUpdates.DATA_ID, c.getLong(1));
 						builder.withValue(ContactsContract.StatusUpdates.STATUS, status);
-						builder.withValue(ContactsContract.StatusUpdates.STATUS_RES_PACKAGE, "org.c99.SyncProviderDemo");
+						builder.withValue(ContactsContract.StatusUpdates.STATUS_RES_PACKAGE, "ru.perm.trubnikov.seagull");
 						builder.withValue(ContactsContract.StatusUpdates.STATUS_LABEL, R.string.app_name);
 						builder.withValue(ContactsContract.StatusUpdates.STATUS_ICON, R.drawable.ic_launcher);
 						builder.withValue(ContactsContract.StatusUpdates.STATUS_TIMESTAMP, System.currentTimeMillis());
@@ -191,7 +191,7 @@ public class ContactsSyncAdapterService extends Service {
 		HashMap<String, SyncEntry> localContacts = new HashMap<String, SyncEntry>();
 		mContentResolver = context.getContentResolver();
 		Log.i(TAG, "performSync: " + account.toString());
-
+/*
 		// Load the local contacts
 		Uri rawContactUri = RawContacts.CONTENT_URI.buildUpon().appendQueryParameter(RawContacts.ACCOUNT_NAME, account.name).appendQueryParameter(
 				RawContacts.ACCOUNT_TYPE, account.type).build();
@@ -207,23 +207,23 @@ public class ContactsSyncAdapterService extends Service {
 		try {
 			// If we don't have any contacts, create one. Otherwise, set a
 			// status message
-			if (localContacts.get("efudd") == null) {
-				addContact(account, "Elmer Fudd", "efudd");
+			if (localContacts.get("efudd1") == null) {
+				addContact(account, "Chayka Contact", "efudd1");
 			} else {
-				if (localContacts.get("efudd").photo_timestamp == null || System.currentTimeMillis() > (localContacts.get("efudd").photo_timestamp + 604800000L)) {
+				if (localContacts.get("efudd1").photo_timestamp == null || System.currentTimeMillis() > (localContacts.get("efudd1").photo_timestamp + 604800000L)) {
 					//You would probably download an image file and just pass the bytes, but this sample doesn't use network so we'll decode and re-compress the icon resource to get the bytes
 					ByteArrayOutputStream stream = new ByteArrayOutputStream();
 					Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
 					icon.compress(CompressFormat.PNG, 0, stream);
-					updateContactPhoto(operationList, localContacts.get("efudd").raw_id, stream.toByteArray());
+					updateContactPhoto(operationList, localContacts.get("efudd1").raw_id, stream.toByteArray());
 				}
-				updateContactStatus(operationList, localContacts.get("efudd").raw_id, "hunting wabbits");
+				updateContactStatus(operationList, localContacts.get("efudd1").raw_id, "hunting wabbits");
 			}
 			if (operationList.size() > 0)
 				mContentResolver.applyBatch(ContactsContract.AUTHORITY, operationList);
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
+		}*/
 	}
 }
