@@ -198,8 +198,8 @@ public class ProfileActivity extends Activity  {
 	        } else {
 	        	phoneNumber = phoneNumber.replace("-", "").replace(" ", "").replace("(", "").replace(")", "");
 	        	
-	        	Log.d("seagull", " pnum ---> " + phoneNumber);
-	        	Log.d("seagull", " pnum ---> " + phoneNumber);
+	        	//Log.d("seagull", " pnum ---> " + phoneNumber);
+	        	//Log.d("seagull", " pnum ---> " + phoneNumber);
 	        	
 	        	if ((phoneNumber.length() < 11) || (phoneNumber.length() > 12)) {
 	        		Toast toast = Toast.makeText(ProfileActivity.this, "Некорректный телефонный номер! ("+phoneNumber+")", Toast.LENGTH_LONG);
