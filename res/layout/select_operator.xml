@@ -71,7 +71,72 @@
 				android:layout_marginLeft="24dp"
 				android:layout_marginTop="8dp"
 				android:text="@string/op4" />
-                      
+			
+			<RadioButton
+				android:id="@+id/radioButton5"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="24dp"
+				android:layout_marginTop="8dp"
+				android:text="@string/op5" />
+			
+			<RadioButton
+				android:id="@+id/radioButton6"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="24dp"
+				android:layout_marginTop="8dp"
+				android:text="@string/op6" />
+            
+			<RadioButton
+				android:id="@+id/radioButton7"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="24dp"
+				android:layout_marginTop="8dp"
+				android:text="@string/op7" />
+			
+			<RadioButton
+				android:id="@+id/radioButton8"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="24dp"
+				android:layout_marginTop="8dp"
+				android:text="@string/op8" />
+			
+			<RadioButton
+				android:id="@+id/radioButton9"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="24dp"
+				android:layout_marginTop="8dp"
+				android:text="@string/op9" />
+			
+			<RadioButton
+				android:id="@+id/radioButton10"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="24dp"
+				android:layout_marginTop="8dp"
+				android:text="@string/op10" />
+			
+			<RadioButton
+				android:id="@+id/radioButton11"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="24dp"
+				android:layout_marginTop="8dp"
+				android:text="@string/op11" />
+			
+			<RadioButton
+				android:id="@+id/radioButton12"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="24dp"
+				android:layout_marginTop="8dp"
+				android:text="@string/op12" />
+			
+			
 		</RadioGroup>
                 
 	</ScrollView>

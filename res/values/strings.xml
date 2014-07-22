@@ -40,6 +40,18 @@
     <string name="op2">Мегафон</string>
     <string name="op3">МТС</string>
     <string name="op4">Ростелеком</string>
+    <string name="op5">TELE2</string>
+    <string name="op6">Мотив</string>
+    <string name="op7">Смартс</string>
+    <string name="op8">НСС</string>
+    <string name="op9">БайкалВестКом</string>
+    <string name="op10">АКОС GSM</string>
+    <string name="op11">Енисей Телеком</string>
+    <string name="op12">Просто для общения</string>
+    
+    
+    
+    
 
 	<string name="header_choose_number">Выберите номер</string>
 
