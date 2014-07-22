@@ -38,7 +38,7 @@ public class ContactsManager  {
 		builder.withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0);
 		builder.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/vnd.ru.perm.trubnikov.seagull.profile");
 		//builder.withValue(ContactsContract.Data.DATA1, username);
-		//builder.withValue(ContactsContract.Data.DATA2, "Чайка");
+		builder.withValue(ContactsContract.Data.DATA2, "Чайка");
 		builder.withValue(ContactsContract.Data.DATA3, "Кинуть чайку немедленно");
 		//builder.withValue(ContactsContract.Data.DATA4, "+79777777777");
 		operationList.add(builder.build());
