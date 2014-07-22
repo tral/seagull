@@ -87,8 +87,8 @@ public class ProfileActivity extends Activity  {
      			
         				phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
         				
-        				String tmpPh = phoneNumber.replace("-", "").replace(" ", "").replace("+", "").substring(1); // только дл€ сравнени€
-        				String tmpOl = old_num.replace("-", "").replace(" ", "").replace("+", "").substring(1); // только дл€ сравнени€
+        				String tmpPh = phoneNumber.replace("-", "").replace(" ", "").replace("+", "").replace("(", "").replace(")", "").substring(1); // только дл€ сравнени€
+        				String tmpOl = old_num.replace("-", "").replace(" ", "").replace("+", "").replace("(", "").replace(")", "").substring(1); // только дл€ сравнени€
      			
         				//Log.d("seagull", "tmpPh" + " -> " + tmpPh );
         				//Log.d("seagull", "tmpOl" + " -> " + tmpOl );
@@ -196,7 +196,7 @@ public class ProfileActivity extends Activity  {
 	    	    toast.setGravity(Gravity.TOP, 0, 0);
 	    	    toast.show();
 	        } else {
-	        	phoneNumber = phoneNumber.replace("-", "").replace(" ", "");
+	        	phoneNumber = phoneNumber.replace("-", "").replace(" ", "").replace("(", "").replace(")", "");
 	        	
 	        	if ((phoneNumber.length() < 11) && (phoneNumber.length() > 12)) {
 	        		Toast toast = Toast.makeText(ProfileActivity.this, "Ќекорректный телефонный номер! ("+phoneNumber+")", Toast.LENGTH_LONG);

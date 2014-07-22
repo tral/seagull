@@ -273,7 +273,7 @@ public class MainActivity extends Activity {
 
 	                    if (c != null && c.moveToFirst()) {
 	                        number = c.getString(0);
-	                        number = number.replace("-", "").replace(" ", "");
+	                        number = number.replace("-", "").replace(" ", "").replace("(", "").replace(")", "");
 	                        //type = c.getInt(1);
 	                        name = c.getString(2);
 
