@@ -34,7 +34,7 @@
 	<string name="ACCOUNT_TYPE">ru.perm.trubnikov.seagull.account</string>
 	<string name="dummy_username">seagull</string>
     <string name="dummy_password">123</string>
-    <string name="sel_op_desc">Выберите оператора</string>
+    <string name="sel_op_desc">Выберите Вашего оператора</string>
     
     <string name="op1">Билайн</string>
     <string name="op2">Мегафон</string>
