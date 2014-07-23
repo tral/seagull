@@ -35,6 +35,7 @@ public class MainActivity extends Activity {
 	public static final int IDM_HELP = 102;
 	public static final int IDM_SEL_OP = 103;
 	public static final int IDM_SEAGULL_FROM_CONTACTS = 104;
+	public static final int IDM_RATE = 105;
 	
 	// Dialogs
     private final static int SEAGULL_PROPS_DIALOG_ID = 1;
@@ -72,6 +73,7 @@ public class MainActivity extends Activity {
 		menu.add(Menu.NONE, IDM_SEAGULL_PROPS, Menu.NONE, R.string.menu_item_settings);
 		menu.add(Menu.NONE, IDM_SEL_OP, Menu.NONE, R.string.menu_sel_op);
 		menu.add(Menu.NONE, IDM_HELP, Menu.NONE, R.string.menu_item_help);
+		menu.add(Menu.NONE, IDM_RATE, Menu.NONE, R.string.menu_item_rate);
 		
 		return(super.onCreateOptionsMenu(menu));
 	}
@@ -110,8 +112,9 @@ public class MainActivity extends Activity {
          
          final EditText nameEdit = (EditText) layout.findViewById(R.id.seagull_name);
          final EditText ussdEdit = (EditText) layout.findViewById(R.id.seagull_ussd);
+         final EditText orderEdit = (EditText) layout.findViewById(R.id.seagull_order);
          
-         builder.setMessage(getString(R.string.info_seagull_props));
+         //builder.setMessage(getString(R.string.info_seagull_props));
          
          builder.setPositiveButton(getString(R.string.save_btn_txt), new DialogInterface.OnClickListener() {
              public void onClick(DialogInterface dialog, int id) {
@@ -119,9 +122,9 @@ public class MainActivity extends Activity {
             	 dbHelper = new DBHelper(MainActivity.this);
             	 
             	 if (seagullId == -1) {
-            		 dbHelper.InsertSeagull(nameEdit.getText().toString(), ussdEdit.getText().toString());
+            		 dbHelper.InsertSeagull(nameEdit.getText().toString(), ussdEdit.getText().toString(), orderEdit.getText().toString());
             	 } else {
-            		 dbHelper.UpdateSeagull(seagullId, nameEdit.getText().toString(), ussdEdit.getText().toString());
+            		 dbHelper.UpdateSeagull(seagullId, nameEdit.getText().toString(), ussdEdit.getText().toString(), orderEdit.getText().toString());
             	 }
 
                 dbHelper.close();
@@ -169,20 +172,27 @@ public class MainActivity extends Activity {
         case SEAGULL_PROPS_DIALOG_ID:
         	EditText e1 = (EditText) dialog.findViewById(R.id.seagull_name);
         	EditText e2 = (EditText) dialog.findViewById(R.id.seagull_ussd);
+        	EditText e3 = (EditText) dialog.findViewById(R.id.seagull_order);
 
         	e1.requestFocus();
         	
         	if (seagullId == -1) {
         		e1.setText("");
         		e2.setText("");
+        		e3.setText("");
                 aDialog.getButton(Dialog.BUTTON_NEGATIVE).setEnabled(false);
         	} else {
-        		dbHelper = new DBHelper(this);
-        		e1.setText(dbHelper.getName(seagullId));
-        		e2.setText(dbHelper.getUSSD(seagullId));
-                dbHelper.close();
-                aDialog.getButton(Dialog.BUTTON_NEGATIVE).setEnabled(true);
-           	            		
+        		try {
+	        		dbHelper = new DBHelper(this);
+	        		e1.setText(dbHelper.getName(seagullId));
+	        		e2.setText(dbHelper.getUSSD(seagullId));
+	        		e3.setText(dbHelper.getOrder(seagullId) + "");
+	                dbHelper.close();
+	                aDialog.getButton(Dialog.BUTTON_NEGATIVE).setEnabled(true);
+                }
+        		catch (Exception e) {
+        	     	Log.d("seagull", "EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
+        	    }        		
         	}
         	
         	 
@@ -222,6 +232,11 @@ public class MainActivity extends Activity {
             	seagullId = -1;
             	showDialog(SEAGULL_PROPS_DIALOG_ID);
                 break;
+            case IDM_RATE:
+            	Intent int_rate = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getApplicationContext().getPackageName()));
+            	int_rate.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        		getApplicationContext().startActivity(int_rate);
+        		break;
             case IDM_HELP:
             	showDialog(HELP_DIALOG_ID);
                 break;
@@ -281,7 +296,7 @@ public class MainActivity extends Activity {
 	                        String op_num = dbHelper.getSettingsParamTxt("op_num");
 	                        String op_prefix = dbHelper.getSettingsParamTxt("op_prefix");
 	                        number = DBHelper.getNormalizedPhone(number, op_num);
-	                   	 	dbHelper.InsertSeagull(name, op_prefix + number + "#");
+	                   	 	dbHelper.InsertSeagull(name, op_prefix + number + "#", "");
 	                        dbHelper.close();
 	                        
 	                        refillMainScreen();
@@ -338,7 +353,7 @@ public class MainActivity extends Activity {
  			dbHelper = new DBHelper(this);
  	     	SQLiteDatabase db = dbHelper.getWritableDatabase();
  	     	
- 	     	Cursor mCur = db.rawQuery("select id_, name, ussd, color, order_by FROM seagulls ORDER BY order_by", null);
+ 	     	Cursor mCur = db.rawQuery("select id_, name, ussd, color, order_by FROM seagulls ORDER BY order_by, name, id_", null);
  	     	
  	     	phones = new String[mCur.getCount()];
  	        ids = new int[mCur.getCount()];

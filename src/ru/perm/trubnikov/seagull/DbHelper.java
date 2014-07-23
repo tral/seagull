@@ -54,6 +54,19 @@ import android.graphics.Color;
     }
 
     
+    public long getOrder(int id) {
+    	SQLiteDatabase db = this.getWritableDatabase();
+    	Cursor c = db.query("seagulls", null, "id_ = "+id, null, null, null, null);
+    	
+    	if (c.moveToFirst()) {
+            int idx = c.getColumnIndex("order_by");
+            long r = c.getLong(idx);
+            return r;
+		}
+    	
+    	return 0;
+    }
+    
     public String getUSSD(int id) {
     	SQLiteDatabase db = this.getWritableDatabase();
     	Cursor c = db.query("seagulls", null, "id_ = "+id, null, null, null, null);
@@ -108,7 +121,20 @@ import android.graphics.Color;
     }
     
     
-    public void InsertSeagull(String name, String ussd) {
+    public static boolean isInteger(String s) {
+        try { 
+            Integer.parseInt(s); 
+        } catch(NumberFormatException e) { 
+            return false; 
+        }
+        // only got here if we didn't return false
+        return true;
+    }
+    
+    public void InsertSeagull(String name, String ussd, String order_by) {
+    	
+    	long orderby = 0;
+    	
     	SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues cv = new ContentValues();
         cv.put("name", name);
@@ -116,18 +142,35 @@ import android.graphics.Color;
     	cv.put("color", DBHelper.getRndColor());
     	
     	long rowID = db.insert("seagulls", null, cv);
-    	// порядок сделаем равным только что вставленному id
+
+    	if (DBHelper.isInteger(order_by)) {
+    		orderby = Integer.parseInt(order_by);
+    	} else {
+    		orderby = rowID;
+    	}
+    	
     	cv.clear();
-    	cv.put("order_by", rowID);
+    	cv.put("order_by", orderby);
     	db.update("seagulls", cv, "id_ = ?", new String[] { ""+rowID });
     }
     
-    public void UpdateSeagull(int id, String name, String ussd) {
+    public void UpdateSeagull(int id, String name, String ussd, String order_by) {
+    	
+    	long orderby = 0;
+    	
+    	if (DBHelper.isInteger(order_by)) {
+    		orderby = Integer.parseInt(order_by);
+    	} else {
+    		orderby = id;
+    	}
+    	
     	SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues cv = new ContentValues();
         cv.put("name", name);
         cv.put("ussd", ussd);
     	cv.put("color", DBHelper.getRndColor());
+    	cv.put("order_by", orderby);
+    	
     	db.update("seagulls", cv, "id_ = ?", new String[] { ""+id });
     }
     

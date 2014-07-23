@@ -4,11 +4,13 @@
     <string name="app_name">Чайка</string>
     <string name="seagull_name">Отображаемое имя чайки</string>
     <string name="seagull_ussd">USSD-запрос</string>
-	
-	<string name="menu_item_seagull_from_contacts">Добавить чайку для контакта</string>
+    <string name="seagull_order">Порядок</string>
+    
+	<string name="menu_item_seagull_from_contacts">Добавить чайку из контакта</string>
 	<string name="menu_item_settings">Добавить чайку вручную</string>
 	
 	<string name="menu_item_help">Помощь</string>
+	<string name="menu_item_rate">Оценить приложение</string>
 	<string name="menu_sel_op">Выбрать оператора</string>
 	<string name="err_empty_op">Не выбран оператор!</string>
 	
@@ -23,7 +25,9 @@
 	<string name="default_seagull_ussd3">*102#</string>
 	<string name="default_seagull_ussd4">*100#</string>
 	
+	<!--
 	<string name="info_seagull_props">Данные чайки</string>
+	-->
 	
 	<string name="save_btn_txt">Сохранить</string>
 	<string name="del_btn_txt">Удалить</string>
