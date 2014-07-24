@@ -69,7 +69,7 @@ public class ProfileActivity extends Activity  {
 	        		// число пикселей для высоты кнопок (относительно dp)
 	        		int pixels_b = (int) TypedValue.applyDimension(
          		         TypedValue.COMPLEX_UNIT_DIP,
-         		         96, 
+         		         getApplicationContext().getResources().getInteger(R.integer.seagull_item_height),
          		         r.getDisplayMetrics());
 
 	        		// число пикселей для margin'ов (относительно dp)
