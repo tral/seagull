@@ -90,6 +90,31 @@ public class SelectOperatorActivity extends Activity {
         			op_num="11_8";
         			op=getString(R.string.op12);
         			break;
+        		case R.id.radioButton13: 
+        			op_prefix = "*104*+380";
+        			op_num="9_UA";
+        			op=getString(R.string.op13);
+        			break;
+        		case R.id.radioButton14: 
+        			op_prefix = "*130*380";
+        			op_num="9_UA";
+        			op=getString(R.string.op14);
+        			break;
+        		case R.id.radioButton15: 
+        			op_prefix = "*130*380";
+        			op_num="9_UA";
+        			op=getString(R.string.op15);
+        			break;
+        		case R.id.radioButton16: 
+        			op_prefix = "*130*380";
+        			op_num="9_UA";
+        			op=getString(R.string.op16);
+        			break;
+        		case R.id.radioButton17: 
+        			op_prefix = "*123*3*380";
+        			op_num="9_UA";
+        			op=getString(R.string.op17);
+        			break;
 
         		default:
         			break;
@@ -130,7 +155,16 @@ public class SelectOperatorActivity extends Activity {
         rb11.setOnClickListener(radioListener);
         RadioButton rb12 = (RadioButton)findViewById(R.id.radioButton12);
         rb12.setOnClickListener(radioListener);
-        
+        RadioButton rb13 = (RadioButton)findViewById(R.id.radioButton13);
+        rb13.setOnClickListener(radioListener);
+        RadioButton rb14 = (RadioButton)findViewById(R.id.radioButton14);
+        rb14.setOnClickListener(radioListener);
+        RadioButton rb15 = (RadioButton)findViewById(R.id.radioButton15);
+        rb15.setOnClickListener(radioListener);
+        RadioButton rb16 = (RadioButton)findViewById(R.id.radioButton16);
+        rb16.setOnClickListener(radioListener);
+        RadioButton rb17 = (RadioButton)findViewById(R.id.radioButton17);
+        rb17.setOnClickListener(radioListener);
         
         dbHelper = new DBHelper(SelectOperatorActivity.this);
         String op = dbHelper.getSettingsParamTxt("op");
@@ -160,6 +194,16 @@ public class SelectOperatorActivity extends Activity {
         	rb11.setChecked(true);
         if (op.equalsIgnoreCase(getString(R.string.op12)))
         	rb12.setChecked(true);
+        if (op.equalsIgnoreCase(getString(R.string.op13)))
+        	rb13.setChecked(true);
+        if (op.equalsIgnoreCase(getString(R.string.op14)))
+        	rb14.setChecked(true);
+        if (op.equalsIgnoreCase(getString(R.string.op15)))
+        	rb15.setChecked(true);
+        if (op.equalsIgnoreCase(getString(R.string.op16)))
+        	rb16.setChecked(true);
+        if (op.equalsIgnoreCase(getString(R.string.op17)))
+        	rb17.setChecked(true);
         
        
     }

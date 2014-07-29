@@ -186,6 +186,8 @@ public class ProfileActivity extends Activity  {
     	
     	try {
 			
+    		String nrml_number;
+    		
     		DBHelper dbHelper = new DBHelper(ProfileActivity.this);
 			String op_prefix = dbHelper.getSettingsParamTxt("op_prefix");
 			String op_num = dbHelper.getSettingsParamTxt("op_num");
@@ -200,21 +202,27 @@ public class ProfileActivity extends Activity  {
 	        	
 	        	//Log.d("seagull", " pnum ---> " + phoneNumber);
 	        	//Log.d("seagull", " pnum ---> " + phoneNumber);
-	        	
+	        	/*
 	        	if ((phoneNumber.length() < 11) || (phoneNumber.length() > 12)) {
 	        		Toast toast = Toast.makeText(ProfileActivity.this, "Некорректный телефонный номер! ("+phoneNumber+")", Toast.LENGTH_LONG);
 		    	    toast.setGravity(Gravity.TOP, 0, 0);
 		    	    toast.show();
 	        	} else {
-	        		
-	        		// Приведение формата номера для оператора
-	        		phoneNumber = DBHelper.getNormalizedPhone(phoneNumber, op_num);
+	        		*/
+        		// Приведение формата номера для оператора
+	        	nrml_number = DBHelper.getNormalizedPhone(phoneNumber, op_num);
 
-	        		Log.d("seagull", " sending ---> " + op_prefix + phoneNumber);
+        		if (nrml_number.equalsIgnoreCase("")) {
+        			Toast toast = Toast.makeText(ProfileActivity.this, "Некорректный телефонный номер! ("+phoneNumber+")", Toast.LENGTH_LONG);
+		    	    toast.setGravity(Gravity.TOP, 0, 0);
+		    	    toast.show();	
+        		} else {
+
+	        		Log.d("seagull", " sending ---> " + op_prefix + nrml_number);
 	        		
-	        		String cToSend = "tel:" + op_prefix + phoneNumber + Uri.encode("#"); 
+	        		String cToSend = "tel:" + op_prefix + nrml_number + Uri.encode("#"); 
 		        	startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse(cToSend)), 1);
-	        	}
+        		}
 	        }
 		}
 		catch (Exception e) {

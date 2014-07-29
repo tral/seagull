@@ -271,6 +271,7 @@ public class MainActivity extends Activity {
 	  switch (reqCode) {
 	    case (1001) :
 	    	String number = "";
+	    	String nrml_number = "";
 	        String name = "";
 	        //int type = 0;
 	        if (data != null) {
@@ -295,8 +296,17 @@ public class MainActivity extends Activity {
 	                        dbHelper = new DBHelper(MainActivity.this);
 	                        String op_num = dbHelper.getSettingsParamTxt("op_num");
 	                        String op_prefix = dbHelper.getSettingsParamTxt("op_prefix");
-	                        number = DBHelper.getNormalizedPhone(number, op_num);
-	                   	 	dbHelper.InsertSeagull(name, op_prefix + number + "#", "");
+	                        
+	                		// Приведение формата номера для оператора
+	                        nrml_number = DBHelper.getNormalizedPhone(number, op_num);
+	                   	 	
+	                        if (nrml_number.equalsIgnoreCase("")) {
+	                			Toast toast = Toast.makeText(MainActivity.this, "Некорректный телефонный номер! ("+number+")", Toast.LENGTH_LONG);
+	        		    	    toast.setGravity(Gravity.TOP, 0, 0);
+	        		    	    toast.show();	
+	                		} else {
+	                			dbHelper.InsertSeagull(name, op_prefix + nrml_number + "#", "");
+	                		}
 	                        dbHelper.close();
 	                        
 	                        refillMainScreen();

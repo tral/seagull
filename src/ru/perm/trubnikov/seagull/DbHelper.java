@@ -262,10 +262,29 @@ import android.graphics.Color;
     
     
     public static String getNormalizedPhone(String phone, String  op_num) {
-    	if (phone.length() == 12) {phone = phone.substring(2);}
-		if (phone.length() == 11) {phone = phone.substring(1);}
+    	
+		// РФ 11-значный номер, начинается с 8-ки
+		if (op_num.equalsIgnoreCase("11_8")) {
+			if (phone.length() == 12) {return "8" + phone.substring(2);}
+			if (phone.length() == 11) {return "8" + phone.substring(1);}
+			return "";
+		}
 		
-		if (op_num.equalsIgnoreCase("11_8")) {phone = "8" + phone;}
+		// РФ 10-значный номер, начинается с 9-ки
+		if (op_num.equalsIgnoreCase("10_9")) {
+			if (phone.length() == 12) {return phone.substring(2);}
+			if (phone.length() == 11) {return phone.substring(1);}
+			return "";
+		}
+
+		// Украина 9-значный номер
+		if (op_num.equalsIgnoreCase("9_UA")) {
+			if (phone.length() >= 9) {
+				return phone.substring(phone.length()-9);
+			}
+			return "";
+		}
+		
         return phone;
    }
    
