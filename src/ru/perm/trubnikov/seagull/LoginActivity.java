@@ -51,13 +51,23 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 
 	private class LoginTask extends AsyncTask<String, Void, Boolean> {
 		Context mContext;
-		ProgressDialog mDialog;
+		//ProgressDialog mDialog;
 		DBHelper dbHelper;
+		
+		ProgressDialog progressBar;
 
 		LoginTask(Context c) {
 			mContext = c;
-			mDialog = ProgressDialog.show(c, "", getString(R.string.authenticating), true, false);
-			mDialog.setCancelable(false);
+			
+			progressBar = new ProgressDialog(c);
+			progressBar.setCancelable(false);
+			progressBar.setMessage(getString(R.string.authenticating));
+			progressBar.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+			progressBar.setProgress(0);
+			progressBar.show();
+			
+			//mDialog = ProgressDialog.show(c, "", getString(R.string.authenticating), true, false);
+			//mDialog.setCancelable(false);
 		}
 
 		@Override
@@ -86,22 +96,28 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 						        // + " AND " +Data.CONTACT_ID +" > 400 AND " +Data.CONTACT_ID+ "<500", 
 						        new String[]{Phone.CONTENT_ITEM_TYPE},
 						        Data.CONTACT_ID);
+
+					 progressBar.setMax(c.getCount());
 					 
-						while (c.moveToNext()) {
-						    //long id = c.getLong(c.getColumnIndex(Data.CONTACT_ID));
-						    //long raw_id = c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID));
-						    //String name = c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY));
-						    //String data1 = c.getString(c.getColumnIndex(Data.DATA1));
-	
-						    //System.out.println(id + ", name=" + name + ", data1=" + data1);
-						    if (last_cid != c.getLong(c.getColumnIndex(Data.CONTACT_ID))) {
-						    	
-						    	Log.d("seagull", "c_id = " + c.getLong(c.getColumnIndex(Data.CONTACT_ID)) +", raw_id = " +c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID))+ ", name = " + c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY)));
-						    	ContactsManager.addSeagullContact(LoginActivity.this, account, c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY)), c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID)));
-						    	last_cid  = c.getLong(c.getColumnIndex(Data.CONTACT_ID));
-						    }
-						}
-				 	}
+					 while (c.moveToNext()) {
+					    //long id = c.getLong(c.getColumnIndex(Data.CONTACT_ID));
+					    //long raw_id = c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID));
+					    //String name = c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY));
+					    //String data1 = c.getString(c.getColumnIndex(Data.DATA1));
+						 
+						progressBar.setProgress(progressBar.getProgress()+1);
+						
+					    if (last_cid != c.getLong(c.getColumnIndex(Data.CONTACT_ID))) {
+					    	
+					    	Log.d("seagull", "c_id = " + c.getLong(c.getColumnIndex(Data.CONTACT_ID)) +", raw_id = " +c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID))+ ", name = " + c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY)));
+					    	ContactsManager.addSeagullContact(LoginActivity.this, account, c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY)), c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID)));
+					    	last_cid  = c.getLong(c.getColumnIndex(Data.CONTACT_ID));
+					    	
+					    }
+					    
+					 }
+					 
+				 }
 				   catch (Exception e) {
 	 	        		Log.d("seagull", "initial insert: EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
 	 	        	}
@@ -129,7 +145,8 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 		@Override
 		public void onPostExecute(Boolean result) {
 			//mLoginButton.setEnabled(true);
-			mDialog.dismiss();
+			//mDialog.dismiss();
+			progressBar.dismiss();
 			//addContact();
 			//if (result)
          	Intent intent = new Intent(LoginActivity.this, SelectOperatorActivity.class);
