@@ -10,7 +10,7 @@ public class SelectOperatorActivity extends Activity {
     
 	OnClickListener radioListener;
 	DBHelper dbHelper;
-		
+
 	
 	// ------------------------------------------------------------------------------------------
     @Override

@@ -201,8 +201,8 @@ public class ContactsSyncAdapterService extends Service {
 
 			    if (last_cid != c.getLong(c.getColumnIndex(Data.CONTACT_ID))) {
 			    	
-			    	Log.d("seagull", "sync: c_id = " + c.getLong(c.getColumnIndex(Data.CONTACT_ID)) +", raw_id = " +c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID))+ ", name = " + c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY)));
-			    	ContactsManager.addSeagullContact(context, account, c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY)), c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID)));
+			    	Log.d("seagull", "sync: c_id = " + c.getLong(c.getColumnIndex(Data.CONTACT_ID)) +", raw_id = " +c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID))+ ", name = " + c.getString(c.getColumnIndex(Data.DISPLAY_NAME)));
+			    	ContactsManager.addSeagullContact(context, account, c.getString(c.getColumnIndex(Data.DISPLAY_NAME)), c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID)));
 			    	last_cid  = c.getLong(c.getColumnIndex(Data.CONTACT_ID));
 			    }
 			}
