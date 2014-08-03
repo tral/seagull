@@ -305,7 +305,7 @@ public class MainActivity extends Activity {
 	        		    	    toast.setGravity(Gravity.TOP, 0, 0);
 	        		    	    toast.show();	
 	                		} else {
-	                			dbHelper.InsertSeagull(name, op_prefix + nrml_number + "#", "");
+	                			dbHelper.InsertSeagull(name, op_prefix + nrml_number, "");
 	                		}
 	                        dbHelper.close();
 	                        

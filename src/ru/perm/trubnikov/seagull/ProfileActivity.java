@@ -220,7 +220,7 @@ public class ProfileActivity extends Activity  {
 
 	        		Log.d("seagull", " sending ---> " + op_prefix + nrml_number);
 	        		
-	        		String cToSend = "tel:" + op_prefix + nrml_number + Uri.encode("#"); 
+	        		String cToSend = "tel:" + op_prefix + nrml_number.replace("#", Uri.encode("#")); 
 		        	startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse(cToSend)), 1);
         		}
 	        }

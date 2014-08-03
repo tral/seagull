@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
+import android.net.Uri;
 
   class DBHelper extends SQLiteOpenHelper {
 
@@ -265,25 +266,51 @@ import android.graphics.Color;
     	
 		// РФ 11-значный номер, начинается с 8-ки
 		if (op_num.equalsIgnoreCase("11_8")) {
-			if (phone.length() == 12) {return "8" + phone.substring(2);}
-			if (phone.length() == 11) {return "8" + phone.substring(1);}
+			if (phone.length() == 12) {return "8" + phone.substring(2) + "#";}
+			if (phone.length() == 11) {return "8" + phone.substring(1) + "#";}
 			return "";
 		}
 		
 		// РФ 10-значный номер, начинается с 9-ки
 		if (op_num.equalsIgnoreCase("10_9")) {
-			if (phone.length() == 12) {return phone.substring(2);}
-			if (phone.length() == 11) {return phone.substring(1);}
+			if (phone.length() == 12) {return phone.substring(2) + "#";}
+			if (phone.length() == 11) {return phone.substring(1) + "#";}
 			return "";
 		}
 
 		// Украина 9-значный номер
 		if (op_num.equalsIgnoreCase("9_UA")) {
 			if (phone.length() >= 9) {
+				return phone.substring(phone.length()-9) + "#";
+			}
+			return "";
+		}
+		
+		// Узбекистан 9-значный номер
+		if (op_num.equalsIgnoreCase("998_UZ_9")) {
+			if (phone.length() >= 9) {
+				return phone.substring(phone.length()-9) + "#";
+			}
+			return "";
+		}
+		
+		// Узбекистан 9-значный номер (оператор Ucell с указанием языка)
+		if (op_num.equalsIgnoreCase("998_UZ_9_UCELL")) {
+			if (phone.length() >= 9) {
+				return phone.substring(phone.length()-9) + "#1" + "#";
+			}
+			return "";
+		}
+		
+		// Узбекистан 9-значный номер (оператор PerfectumMobile без решеток)
+		if (op_num.equalsIgnoreCase("998_UZ_9_PERFECTUM_MOBILE")) {
+			if (phone.length() >= 9) {
 				return phone.substring(phone.length()-9);
 			}
 			return "";
 		}
+		
+		
 		
         return phone;
    }

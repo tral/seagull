@@ -115,6 +115,21 @@ public class SelectOperatorActivity extends Activity {
         			op_num="9_UA";
         			op=getString(R.string.op17);
         			break;
+        		case R.id.radioButton18: 
+        			op_prefix = "*125*998";
+        			op_num="998_UZ_9_UCELL";
+        			op=getString(R.string.op18);
+        			break;
+        		case R.id.radioButton19: 
+        			op_prefix = "*145*998";
+        			op_num="998_UZ_9";
+        			op=getString(R.string.op19);
+        			break;
+        		case R.id.radioButton20: 
+        			op_prefix = "3*998";
+        			op_num="998_UZ_9_PERFECTUM_MOBILE";
+        			op=getString(R.string.op20);
+        			break;
 
         		default:
         			break;
@@ -165,6 +180,12 @@ public class SelectOperatorActivity extends Activity {
         rb16.setOnClickListener(radioListener);
         RadioButton rb17 = (RadioButton)findViewById(R.id.radioButton17);
         rb17.setOnClickListener(radioListener);
+        RadioButton rb18 = (RadioButton)findViewById(R.id.radioButton18);
+        rb18.setOnClickListener(radioListener);
+        RadioButton rb19 = (RadioButton)findViewById(R.id.radioButton19);
+        rb19.setOnClickListener(radioListener);
+        RadioButton rb20 = (RadioButton)findViewById(R.id.radioButton20);
+        rb20.setOnClickListener(radioListener);
         
         dbHelper = new DBHelper(SelectOperatorActivity.this);
         String op = dbHelper.getSettingsParamTxt("op");
@@ -204,6 +225,12 @@ public class SelectOperatorActivity extends Activity {
         	rb16.setChecked(true);
         if (op.equalsIgnoreCase(getString(R.string.op17)))
         	rb17.setChecked(true);
+        if (op.equalsIgnoreCase(getString(R.string.op18)))
+        	rb18.setChecked(true);
+        if (op.equalsIgnoreCase(getString(R.string.op19)))
+        	rb19.setChecked(true);
+        if (op.equalsIgnoreCase(getString(R.string.op20)))
+        	rb20.setChecked(true);
         
        
     }
