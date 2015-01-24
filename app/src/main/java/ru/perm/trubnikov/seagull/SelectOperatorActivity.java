@@ -2,11 +2,12 @@ package ru.perm.trubnikov.seagull;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.RadioButton;
 
-public class SelectOperatorActivity extends Activity {
+public class SelectOperatorActivity extends ActionBarActivity {
     
 	OnClickListener radioListener;
 	DBHelper dbHelper;
@@ -42,7 +43,7 @@ public class SelectOperatorActivity extends Activity {
 	        		    break;
         		case R.id.radioButton3: 
 	        			op_prefix = "*110*";
-	        			op_num="11_8"; // 11 символов, начинается с цифры 8
+	        			op_num="11_8"; // 11 пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ 8
 	        			op=getString(R.string.op3);
 	        			break;
         		case R.id.radioButton4: 

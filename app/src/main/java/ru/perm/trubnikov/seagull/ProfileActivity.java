@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Data;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -38,7 +39,7 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.Toast;
 
-public class ProfileActivity extends Activity  {
+public class ProfileActivity extends ActionBarActivity {
 	
 	private final static int CHOOSE_NUMBER_DIALOG_ID = 1;
 	String cid;

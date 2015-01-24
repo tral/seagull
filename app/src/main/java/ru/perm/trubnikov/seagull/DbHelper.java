@@ -8,8 +8,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
+import android.view.Gravity;
+import android.widget.Toast;
 
-  class DBHelper extends SQLiteOpenHelper {
+class DBHelper extends SQLiteOpenHelper {
 
 	private String s_name1;
 	private String s_name2;
@@ -53,6 +55,12 @@ import android.graphics.Color;
     	return "";
     }
 
+      // Small util to show text messages
+      public static void ShowToast(Context context, int txt, int lng) {
+          Toast toast = Toast.makeText(context, txt, lng);
+          toast.setGravity(Gravity.TOP, 0, 0);
+          toast.show();
+      }
     
     public long getOrder(int id) {
     	SQLiteDatabase db = this.getWritableDatabase();

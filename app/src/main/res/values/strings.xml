@@ -2,6 +2,8 @@
 <resources>
 
     <string name="app_name">Чайка</string>
+    <string name="version_name">1.26</string>
+
     <string name="seagull_name">Отображаемое имя чайки</string>
     <string name="seagull_ussd">USSD-запрос</string>
     <string name="seagull_order">Порядок</string>
@@ -60,13 +62,30 @@
     <string name="op18">Ucell Узбекистан</string>
     <string name="op19">Билайн Узбекистан</string>
     <string name="op20">PerfectumMobile Узбекистан</string>
-    
-    
-    
-    
 
 	<string name="header_choose_number">Выберите номер</string>
 
-	
+    <string name="donate_title_1">Поездка на автобусе</string>
+    <string name="donate_title_2">Вкусный гамбургер</string>
+    <string name="donate_title_3">Хорошее пивко</string>
+    <string name="donate_title_4">Билет в кино</string>
+    <string name="donate_title_5">Оплатить вечеринку! Тусэ!</string>
+    <string name="donate_price_1">30 руб.</string>
+    <string name="donate_price_2">67 руб.</string>
+    <string name="donate_price_3">130 руб.</string>
+    <string name="donate_price_4">250 руб.</string>
+    <string name="donate_price_5">650 руб.</string>
+
+    <string name="menu_item_donate">Пожертвование</string>
+
+    <string name="donation_title">Спасибо за пожертвование!</string>
+    <string name="donation_desc">
+        \nВы можете помочь разработчику купить что-то из этого списка:
+        \n
+    </string>
+
+    <string name="donation_already_purchased">Вы уже сделали это пожертвование! Спасибо кстати!</string>
+    <string name="donation_restore_purchases">Восстановить покупки</string>
+    <string name="donation_billing_not_ready">Ваша биллинговая система не подключена!</string>
 	
 </resources>

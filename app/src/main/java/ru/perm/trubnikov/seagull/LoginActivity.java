@@ -86,7 +86,6 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 				result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type); // ru.perm.trubnikov.seagull.account
 				setAccountAuthenticatorResult(result);
 				
-				// Добавляем апп в контакты, у которых есть телефонный номер
 				 long last_cid = -1;
 				 try {
 					 Cursor c = getContentResolver().query(
@@ -131,7 +130,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 	 	        		Log.d("seagull", "EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
 	 	        	}
 				
-				// Врубаем автосинхронизацию сразу
+				// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 				ContentResolver.setMasterSyncAutomatically(true);
 				ContentResolver.setIsSyncable(account, ContactsContract.AUTHORITY, 1);
 				ContentResolver.setSyncAutomatically(account, ContactsContract.AUTHORITY, true);

@@ -2,11 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ru.perm.trubnikov.seagull" 
     android:installLocation="auto" 
-    android:versionCode="25"
-    android:versionName="1.25" >
+    android:versionCode="27"
+    android:versionName="@string/version_name" >
 
     <uses-sdk
-        android:minSdkVersion="7"
+        android:minSdkVersion="8"
         android:targetSdkVersion="21" />
 
     <uses-permission android:name="android.permission.CALL_PHONE"></uses-permission>
@@ -18,7 +18,7 @@
 	<uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
 	<uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
 	<uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
-    
+    <uses-permission android:name="com.android.vending.BILLING" />
     
     <application
         android:allowBackup="true"
@@ -76,6 +76,11 @@
 				<action android:name="android.intent.action.PICK" />
 				<category android:name="android.intent.category.DEFAULT" />
                 
+            </intent-filter>
+        </activity>
+        <activity android:name=".DonateActivity">
+            <intent-filter>
+                <category android:name="android.intent.category.CATEGORY_ALTERNATE" />
             </intent-filter>
         </activity>
 
