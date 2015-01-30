@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ru.perm.trubnikov.seagull" 
+    package="ru.perm.trubnikov.chayka"
     android:installLocation="auto" 
-    android:versionCode="28"
+    android:versionCode="29"
     android:versionName="@string/version_name" >
 
     <uses-sdk
@@ -26,7 +26,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="ru.perm.trubnikov.seagull.MainActivity"
+            android:name="ru.perm.trubnikov.chayka.MainActivity"
             android:label="@string/app_name" 
             >
             <intent-filter>
@@ -48,18 +48,18 @@
              -->
         </activity>
         
-		<activity android:name=".ProfileActivity"
+		<activity android:name="ru.perm.trubnikov.chayka.ProfileActivity"
 		  		android:label="@string/app_name"
 		  		android:screenOrientation="portrait"
 		  		android:windowSoftInputMode="stateAlwaysHidden">
 			<intent-filter android:icon="@drawable/ic_launcher" >
 				<action android:name="android.intent.action.VIEW" />
 				<category android:name="android.intent.category.DEFAULT" />
-				<data android:mimeType="vnd.android.cursor.item/vnd.ru.perm.trubnikov.seagull.profile" />
+				<data android:mimeType="vnd.android.cursor.item/vnd.ru.perm.trubnikov.chayka.profile" />
 			</intent-filter>
 		</activity>
         
-		<activity android:name=".LoginActivity"
+		<activity android:name="ru.perm.trubnikov.chayka.LoginActivity"
                   android:label="@string/app_name"
                   android:screenOrientation="portrait" >
             <intent-filter>
@@ -68,7 +68,7 @@
         </activity>
 
 		<activity
-            android:name=".SelectOperatorActivity"
+            android:name="ru.perm.trubnikov.chayka.SelectOperatorActivity"
             android:label="@string/app_name" 
             android:screenOrientation="portrait" 
             android:windowSoftInputMode="stateAlwaysHidden">
@@ -78,13 +78,13 @@
                 
             </intent-filter>
         </activity>
-        <activity android:name=".DonateActivity">
+        <activity android:name="ru.perm.trubnikov.chayka.DonateActivity">
             <intent-filter>
                 <category android:name="android.intent.category.CATEGORY_ALTERNATE" />
             </intent-filter>
         </activity>
 
-		<service android:name=".AccountAuthenticatorService"
+		<service android:name="ru.perm.trubnikov.chayka.AccountAuthenticatorService"
 			android:exported="true" android:process=":auth">
 			<intent-filter>
 				<action android:name="android.accounts.AccountAuthenticator" />
@@ -92,7 +92,7 @@
 			<meta-data android:name="android.accounts.AccountAuthenticator"
 				android:resource="@xml/authenticator" />
 		</service>
-		<service android:name=".ContactsSyncAdapterService"
+		<service android:name="ru.perm.trubnikov.chayka.ContactsSyncAdapterService"
 			android:exported="true" android:process=":contacts">
 			<intent-filter>
 				<action android:name="android.content.SyncAdapter" />

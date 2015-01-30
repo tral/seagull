@@ -16,7 +16,7 @@
 <ContactsSource xmlns:android="http://schemas.android.com/apk/res/android">
 	<ContactsDataKind
 		android:icon="@drawable/ic_launcher"
-		android:mimeType="vnd.android.cursor.item/vnd.ru.perm.trubnikov.seagull.profile"
+		android:mimeType="vnd.android.cursor.item/vnd.ru.perm.trubnikov.chayka.profile"
 		android:detailColumn="data3"
 		android:summaryColumn="data2"
 		android:detailSocialSummary="true" />

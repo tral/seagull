@@ -1,4 +1,4 @@
-package ru.perm.trubnikov.seagull;
+package ru.perm.trubnikov.chayka;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;

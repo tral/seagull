@@ -1,4 +1,4 @@
-package ru.perm.trubnikov.seagull;
+package ru.perm.trubnikov.chayka;
 
 import java.util.ArrayList;
 
@@ -30,7 +30,7 @@ public class ContactsManager  {
 
 		builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
 		builder.withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0);
-		builder.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/vnd.ru.perm.trubnikov.seagull.profile");
+		builder.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/vnd.ru.perm.trubnikov.chayka.profile");
 		builder.withValue(ContactsContract.Data.DATA1, account.name);
 		builder.withValue(ContactsContract.Data.DATA2, "Чайка");
 		builder.withValue(ContactsContract.Data.DATA3, "Кинуть чайку немедленно");

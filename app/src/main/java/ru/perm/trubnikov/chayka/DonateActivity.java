@@ -1,4 +1,4 @@
-package ru.perm.trubnikov.seagull;
+package ru.perm.trubnikov.chayka;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

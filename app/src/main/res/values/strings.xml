@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Чайка</string>
-    <string name="version_name">1.27</string>
+    <string name="version_name">2.0</string>
 
     <string name="seagull_name">Отображаемое имя чайки</string>
     <string name="seagull_ussd">USSD-запрос</string>
@@ -37,7 +37,7 @@
 	<string name="authenticating">Добавляю «чайки» к контактам, это может занять несколько минут. Пожалуйста, подождите.</string>
 	<string name="info_btn_ok">Понятно</string>
 	
-	<string name="ACCOUNT_TYPE">ru.perm.trubnikov.seagull.account</string>
+	<string name="ACCOUNT_TYPE">ru.perm.trubnikov.chayka.account</string>
 	<string name="dummy_username">seagull</string>
     <string name="dummy_password">123</string>
     <string name="sel_op_desc">Выберите Вашего оператора</string>

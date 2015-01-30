@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package ru.perm.trubnikov.seagull;
+package ru.perm.trubnikov.chayka;
 
 import android.accounts.Account;
 import android.accounts.OperationCanceledException;
@@ -94,7 +94,7 @@ public class ContactsSyncAdapterService extends Service {
 
 		builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
 		builder.withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0);
-		builder.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/vnd.ru.perm.trubnikov.seagull.profile");
+		builder.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/vnd.ru.perm.trubnikov.chayka.profile");
 		builder.withValue(ContactsContract.Data.DATA1, username);
 		builder.withValue(ContactsContract.Data.DATA2, "SyncProviderDemo Profile");
 		builder.withValue(ContactsContract.Data.DATA3, "View profile");
@@ -117,11 +117,11 @@ public class ContactsSyncAdapterService extends Service {
 				if (!c.isNull(1)) {
 					String mimeType = c.getString(2);
 
-					if (mimeType.equals("vnd.android.cursor.item/vnd.ru.perm.trubnikov.seagull.profile")) {
+					if (mimeType.equals("vnd.android.cursor.item/vnd.ru.perm.trubnikov.chayka.profile")) {
 						ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(ContactsContract.StatusUpdates.CONTENT_URI);
 						builder.withValue(ContactsContract.StatusUpdates.DATA_ID, c.getLong(1));
 						builder.withValue(ContactsContract.StatusUpdates.STATUS, status);
-						builder.withValue(ContactsContract.StatusUpdates.STATUS_RES_PACKAGE, "ru.perm.trubnikov.seagull");
+						builder.withValue(ContactsContract.StatusUpdates.STATUS_RES_PACKAGE, "ru.perm.trubnikov.chayka");
 						builder.withValue(ContactsContract.StatusUpdates.STATUS_LABEL, R.string.app_name);
 						builder.withValue(ContactsContract.StatusUpdates.STATUS_ICON, R.drawable.ic_launcher);
 						builder.withValue(ContactsContract.StatusUpdates.STATUS_TIMESTAMP, System.currentTimeMillis());
@@ -182,11 +182,11 @@ public class ContactsSyncAdapterService extends Service {
 		
 		try {
 			
-			Log.d("seagull", "sync: start");
+			Log.d("chayka", "sync: start");
 
 	        long startFromId = dbHelper.getSettingsParamInt("syncfrom");
 			
-	        Log.d("seagull", "sync: startFromId = " + startFromId);
+	        Log.d("chayka", "sync: startFromId = " + startFromId);
         
 	        // Обновляем контакты без чаек
 	        long last_cid = -1;
@@ -201,7 +201,7 @@ public class ContactsSyncAdapterService extends Service {
 
 			    if (last_cid != c.getLong(c.getColumnIndex(Data.CONTACT_ID))) {
 			    	
-			    	Log.d("seagull", "sync: c_id = " + c.getLong(c.getColumnIndex(Data.CONTACT_ID)) +", raw_id = " +c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID))+ ", name = " + c.getString(c.getColumnIndex(Data.DISPLAY_NAME)));
+			    	Log.d("chayka", "sync: c_id = " + c.getLong(c.getColumnIndex(Data.CONTACT_ID)) +", raw_id = " +c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID))+ ", name = " + c.getString(c.getColumnIndex(Data.DISPLAY_NAME)));
 			    	ContactsManager.addSeagullContact(context, account, c.getString(c.getColumnIndex(Data.DISPLAY_NAME)), c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID)));
 			    	last_cid  = c.getLong(c.getColumnIndex(Data.CONTACT_ID));
 			    }
@@ -213,82 +213,13 @@ public class ContactsSyncAdapterService extends Service {
 		
 		}
         catch (Exception e) {
-     		Log.d("seagull", "sync: EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
+     		Log.d("chayka", "sync: EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
      	}
 		finally {
 			dbHelper.close();
 		}
 		
-		Log.d("seagull", "sync: finish");
-		
-		
-		
-		
-		
-		
-		
-		//Log.d("seagull", "performSync: " + account.toString());
-		//ContactsManager.addSeagullContact(context, account, "ChaykaLogin", "chaykauser", 154);
-/*
-		 long last_cid = -1;
-		 Cursor c = context.getContentResolver().query(
-			        Data.CONTENT_URI, 
-			        null, 
-			        Data.HAS_PHONE_NUMBER + " != 0 AND " + Data.MIMETYPE + "=? ", 
-			        new String[]{Phone.CONTENT_ITEM_TYPE},
-			        Data.CONTACT_ID);
-		 
-			while (c.moveToNext()) {
-			    //long id = c.getLong(c.getColumnIndex(Data.CONTACT_ID));
-			    //long raw_id = c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID));
-			    //String name = c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY));
-			    //String data1 = c.getString(c.getColumnIndex(Data.DATA1));
+		Log.d("chayka", "sync: finish");
 
-			    //System.out.println(id + ", name=" + name + ", data1=" + data1);
-			    if (last_cid != c.getLong(c.getColumnIndex(Data.CONTACT_ID))) {
-			    	
-			    	Log.d("seagull", "c_id = " + c.getLong(c.getColumnIndex(Data.CONTACT_ID)) +", raw_id = " +c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID))+ ", name = " + c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY)));
-			    	ContactsManager.addSeagullContact(context, account, c.getString(c.getColumnIndex(Data.DISPLAY_NAME_PRIMARY)), c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID)));
-			    	last_cid  = c.getLong(c.getColumnIndex(Data.CONTACT_ID));
-			    }
-			}
-		*/
-		
-		
-		
-/*
-		// Load the local contacts
-		Uri rawContactUri = RawContacts.CONTENT_URI.buildUpon().appendQueryParameter(RawContacts.ACCOUNT_NAME, account.name).appendQueryParameter(
-				RawContacts.ACCOUNT_TYPE, account.type).build();
-		Cursor c1 = mContentResolver.query(rawContactUri, new String[] { BaseColumns._ID, UsernameColumn, PhotoTimestampColumn }, null, null, null);
-		while (c1.moveToNext()) {
-			SyncEntry entry = new SyncEntry();
-			entry.raw_id = c1.getLong(c1.getColumnIndex(BaseColumns._ID));
-			entry.photo_timestamp = c1.getLong(c1.getColumnIndex(PhotoTimestampColumn));
-			localContacts.put(c1.getString(1), entry);
-		}
-
-		ArrayList<ContentProviderOperation> operationList = new ArrayList<ContentProviderOperation>();
-		try {
-			// If we don't have any contacts, create one. Otherwise, set a
-			// status message
-			if (localContacts.get("efudd1") == null) {
-				addContact(account, "Chayka Contact", "efudd1");
-			} else {
-				if (localContacts.get("efudd1").photo_timestamp == null || System.currentTimeMillis() > (localContacts.get("efudd1").photo_timestamp + 604800000L)) {
-					//You would probably download an image file and just pass the bytes, but this sample doesn't use network so we'll decode and re-compress the icon resource to get the bytes
-					ByteArrayOutputStream stream = new ByteArrayOutputStream();
-					Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
-					icon.compress(CompressFormat.PNG, 0, stream);
-					updateContactPhoto(operationList, localContacts.get("efudd1").raw_id, stream.toByteArray());
-				}
-				updateContactStatus(operationList, localContacts.get("efudd1").raw_id, "hunting wabbits");
-			}
-			if (operationList.size() > 0)
-				mContentResolver.applyBatch(ContactsContract.AUTHORITY, operationList);
-		} catch (Exception e1) {
-			
-			e1.printStackTrace();
-		}*/
 	}
 }

@@ -1,4 +1,4 @@
-package ru.perm.trubnikov.seagull;
+package ru.perm.trubnikov.chayka;
 
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;

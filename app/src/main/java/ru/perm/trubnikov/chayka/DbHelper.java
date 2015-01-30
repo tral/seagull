@@ -1,4 +1,4 @@
-package ru.perm.trubnikov.seagull;
+package ru.perm.trubnikov.chayka;
 
 import java.util.Random;
 
@@ -24,7 +24,7 @@ class DBHelper extends SQLiteOpenHelper {
 	  
     public DBHelper(Context context) {
       // конструктор суперкласса
-      super(context, "rupermtrubnikovseagullDB", null, 2);  // ������ �� ���!
+      super(context, "rupermtrubnikovchaykaDB", null, 2);  // ������ �� ���!
       s_name1 = context.getString(R.string.default_seagull_name1);
       s_name2 = context.getString(R.string.default_seagull_name2);
       s_name3 = context.getString(R.string.default_seagull_name3);

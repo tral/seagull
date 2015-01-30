@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package ru.perm.trubnikov.seagull;
+package ru.perm.trubnikov.chayka;
 
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
@@ -83,7 +83,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 			if (am.addAccountExplicitly(account, pass, null)) {
 				result = new Bundle();
 				result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name); // chaykauser
-				result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type); // ru.perm.trubnikov.seagull.account
+				result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type); // ru.perm.trubnikov.chayka.account
 				setAccountAuthenticatorResult(result);
 				
 				 long last_cid = -1;
