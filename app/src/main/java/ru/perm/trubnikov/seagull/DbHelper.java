@@ -264,8 +264,7 @@ class DBHelper extends SQLiteOpenHelper {
          int g = rand.nextInt(255);
          int b = rand.nextInt(255);
 
-         int randomColor = Color.rgb(rc,g,b);
-         return randomColor;
+         return Color.rgb(rc,g,b);
     }
     
     

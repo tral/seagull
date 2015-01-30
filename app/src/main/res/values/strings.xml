@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Чайка</string>
-    <string name="version_name">1.26</string>
+    <string name="version_name">1.27</string>
 
     <string name="seagull_name">Отображаемое имя чайки</string>
     <string name="seagull_ussd">USSD-запрос</string>
@@ -70,11 +70,6 @@
     <string name="donate_title_3">Хорошее пивко</string>
     <string name="donate_title_4">Билет в кино</string>
     <string name="donate_title_5">Оплатить вечеринку! Тусэ!</string>
-    <string name="donate_price_1">30 руб.</string>
-    <string name="donate_price_2">67 руб.</string>
-    <string name="donate_price_3">130 руб.</string>
-    <string name="donate_price_4">250 руб.</string>
-    <string name="donate_price_5">650 руб.</string>
 
     <string name="menu_item_donate">Пожертвование</string>
 
