@@ -90,14 +90,14 @@ public class ProfileActivity extends ActionBarActivity {
         				String tmpPh = phoneNumber.replace("-", "").replace(" ", "").replace("+", "").replace("(", "").replace(")", "").substring(1); // ������ ��� ���������
         				String tmpOl = old_num.replace("-", "").replace(" ", "").replace("+", "").replace("(", "").replace(")", "").substring(1); // ������ ��� ���������
      			
-        				//Log.d("seagull", "tmpPh" + " -> " + tmpPh );
-        				//Log.d("seagull", "tmpOl" + " -> " + tmpOl );
+        				//Log.d("chayka", "tmpPh" + " -> " + tmpPh );
+        				//Log.d("chayka", "tmpOl" + " -> " + tmpOl );
         				
         				if (!tmpPh.equalsIgnoreCase(tmpOl)) {
         					old_num = phoneNumber;
     						i++;
     						initOneSeagull( layout, i, pixels_b, pixels_m, phoneNumber);
-    						//Log.d("seagull", "i" + i + " -> "  + name +  " " + phoneNumber);
+    						//Log.d("chayka", "i" + i + " -> "  + name +  " " + phoneNumber);
         				}
         			}
         			
@@ -109,7 +109,7 @@ public class ProfileActivity extends ActionBarActivity {
          	 	        
 	        	}
 	        	catch (Exception e) {
-        			Log.d("seagull","EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
+        			Log.d("chayka","EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
         		}
 	        	finally {
 	        		phones.close();
@@ -200,8 +200,8 @@ public class ProfileActivity extends ActionBarActivity {
 	        } else {
 	        	phoneNumber = phoneNumber.replace("-", "").replace(" ", "").replace("(", "").replace(")", "");
 	        	
-	        	//Log.d("seagull", " pnum ---> " + phoneNumber);
-	        	//Log.d("seagull", " pnum ---> " + phoneNumber);
+	        	//Log.d("chayka", " pnum ---> " + phoneNumber);
+	        	//Log.d("chayka", " pnum ---> " + phoneNumber);
 	        	/*
 	        	if ((phoneNumber.length() < 11) || (phoneNumber.length() > 12)) {
 	        		Toast toast = Toast.makeText(ProfileActivity.this, "������������ ���������� �����! ("+phoneNumber+")", Toast.LENGTH_LONG);
@@ -218,7 +218,7 @@ public class ProfileActivity extends ActionBarActivity {
 		    	    toast.show();	
         		} else {
 
-	        		Log.d("seagull", " sending ---> " + op_prefix + nrml_number);
+	        		Log.d("chayka", " sending ---> " + op_prefix + nrml_number);
 	        		
 	        		String cToSend = "tel:" + op_prefix + nrml_number.replace("#", Uri.encode("#")); 
 		        	startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse(cToSend)), 1);
@@ -226,7 +226,7 @@ public class ProfileActivity extends ActionBarActivity {
 	        }
 		}
 		catch (Exception e) {
-     		Log.d("seagull", "EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
+     		Log.d("chayka", "EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
      		Toast toast = Toast.makeText(ProfileActivity.this, "Не удалось отправить чайку! Возможно, номер некорректен!", Toast.LENGTH_LONG);
     	    toast.setGravity(Gravity.TOP, 0, 0);
     	    toast.show();	

@@ -108,7 +108,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 						
 					    if (last_cid != c.getLong(c.getColumnIndex(Data.CONTACT_ID))) {
 					    	
-					    	Log.d("seagull", "c_id = " + c.getLong(c.getColumnIndex(Data.CONTACT_ID)) +", raw_id = " +c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID))+ ", name = " + c.getString(c.getColumnIndex(Data.DISPLAY_NAME)));
+					    	Log.d("chayka", "c_id = " + c.getLong(c.getColumnIndex(Data.CONTACT_ID)) +", raw_id = " +c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID))+ ", name = " + c.getString(c.getColumnIndex(Data.DISPLAY_NAME)));
 					    	ContactsManager.addSeagullContact(LoginActivity.this, account, c.getString(c.getColumnIndex(Data.DISPLAY_NAME)), c.getLong(c.getColumnIndex(Data.RAW_CONTACT_ID)));
 					    	last_cid  = c.getLong(c.getColumnIndex(Data.CONTACT_ID));
 					    	
@@ -118,7 +118,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 					 
 				 }
 				   catch (Exception e) {
-	 	        		Log.d("seagull", "initial insert: EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
+	 	        		Log.d("chayka", "initial insert: EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
 	 	        	}
 				 
 					try {
@@ -127,7 +127,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 				        dbHelper.close();
 					}
 			        catch (Exception e) {
-	 	        		Log.d("seagull", "EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
+	 	        		Log.d("chayka", "EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
 	 	        	}
 				
 				// ������� ����������������� �����

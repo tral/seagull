@@ -2,46 +2,46 @@
 <resources>
 
     <string name="app_name">Чайка</string>
-    <string name="version_name">2.0</string>
+    <string name="version_name">2.0.1</string>
 
     <string name="seagull_name">Отображаемое имя чайки</string>
     <string name="seagull_ussd">USSD-запрос</string>
     <string name="seagull_order">Порядок</string>
-    
-	<string name="menu_item_seagull_from_contacts">Добавить чайку из контакта</string>
-	<string name="menu_item_settings">Добавить чайку вручную</string>
-	
-	<string name="menu_item_help">Помощь</string>
-	<string name="menu_item_rate">Оценить приложение</string>
-	<string name="menu_sel_op">Выбрать оператора</string>
-	<string name="err_empty_op">Не выбран оператор!</string>
-	
-	<string name="help_str">Программа для отправки специальных сообщений «жду звонка» (в народе - «чаек»).\nВсе крупные операторы РФ позволяют бесплатно отправлять подобные сообщения, например, чтобы отправить «чайку» с сим-карты Билайн, нужно набрать USSD-запрос вида *144*номер абонента# и нажать кнопку вызова.\n\nЧтобы отредактировать или удалить «чайку», используйте долгое нажатие на нее.\n\n<b>Программа добавляет кнопку отправки чаек к контактам в телефоне, у которых есть хотя бы один телефонный номер.</b>\n\nВместо USSD-запроса «чайки» можно ввести любой другой USSD-запрос (например, запрос баланса) или телефонный номер (в этом случае будет выполнен звонок абоненту по тарифу оператора).</string>
-		
-	<string name="default_seagull_name1">Пример: баланс «Ростелеком»</string>
-	<string name="default_seagull_name2">Пример: баланс «МТС»</string>
-	<string name="default_seagull_name3">Пример: баланс «Билайн»</string>
-	<string name="default_seagull_name4">Пример: баланс «Мегафон»</string>
-	<string name="default_seagull_ussd1">*102#</string>
-	<string name="default_seagull_ussd2">*100#</string>
-	<string name="default_seagull_ussd3">*102#</string>
-	<string name="default_seagull_ussd4">*100#</string>
-	
-	<!--
-	<string name="info_seagull_props">Данные чайки</string>
-	-->
-	
-	<string name="save_btn_txt">Сохранить</string>
-	<string name="del_btn_txt">Удалить</string>
-	<string name="cancel_btn_txt">Отменить</string>
-	<string name="authenticating">Добавляю «чайки» к контактам, это может занять несколько минут. Пожалуйста, подождите.</string>
-	<string name="info_btn_ok">Понятно</string>
-	
-	<string name="ACCOUNT_TYPE">ru.perm.trubnikov.chayka.account</string>
-	<string name="dummy_username">seagull</string>
+
+    <string name="menu_item_seagull_from_contacts">Добавить чайку из контакта</string>
+    <string name="menu_item_settings">Добавить чайку вручную</string>
+
+    <string name="menu_item_help">Помощь</string>
+    <string name="menu_item_rate">Оценить приложение</string>
+    <string name="menu_sel_op">Выбрать оператора</string>
+    <string name="err_empty_op">Не выбран оператор!</string>
+
+    <string name="help_str">Программа для отправки специальных сообщений «жду звонка» (в народе - «чаек»).\nВсе крупные операторы РФ позволяют бесплатно отправлять подобные сообщения, например, чтобы отправить «чайку» с сим-карты Билайн, нужно набрать USSD-запрос вида *144*номер абонента# и нажать кнопку вызова.\n\nЧтобы отредактировать или удалить «чайку», используйте долгое нажатие на нее.\n\n<b>Программа добавляет кнопку отправки чаек к контактам в телефоне, у которых есть хотя бы один телефонный номер.</b>\n\nВместо USSD-запроса «чайки» можно ввести любой другой USSD-запрос (например, запрос баланса) или телефонный номер (в этом случае будет выполнен звонок абоненту по тарифу оператора).</string>
+
+    <string name="default_seagull_name1">Пример: баланс «Ростелеком»</string>
+    <string name="default_seagull_name2">Пример: баланс «МТС»</string>
+    <string name="default_seagull_name3">Пример: баланс «Билайн»</string>
+    <string name="default_seagull_name4">Пример: баланс «Мегафон»</string>
+    <string name="default_seagull_ussd1">*102#</string>
+    <string name="default_seagull_ussd2">*100#</string>
+    <string name="default_seagull_ussd3">*102#</string>
+    <string name="default_seagull_ussd4">*100#</string>
+
+    <!--
+    <string name="info_seagull_props">Данные чайки</string>
+    -->
+
+    <string name="save_btn_txt">Сохранить</string>
+    <string name="del_btn_txt">Удалить</string>
+    <string name="cancel_btn_txt">Отменить</string>
+    <string name="authenticating">Добавляю «чайки» к контактам, это может занять несколько минут. Пожалуйста, подождите.</string>
+    <string name="info_btn_ok">Понятно</string>
+
+    <string name="ACCOUNT_TYPE">ru.perm.trubnikov.chayka.account</string>
+    <string name="dummy_username">seagull</string>
     <string name="dummy_password">123</string>
     <string name="sel_op_desc">Выберите Вашего оператора</string>
-    
+
     <string name="op1">Билайн</string>
     <string name="op2">Мегафон</string>
     <string name="op3">МТС</string>
@@ -62,8 +62,11 @@
     <string name="op18">Ucell Узбекистан</string>
     <string name="op19">Билайн Узбекистан</string>
     <string name="op20">PerfectumMobile Узбекистан</string>
+    <string name="op21">Velcom Беларусь</string>
+    <string name="op22">Life Беларусь</string>
+    <string name="op23">МТС Беларусь</string>
 
-	<string name="header_choose_number">Выберите номер</string>
+    <string name="header_choose_number">Выберите номер</string>
 
     <string name="donate_title_1">Поездка на автобусе</string>
     <string name="donate_title_2">Вкусный гамбургер</string>
@@ -82,5 +85,5 @@
     <string name="donation_already_purchased">Вы уже сделали это пожертвование! Спасибо кстати!</string>
     <string name="donation_restore_purchases">Восстановить покупки</string>
     <string name="donation_billing_not_ready">Ваша биллинговая система не подключена!</string>
-	
+
 </resources>

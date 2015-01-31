@@ -291,6 +291,14 @@ class DBHelper extends SQLiteOpenHelper {
 			}
 			return "";
 		}
+
+		// 9-значный номер Беларусь
+		if (op_num.equalsIgnoreCase("9_BY")) {
+			if (phone.length() >= 9) {
+				return phone.substring(phone.length()-9) + "#";
+			}
+			return "";
+		}
 		
 		// ���������� 9-������� �����
 		if (op_num.equalsIgnoreCase("998_UZ_9")) {

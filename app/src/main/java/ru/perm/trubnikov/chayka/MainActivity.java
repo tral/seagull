@@ -195,7 +195,7 @@ public class MainActivity extends ActionBarActivity {
                         dbHelper.close();
                         aDialog.getButton(Dialog.BUTTON_NEGATIVE).setEnabled(true);
                     } catch (Exception e) {
-                        Log.d("seagull", "EXCEPTION! " + e.toString() + " Message:" + e.getMessage());
+                        Log.d("chayka", "EXCEPTION! " + e.toString() + " Message:" + e.getMessage());
                     }
                 }
 
@@ -471,7 +471,7 @@ public class MainActivity extends ActionBarActivity {
             AccountManager accountManager = AccountManager.get(MainActivity.this);
             Account[] accounts = accountManager.getAccountsByType(getString(R.string.ACCOUNT_TYPE));
 
-            //Log.d("seagull", accounts.length+"");
+            //Log.d("chayka", accounts.length+"");
 
             if (accounts.length > 0) {
             } else {
@@ -481,7 +481,7 @@ public class MainActivity extends ActionBarActivity {
             }
 
         } catch (Exception e) {
-            Log.d("seagull", "ManageAccounts(): EXCEPTION! " + e.toString() + " Message:" + e.getMessage());
+            Log.d("chayka", "ManageAccounts(): EXCEPTION! " + e.toString() + " Message:" + e.getMessage());
         }
 
     }
@@ -497,13 +497,13 @@ public class MainActivity extends ActionBarActivity {
         try {
             refillMainScreen();
         } catch (Exception e) {
-            Log.d("seagull", "refillMainScreen(): EXCEPTION! " + e.toString() + " Message:" + e.getMessage());
+            Log.d("chayka", "refillMainScreen(): EXCEPTION! " + e.toString() + " Message:" + e.getMessage());
         }
 
         try {
             ManageAccounts();
         } catch (Exception e) {
-            Log.d("seagull", "ManageAccounts(): EXCEPTION! " + e.toString() + " Message:" + e.getMessage());
+            Log.d("chayka", "ManageAccounts(): EXCEPTION! " + e.toString() + " Message:" + e.getMessage());
         }
 
     }
