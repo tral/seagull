@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <ru.perm.trubnikov.chayka.SquareImageView
+        android:id="@+id/Imageview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ph"
+        />
+
+    <TextView
+        android:id="@+id/tvText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/Imageview"
+        android:layout_alignLeft="@+id/Imageview"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="6dp"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:text="TEST TEST TEST"/>
+    <!--
+    <TextView
+        android:id="@+id/tvText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:minHeight="40dp"
+        android:text=""
+        android:textSize="20sp"></TextView>
+        -->
+</RelativeLayout>

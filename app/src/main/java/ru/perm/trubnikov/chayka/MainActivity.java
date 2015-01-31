@@ -4,12 +4,14 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentUris;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,12 +25,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.InputStream;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -48,6 +55,11 @@ public class MainActivity extends ActionBarActivity {
     private int seagullId;
     private int[] ids;
     private String[] phones;
+
+    String[] data = {"Alexey Trunikov", "Алексей Трубников", "c", "d", "e", "f", "g", "h", "i", "j", "k"};
+
+    GridView gvMain;
+    ArrayAdapter<String> adapter;
 
     // Database
     DBHelper dbHelper;
@@ -348,7 +360,7 @@ public class MainActivity extends ActionBarActivity {
 
 
     protected void refillMainScreen() {
-
+/*
         LinearLayout layout = (LinearLayout) findViewById(R.id.linearLayoutSum);
 
         if (((LinearLayout) layout).getChildCount() > 0)
@@ -407,9 +419,39 @@ public class MainActivity extends ActionBarActivity {
 
         } catch (Exception e) {
             MainActivity.this.ShowToastT("EXCEPTION! " + e.toString() + " Message:" + e.getMessage(), Toast.LENGTH_LONG);
-        }
+        }*/
+    }
+    private void adjustGridView() {
+        gvMain.setNumColumns(2);
     }
 
+    public Uri getPhotoUri(int contactId) {
+        try {
+            Cursor cur = MainActivity.this.getContentResolver().query(
+                    ContactsContract.Data.CONTENT_URI,
+                    null,
+                    ContactsContract.Data.CONTACT_ID + "=" + contactId + " AND "
+                            + ContactsContract.Data.MIMETYPE + "='"
+                            + ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE + "'", null,
+                    null);
+            if (cur != null) {
+                if (!cur.moveToFirst()) {
+                    return null; // no photo
+                }
+            } else {
+                return null; // error in cursor process
+            }
+
+            cur.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        Uri person = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
+        return Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
+    }
 
     protected void initOneSeagull(LinearLayout layout, int i, int pixels_b, int pixels_m, String name, String ussd, int id, int color) {
 
@@ -426,6 +468,15 @@ public class MainActivity extends ActionBarActivity {
         btnTag.setText(name);
         btnTag.setId(i);
         btnTag.setBackgroundColor(color);
+/*
+        Uri uri = getPhotoUri(608);
+        try {
+            btnTag.setGravity(Gravity.BOTTOM);
+            btnTag.setTextColor(Color.WHITE);
+            InputStream is = MainActivity.this.getContentResolver().openInputStream(uri);
+            btnTag.setBackgroundDrawable(Drawable.createFromStream(is, uri.toString()));
+        } catch(Exception e){}
+*/
 
         phones[i] = ussd;
         ids[i] = id;
@@ -494,8 +545,14 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        adapter = new ArrayAdapter<String>(this, R.layout.item, R.id.tvText, data);
+        gvMain = (GridView) findViewById(R.id.gvMain);
+        gvMain.setAdapter(adapter);
+        adjustGridView();
+
+
         try {
-            refillMainScreen();
+            //refillMainScreen();
         } catch (Exception e) {
             Log.d("chayka", "refillMainScreen(): EXCEPTION! " + e.toString() + " Message:" + e.getMessage());
         }
