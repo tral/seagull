@@ -2,39 +2,44 @@ package ru.perm.trubnikov.chayka;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
+import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.view.ViewTreeObserver;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 public class MainActivity extends ActionBarActivity {
@@ -59,7 +64,13 @@ public class MainActivity extends ActionBarActivity {
     String[] data = {"Alexey Trunikov", "Алексей Трубников", "c", "d", "e", "f", "g", "h", "i", "j", "k"};
 
     GridView gvMain;
-    ArrayAdapter<String> adapter;
+    //ArrayAdapter<String> adapter;
+
+    int finalHeight, finalWidth;
+
+    // Global cursor
+    //Cursor gridCursor;
+    //SimpleCursorAdapter gridAdapter;
 
     // Database
     DBHelper dbHelper;
@@ -70,6 +81,234 @@ public class MainActivity extends ActionBarActivity {
         toast.setGravity(Gravity.TOP, 0, 0);
         toast.show();
     }*/
+
+
+    // ------------------------------------------------------------------------------------------
+    @Override
+    public void onDestroy() {
+        // if (gridCursor != null)
+        //     gridCursor.close();
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // adapter = new ArrayAdapter<String>(this, R.layout.item, R.id.tvText, data);
+        gvMain = (GridView) findViewById(R.id.gvMain);
+        //gvMain.setAdapter(adapter);
+        adjustGridView();
+
+
+        refillMainScreen2();
+
+        gvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+                //String cToSend = "tel:" + phones[v.getId()].replace("#", Uri.encode("#"));
+                // startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse(cToSend)), 1);
+
+                SimpleCursorAdapter gridAdapter = (SimpleCursorAdapter) gvMain.getAdapter();
+                Cursor gridCursor = gridAdapter.getCursor();
+                gridCursor.moveToPosition(position);
+                Log.d("chayka", "-----> position " + position + " id:" + id + " ussd" + gridCursor.getString(gridCursor.getColumnIndex("ussd")));
+
+
+            }
+        });
+
+
+        try {
+            ManageAccounts();
+        } catch (Exception e) {
+            Log.d("chayka", "ManageAccounts(): EXCEPTION! " + e.toString() + " Message:" + e.getMessage());
+        }
+
+    }
+
+
+    protected void refreshGrid() {
+
+        try {
+
+            dbHelper = new DBHelper(this);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            Cursor gridCursor = db.rawQuery("select id_ as _id , id_, name, ussd, color, order_by FROM seagulls ORDER BY order_by, name, id_", null);
+            //gridCursor.
+            // gridAdapter.getCursor().requery();
+            SimpleCursorAdapter gridAdapter = (SimpleCursorAdapter) gvMain.getAdapter();
+            gridAdapter.changeCursor(gridCursor);
+            gridAdapter.notifyDataSetChanged();
+
+/*
+            String[] cols = new String[]{"name"};
+            int[]   views = new int[]   {R.id.tvText};
+
+            gridAdapter = new SimpleCursorAdapter(this,
+                    R.layout.item,
+                    gridCursor, cols, views);
+            gvMain.setAdapter(adapter);
+*/
+            dbHelper.close();
+
+
+        } catch (Exception e) {
+            Log.d("chayka", "!!! -> " + e.toString() + " Message:" + e.getMessage());
+        }
+    }
+
+
+    protected void refillMainScreen2() {
+
+        try {
+
+            dbHelper = new DBHelper(this);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            Cursor gridCursor = db.rawQuery("select id_ as _id , id_, name, ussd, color, order_by FROM seagulls ORDER BY order_by, name, id_", null);
+
+            String[] cols = new String[]{"name", "_id"};
+            int[] views = new int[]{R.id.tvText, R.id.Imageview};
+
+            SimpleCursorAdapter gridAdapter = new SimpleCursorAdapter(this,
+                    R.layout.item,
+                    gridCursor, cols, views, 1);
+
+            gridAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+                @Override
+                public boolean setViewValue(View view, Cursor cursor, int column) {
+                    if (column == cursor.getColumnIndex("name")) {
+                        TextView tv = (TextView) view;
+                        String Str = cursor.getString(cursor.getColumnIndex("name"));
+                        tv.setText(Str + " !!! ");
+                        return true;
+                    }
+                    if (column == cursor.getColumnIndex("_id")) {
+
+                        final ImageView tv = (ImageView) view;
+                        Bitmap bmp1 = getPhotoOfContact(608);
+
+                        // tv.setImageURI(u);
+                        if (bmp1 != null)
+                            tv.setImageBitmap(bmp1);
+
+                        if (tv.getDrawable() == null)
+                            tv.setImageResource(R.drawable.ic_launcher);
+
+/*
+                        tv.buildDrawingCache(true);
+                        //Bitmap bm = tv.getDrawingCache();
+                        Bitmap bm = Bitmap.createBitmap(tv.getDrawingCache());
+                        tv.setDrawingCacheEnabled(false); // clear drawing cache
+
+*/
+                        if (cursor.isFirst()) {
+
+                            tv.setDrawingCacheEnabled(true);
+
+                            // this is the important code :)
+                            // Without it the view will have a dimension of 0,0 and the bitmap will be null
+                            tv.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+                            tv.layout(0, 0, tv.getMeasuredWidth(), tv.getMeasuredHeight());
+
+                            tv.buildDrawingCache(true);
+                            Bitmap bm = Bitmap.createBitmap(tv.getDrawingCache());
+                            tv.setDrawingCacheEnabled(false); // clear drawing cache
+
+
+                            //  int finalHeight, finalWidth;
+
+
+                            ViewTreeObserver vto = tv.getViewTreeObserver();
+                            vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                                public boolean onPreDraw() {
+                                    // Remove after the first run so it doesn't fire forever
+                                    tv.getViewTreeObserver().removeOnPreDrawListener(this);
+                                    finalHeight = tv.getMeasuredHeight();
+                                    finalWidth = tv.getMeasuredWidth();
+                                    // tv.setText("Height: " + finalHeight + " Width: " + finalWidth);
+
+                                    return true;
+                                }
+                            });
+
+                            FileOutputStream out = null;
+                            try {
+                                out = new FileOutputStream("/storage/emulated/0/folder_name/i_" + cursor.getString(cursor.getColumnIndex("_id")) + ".png");
+                                //Log.d("chayka", "-----> width: " + bm.getWidth() + " height: " + bm.getHeight());
+                                // Log.d("chayka", " ---> h: "+ tv.getMeasuredHeight() + "w " + tv.getMeasuredWidth());
+                                Log.d("chayka", " THIRD ---> h: " + finalHeight + " , w: " + finalWidth);
+                                bm = Bitmap.createScaledBitmap(bm, finalWidth, finalHeight, false);
+                                bm.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+                                // PNG is a lossless format, the compression factor (100) is ignored
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } finally {
+                                try {
+                                    if (out != null) {
+                                        out.close();
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+
+                        }
+
+
+                        return true;
+                    }
+                    return false;
+                }
+            });
+
+
+            gvMain.setAdapter(gridAdapter);
+
+            dbHelper.close();
+
+
+        } catch (Exception e) {
+            Log.d("chayka", "!!! -> " + e.toString() + " Message:" + e.getMessage());
+        }
+    }
+
+
+    protected Bitmap getPhotoOfContact(long contactId) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            return getContactBitmap8(contactId);
+        } else {
+            return getContactBitmap8(contactId);
+        }
+    }
+
+    @TargetApi(14)
+    public Bitmap getContactBitmap14(long contactId) {
+        Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
+        InputStream stream = ContactsContract.Contacts.openContactPhotoInputStream(
+                getContentResolver(), uri, true);
+        return BitmapFactory.decodeStream(stream);
+
+    }
+
+    public Bitmap getContactBitmap8(long contactId) {
+        Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
+                contactId);
+        Uri displayPhotoUri = Uri.withAppendedPath(contactUri,
+                ContactsContract.Contacts.Photo.DISPLAY_PHOTO);
+        try {
+            AssetFileDescriptor fd = getContentResolver()
+                    .openAssetFileDescriptor(displayPhotoUri, "r");
+            return BitmapFactory.decodeStream(fd.createInputStream());
+        } catch (IOException e) {
+            return null;
+        }
+    }
 
 
     // Small util to show text messages
@@ -306,7 +545,8 @@ public class MainActivity extends ActionBarActivity {
                             c = getContentResolver().query(uri, new String[]{
                                             ContactsContract.CommonDataKinds.Phone.NUMBER,
                                             ContactsContract.CommonDataKinds.Phone.TYPE,
-                                            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME},
+                                            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID},
                                     null, null, null);
 
                             if (c != null && c.moveToFirst()) {
@@ -314,6 +554,8 @@ public class MainActivity extends ActionBarActivity {
                                 number = number.replace("-", "").replace(" ", "").replace("(", "").replace(")", "");
                                 //type = c.getInt(1);
                                 name = c.getString(2);
+
+                                Log.d("chayka", "CONTACT_ID ---> " + c.getString(3));
 
                                 dbHelper = new DBHelper(MainActivity.this);
                                 String op_num = dbHelper.getSettingsParamTxt("op_num");
@@ -328,6 +570,7 @@ public class MainActivity extends ActionBarActivity {
                                     toast.show();
                                 } else {
                                     dbHelper.InsertSeagull(name, op_prefix + nrml_number, "");
+                                    refreshGrid();
                                 }
                                 dbHelper.close();
 
@@ -335,7 +578,7 @@ public class MainActivity extends ActionBarActivity {
 
                                 // update
                             /*dbHelper = new DBHelper(MainActivity.this);
-	    	        		SQLiteDatabase db = dbHelper.getWritableDatabase();
+                            SQLiteDatabase db = dbHelper.getWritableDatabase();
 	    	        		ContentValues cv = new ContentValues();
 	    	                cv.put("contact", name);
 	    	                db.update("contact", cv, "_id = ?", new String[] { "1" });
@@ -421,10 +664,13 @@ public class MainActivity extends ActionBarActivity {
             MainActivity.this.ShowToastT("EXCEPTION! " + e.toString() + " Message:" + e.getMessage(), Toast.LENGTH_LONG);
         }*/
     }
+
     private void adjustGridView() {
-        gvMain.setNumColumns(2);
+        gvMain.setNumColumns(4);
     }
 
+
+    @TargetApi(14)
     public Uri getPhotoUri(int contactId) {
         try {
             Cursor cur = MainActivity.this.getContentResolver().query(
@@ -449,7 +695,7 @@ public class MainActivity extends ActionBarActivity {
             return null;
         }
 
-        Uri person = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
+        Uri person = ContentUris.withAppendedId(ContactsContract.DisplayPhoto.CONTENT_MAX_DIMENSIONS_URI, contactId);
         return Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
     }
 
@@ -537,33 +783,6 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-
-    // ------------------------------------------------------------------------------------------
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        adapter = new ArrayAdapter<String>(this, R.layout.item, R.id.tvText, data);
-        gvMain = (GridView) findViewById(R.id.gvMain);
-        gvMain.setAdapter(adapter);
-        adjustGridView();
-
-
-        try {
-            //refillMainScreen();
-        } catch (Exception e) {
-            Log.d("chayka", "refillMainScreen(): EXCEPTION! " + e.toString() + " Message:" + e.getMessage());
-        }
-
-        try {
-            ManageAccounts();
-        } catch (Exception e) {
-            Log.d("chayka", "ManageAccounts(): EXCEPTION! " + e.toString() + " Message:" + e.getMessage());
-        }
-
-    }
 
     // ------------------------------------------------------------------------------------------
 
