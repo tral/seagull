@@ -24,4 +24,5 @@ repositories {
 dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.anjlab.android.iab.v3:library:1.0.+@aar'
+    compile 'de.cketti.library.changelog:ckchangelog:1.2.2'
 }

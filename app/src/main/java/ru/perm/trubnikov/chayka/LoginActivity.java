@@ -130,7 +130,6 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 	 	        		Log.d("chayka", "EXCEPTION! " + e.toString() +" Message:" +e.getMessage());
 	 	        	}
 				
-				// ������� ����������������� �����
 				ContentResolver.setMasterSyncAutomatically(true);
 				ContentResolver.setIsSyncable(account, ContactsContract.AUTHORITY, 1);
 				ContentResolver.setSyncAutomatically(account, ContactsContract.AUTHORITY, true);

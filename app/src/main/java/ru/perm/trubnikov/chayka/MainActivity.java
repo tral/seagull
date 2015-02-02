@@ -8,7 +8,7 @@ import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.AssetFileDescriptor;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -17,7 +17,9 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -29,18 +31,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+
+import de.cketti.library.changelog.ChangeLog;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -58,38 +58,9 @@ public class MainActivity extends ActionBarActivity {
 
     // Globals
     private int seagullId;
-    private int[] ids;
-    private String[] phones;
-
-    String[] data = {"Alexey Trunikov", "Алексей Трубников", "c", "d", "e", "f", "g", "h", "i", "j", "k"};
-
     GridView gvMain;
-    //ArrayAdapter<String> adapter;
-
-    int finalHeight, finalWidth;
-
-    // Global cursor
-    //Cursor gridCursor;
-    //SimpleCursorAdapter gridAdapter;
-
-    // Database
-    DBHelper dbHelper;
-
-    // Small util to show text messages by resource id
-   /* protected void ShowToast(int txt, int lng) {
-        Toast toast = Toast.makeText(MainActivity.this, txt, lng);
-        toast.setGravity(Gravity.TOP, 0, 0);
-        toast.show();
-    }*/
-
 
     // ------------------------------------------------------------------------------------------
-    @Override
-    public void onDestroy() {
-        // if (gridCursor != null)
-        //     gridCursor.close();
-        super.onDestroy();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,169 +68,107 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // adapter = new ArrayAdapter<String>(this, R.layout.item, R.id.tvText, data);
         gvMain = (GridView) findViewById(R.id.gvMain);
-        //gvMain.setAdapter(adapter);
-        adjustGridView();
+        gvMain.setNumColumns(2);
 
-
-        refillMainScreen2();
+        initMainScreen();
 
         gvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                //String cToSend = "tel:" + phones[v.getId()].replace("#", Uri.encode("#"));
-                // startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse(cToSend)), 1);
-
                 SimpleCursorAdapter gridAdapter = (SimpleCursorAdapter) gvMain.getAdapter();
                 Cursor gridCursor = gridAdapter.getCursor();
                 gridCursor.moveToPosition(position);
-                Log.d("chayka", "-----> position " + position + " id:" + id + " ussd" + gridCursor.getString(gridCursor.getColumnIndex("ussd")));
-
-
+                String cToSend = "tel:" + gridCursor.getString(gridCursor.getColumnIndex("ussd")).replace("#", Uri.encode("#"));
+                startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse(cToSend)), 1);
+                //Log.d("chayka", "-----> position " + position + " id:" + id + " ussd" + gridCursor.getString(gridCursor.getColumnIndex("ussd")));
             }
         });
 
+        gvMain.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+                                           int position, long arg3) {
+                seagullId = (int) arg3;
+                showDialog(SEAGULL_PROPS_DIALOG_ID);
+                //Log.d("chayka", "-----> arg3 " + arg3);
+                return true;
+            }
+        });
 
         try {
             ManageAccounts();
+            ChangeLog cl = new ChangeLog(this);
+            if (cl.isFirstRun()) {
+                cl.getLogDialog().show();
+            }
         } catch (Exception e) {
             Log.d("chayka", "ManageAccounts(): EXCEPTION! " + e.toString() + " Message:" + e.getMessage());
         }
 
     }
 
-
     protected void refreshGrid() {
-
         try {
-
-            dbHelper = new DBHelper(this);
+            DBHelper dbHelper = new DBHelper(this);
             SQLiteDatabase db = dbHelper.getWritableDatabase();
-            Cursor gridCursor = db.rawQuery("select id_ as _id , id_, name, ussd, color, order_by FROM seagulls ORDER BY order_by, name, id_", null);
-            //gridCursor.
-            // gridAdapter.getCursor().requery();
+            Cursor gridCursor = getGridViewCursor(db);
             SimpleCursorAdapter gridAdapter = (SimpleCursorAdapter) gvMain.getAdapter();
             gridAdapter.changeCursor(gridCursor);
             gridAdapter.notifyDataSetChanged();
-
-/*
-            String[] cols = new String[]{"name"};
-            int[]   views = new int[]   {R.id.tvText};
-
-            gridAdapter = new SimpleCursorAdapter(this,
-                    R.layout.item,
-                    gridCursor, cols, views);
-            gvMain.setAdapter(adapter);
-*/
             dbHelper.close();
-
-
         } catch (Exception e) {
             Log.d("chayka", "!!! -> " + e.toString() + " Message:" + e.getMessage());
         }
     }
 
+    private Cursor getGridViewCursor(SQLiteDatabase db) {
+        return db.rawQuery("select id_ as _id , id_, name, ussd, color, order_by, image FROM seagulls ORDER BY order_by, name, id_", null);
+    }
 
-    protected void refillMainScreen2() {
+    protected void initMainScreen() {
 
         try {
 
-            dbHelper = new DBHelper(this);
+            DBHelper dbHelper = new DBHelper(this);
             SQLiteDatabase db = dbHelper.getWritableDatabase();
-            Cursor gridCursor = db.rawQuery("select id_ as _id , id_, name, ussd, color, order_by FROM seagulls ORDER BY order_by, name, id_", null);
+            Cursor gridCursor = getGridViewCursor(db);
 
             String[] cols = new String[]{"name", "_id"};
             int[] views = new int[]{R.id.tvText, R.id.Imageview};
 
-            SimpleCursorAdapter gridAdapter = new SimpleCursorAdapter(this,
-                    R.layout.item,
-                    gridCursor, cols, views, 1);
+            SimpleCursorAdapter gridAdapter = new SimpleCursorAdapter(this, R.layout.item, gridCursor, cols, views, 1);
 
             gridAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
                 @Override
                 public boolean setViewValue(View view, Cursor cursor, int column) {
-                    if (column == cursor.getColumnIndex("name")) {
+                   /* if (column == cursor.getColumnIndex("name")) {
                         TextView tv = (TextView) view;
                         String Str = cursor.getString(cursor.getColumnIndex("name"));
                         tv.setText(Str + " !!! ");
                         return true;
-                    }
+                    }*/
                     if (column == cursor.getColumnIndex("_id")) {
 
                         final ImageView tv = (ImageView) view;
-                        Bitmap bmp1 = getPhotoOfContact(608);
 
-                        // tv.setImageURI(u);
-                        if (bmp1 != null)
-                            tv.setImageBitmap(bmp1);
-
-                        if (tv.getDrawable() == null)
-                            tv.setImageResource(R.drawable.ic_launcher);
-
-/*
-                        tv.buildDrawingCache(true);
-                        //Bitmap bm = tv.getDrawingCache();
-                        Bitmap bm = Bitmap.createBitmap(tv.getDrawingCache());
-                        tv.setDrawingCacheEnabled(false); // clear drawing cache
-
-*/
-                        if (cursor.isFirst()) {
-
-                            tv.setDrawingCacheEnabled(true);
-
-                            // this is the important code :)
-                            // Without it the view will have a dimension of 0,0 and the bitmap will be null
-                            tv.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-                            tv.layout(0, 0, tv.getMeasuredWidth(), tv.getMeasuredHeight());
-
-                            tv.buildDrawingCache(true);
-                            Bitmap bm = Bitmap.createBitmap(tv.getDrawingCache());
-                            tv.setDrawingCacheEnabled(false); // clear drawing cache
-
-
-                            //  int finalHeight, finalWidth;
-
-
-                            ViewTreeObserver vto = tv.getViewTreeObserver();
-                            vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                                public boolean onPreDraw() {
-                                    // Remove after the first run so it doesn't fire forever
-                                    tv.getViewTreeObserver().removeOnPreDrawListener(this);
-                                    finalHeight = tv.getMeasuredHeight();
-                                    finalWidth = tv.getMeasuredWidth();
-                                    // tv.setText("Height: " + finalHeight + " Width: " + finalWidth);
-
-                                    return true;
-                                }
-                            });
-
-                            FileOutputStream out = null;
-                            try {
-                                out = new FileOutputStream("/storage/emulated/0/folder_name/i_" + cursor.getString(cursor.getColumnIndex("_id")) + ".png");
-                                //Log.d("chayka", "-----> width: " + bm.getWidth() + " height: " + bm.getHeight());
-                                // Log.d("chayka", " ---> h: "+ tv.getMeasuredHeight() + "w " + tv.getMeasuredWidth());
-                                Log.d("chayka", " THIRD ---> h: " + finalHeight + " , w: " + finalWidth);
-                                bm = Bitmap.createScaledBitmap(bm, finalWidth, finalHeight, false);
-                                bm.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-                                // PNG is a lossless format, the compression factor (100) is ignored
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            } finally {
-                                try {
-                                    if (out != null) {
-                                        out.close();
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-
+                        // Determine globals: height & width of gridView images
+                        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        if (settings.getInt("prefImgSize", -1) < 0) {
+                            determineImageSize(tv);
                         }
 
+                        // BLOB
+                        byte[] bitmapData = cursor.getBlob(cursor.getColumnIndex("image"));
+
+                        if (bitmapData != null) {
+                            tv.setImageBitmap(BitmapFactory.decodeByteArray(bitmapData, 0, bitmapData.length));
+                        } else {
+                            tv.setImageResource(R.drawable.ic_person_white_48dp);
+                            tv.setBackgroundColor(cursor.getInt(cursor.getColumnIndex("color")));
+                            tv.setScaleType(ImageView.ScaleType.CENTER);
+                        }
 
                         return true;
                     }
@@ -267,21 +176,37 @@ public class MainActivity extends ActionBarActivity {
                 }
             });
 
-
             gvMain.setAdapter(gridAdapter);
-
             dbHelper.close();
-
 
         } catch (Exception e) {
             Log.d("chayka", "!!! -> " + e.toString() + " Message:" + e.getMessage());
         }
     }
 
+    private void determineImageSize(final ImageView iv) {
+        ViewTreeObserver vto = iv.getViewTreeObserver();
+        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            public boolean onPreDraw() {
+                // Remove after the first run so it doesn't fire forever
+                iv.getViewTreeObserver().removeOnPreDrawListener(this);
+                //gridImageHeight = tv.getMeasuredHeight();
+                //gridImageWidth = tv.getMeasuredWidth();
+
+                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putInt("prefImgSize", iv.getMeasuredHeight());
+                editor.commit();
+
+                //Log.d("chayka", "!!! cursor.isFirst() !!!");
+                return true;
+            }
+        });
+    }
 
     protected Bitmap getPhotoOfContact(long contactId) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            return getContactBitmap8(contactId);
+            return getContactBitmap14(contactId);
         } else {
             return getContactBitmap8(contactId);
         }
@@ -293,23 +218,44 @@ public class MainActivity extends ActionBarActivity {
         InputStream stream = ContactsContract.Contacts.openContactPhotoInputStream(
                 getContentResolver(), uri, true);
         return BitmapFactory.decodeStream(stream);
-
     }
 
     public Bitmap getContactBitmap8(long contactId) {
-        Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
-                contactId);
-        Uri displayPhotoUri = Uri.withAppendedPath(contactUri,
-                ContactsContract.Contacts.Photo.DISPLAY_PHOTO);
         try {
-            AssetFileDescriptor fd = getContentResolver()
-                    .openAssetFileDescriptor(displayPhotoUri, "r");
-            return BitmapFactory.decodeStream(fd.createInputStream());
-        } catch (IOException e) {
+            Cursor cur = getContentResolver().query(
+                    ContactsContract.Data.CONTENT_URI,
+                    null,
+                    ContactsContract.Data.CONTACT_ID + "=" + contactId + " AND "
+                            + ContactsContract.Data.MIMETYPE + "='"
+                            + ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE + "'", null,
+                    null);
+            if (cur != null) {
+                if (!cur.moveToFirst()) {
+                    return null; // no photo
+                }
+            } else {
+                return null; // error in cursor process
+            }
+
+            cur.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
-    }
 
+        Uri person = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
+        Uri imageUri = Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
+
+        Bitmap res = null;
+        try {
+            res = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+        } catch (Exception e) {
+            Log.d("chayka", "!!! -----> " + e.getMessage());
+        }
+        return res;
+
+    }
 
     // Small util to show text messages
     protected void ShowToastT(String txt, int lng) {
@@ -317,7 +263,6 @@ public class MainActivity extends ActionBarActivity {
         toast.setGravity(Gravity.TOP, 0, 0);
         toast.show();
     }
-
 
     // Menu
     @Override
@@ -332,7 +277,6 @@ public class MainActivity extends ActionBarActivity {
 
         return (super.onCreateOptionsMenu(menu));
     }
-
 
     protected AlertDialog helpDialog() {
 
@@ -357,7 +301,6 @@ public class MainActivity extends ActionBarActivity {
         return builder_help.create();
     }
 
-
     protected AlertDialog seagullProps() {
 
         LayoutInflater inflater = getLayoutInflater();
@@ -376,28 +319,23 @@ public class MainActivity extends ActionBarActivity {
 
         builder.setPositiveButton(getString(R.string.save_btn_txt), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-
-                dbHelper = new DBHelper(MainActivity.this);
-
+                DBHelper dbHelper = new DBHelper(MainActivity.this);
                 if (seagullId == -1) {
-                    dbHelper.InsertSeagull(nameEdit.getText().toString(), ussdEdit.getText().toString(), orderEdit.getText().toString());
+                    dbHelper.InsertSeagull(nameEdit.getText().toString(), ussdEdit.getText().toString(), orderEdit.getText().toString(), null);
                 } else {
                     dbHelper.UpdateSeagull(seagullId, nameEdit.getText().toString(), ussdEdit.getText().toString(), orderEdit.getText().toString());
                 }
-
                 dbHelper.close();
-
-                refillMainScreen();
-
+                refreshGrid();
             }
         });
 
         builder.setNegativeButton(getString(R.string.del_btn_txt), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                dbHelper = new DBHelper(MainActivity.this);
+                DBHelper dbHelper = new DBHelper(MainActivity.this);
                 dbHelper.deleteSeagull(seagullId);
                 dbHelper.close();
-                refillMainScreen();
+                refreshGrid();
                 dialog.cancel();
             }
         });
@@ -419,7 +357,6 @@ public class MainActivity extends ActionBarActivity {
 
     // Update DialogData
     protected void onPrepareDialog(int id, Dialog dialog) {
-        // �������� ������ � �������� ������ �������
         AlertDialog aDialog = (AlertDialog) dialog;
         //ListAdapter lAdapter = aDialog.getListView().getAdapter();
 
@@ -439,7 +376,7 @@ public class MainActivity extends ActionBarActivity {
                     aDialog.getButton(Dialog.BUTTON_NEGATIVE).setEnabled(false);
                 } else {
                     try {
-                        dbHelper = new DBHelper(this);
+                        DBHelper dbHelper = new DBHelper(this);
                         e1.setText(dbHelper.getName(seagullId));
                         e2.setText(dbHelper.getUSSD(seagullId));
                         e3.setText(dbHelper.getOrder(seagullId) + "");
@@ -450,22 +387,12 @@ public class MainActivity extends ActionBarActivity {
                     }
                 }
 
-
-                // �������� ����������� ��������������
-                //if (lAdapter instanceof BaseAdapter) {
-                // �������������� � ����� ������-����������� � ����� ������
-                //BaseAdapter bAdapter = (BaseAdapter) lAdapter;
-                //bAdapter.notifyDataSetChanged();
-
-                //}
                 break;
 
             default:
                 break;
         }
     }
-
-    ;
 
     // Dialogs
     @Override
@@ -478,7 +405,6 @@ public class MainActivity extends ActionBarActivity {
         }
         return null;
     }
-
 
     // Menu
     @Override
@@ -507,7 +433,7 @@ public class MainActivity extends ActionBarActivity {
                 break;
             case IDM_SEAGULL_FROM_CONTACTS:
 
-                dbHelper = new DBHelper(MainActivity.this);
+                DBHelper dbHelper = new DBHelper(MainActivity.this);
                 String op = dbHelper.getSettingsParamTxt("op");
                 dbHelper.close();
                 if (op.equalsIgnoreCase("")) {
@@ -549,19 +475,17 @@ public class MainActivity extends ActionBarActivity {
                                             ContactsContract.CommonDataKinds.Phone.CONTACT_ID},
                                     null, null, null);
 
+
                             if (c != null && c.moveToFirst()) {
                                 number = c.getString(0);
                                 number = number.replace("-", "").replace(" ", "").replace("(", "").replace(")", "");
                                 //type = c.getInt(1);
                                 name = c.getString(2);
 
-                                Log.d("chayka", "CONTACT_ID ---> " + c.getString(3));
-
-                                dbHelper = new DBHelper(MainActivity.this);
+                                DBHelper dbHelper = new DBHelper(MainActivity.this);
                                 String op_num = dbHelper.getSettingsParamTxt("op_num");
                                 String op_prefix = dbHelper.getSettingsParamTxt("op_prefix");
 
-                                // ���������� ������� ������ ��� ���������
                                 nrml_number = DBHelper.getNormalizedPhone(number, op_num);
 
                                 if (nrml_number.equalsIgnoreCase("")) {
@@ -569,26 +493,27 @@ public class MainActivity extends ActionBarActivity {
                                     toast.setGravity(Gravity.TOP, 0, 0);
                                     toast.show();
                                 } else {
-                                    dbHelper.InsertSeagull(name, op_prefix + nrml_number, "");
+                                    //Log.d("chayka", "Getting image for CONTACT_ID ---> " + c.getString(3));
+                                    byte[] bArray = null;
+                                    Bitmap bm = getPhotoOfContact(c.getLong(3));
+                                    if (bm != null) {
+                                        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                                        int imgSize = settings.getInt("prefImgSize", 512);
+                                        bm = Bitmap.createScaledBitmap(bm, imgSize, imgSize, false);
+                                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                                        bm.compress(Bitmap.CompressFormat.JPEG, 80, bos);
+                                        bArray = bos.toByteArray();
+                                    }
+                                    dbHelper.InsertSeagull(name, op_prefix + nrml_number, "", bArray);
+                                    dbHelper.close();
                                     refreshGrid();
                                 }
-                                dbHelper.close();
-
-                                refillMainScreen();
-
-                                // update
-                            /*dbHelper = new DBHelper(MainActivity.this);
-                            SQLiteDatabase db = dbHelper.getWritableDatabase();
-	    	        		ContentValues cv = new ContentValues();
-	    	                cv.put("contact", name);
-	    	                db.update("contact", cv, "_id = ?", new String[] { "1" });
-	    	                cv.clear();
-	    	                cv.put("phone", number);
-	    	                db.update("phone", cv, "_id = ?", new String[] { "1" });
-	    	                dbHelper.close();*/
 
                             }
+                        } catch (Exception e) {
+                            Log.d("chayka", "!!! -----> " + e.getMessage());
                         } finally {
+
                             if (c != null) {
                                 c.close();
                             }
@@ -596,170 +521,9 @@ public class MainActivity extends ActionBarActivity {
                     }
                 }
 
-
                 break;
         }
     }
-
-
-    protected void refillMainScreen() {
-/*
-        LinearLayout layout = (LinearLayout) findViewById(R.id.linearLayoutSum);
-
-        if (((LinearLayout) layout).getChildCount() > 0)
-            ((LinearLayout) layout).removeAllViews();
-
-        Resources r = getApplicationContext().getResources();
-
-        // ����� �������� ��� ������ ������ (������������ dp)
-        int pixels_b = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                getApplicationContext().getResources().getInteger(R.integer.seagull_item_height),
-                r.getDisplayMetrics()
-        );
-
-        // ����� �������� ��� margin'�� (������������ dp)
-        int pixels_m = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                4,
-                r.getDisplayMetrics()
-        );
-
-        try {
-
-            dbHelper = new DBHelper(this);
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-            Cursor mCur = db.rawQuery("select id_, name, ussd, color, order_by FROM seagulls ORDER BY order_by, name, id_", null);
-
-            phones = new String[mCur.getCount()];
-            ids = new int[mCur.getCount()];
-
-            int i = 0;
-            if (mCur.moveToFirst()) {
-
-                int idColIndex = mCur.getColumnIndex("id_");
-                int nameColIndex = mCur.getColumnIndex("name");
-                int ussdColIndex = mCur.getColumnIndex("ussd");
-                int colorColIndex = mCur.getColumnIndex("color");
-
-                do {
-                    initOneSeagull(layout,
-                            i,
-                            pixels_b,
-                            pixels_m,
-                            mCur.getString(nameColIndex),
-                            mCur.getString(ussdColIndex),
-                            mCur.getInt(idColIndex),
-                            mCur.getInt(colorColIndex));
-
-                    i++;
-                } while (mCur.moveToNext());
-            }
-
-            mCur.close();
-            dbHelper.close();
-
-        } catch (Exception e) {
-            MainActivity.this.ShowToastT("EXCEPTION! " + e.toString() + " Message:" + e.getMessage(), Toast.LENGTH_LONG);
-        }*/
-    }
-
-    private void adjustGridView() {
-        gvMain.setNumColumns(4);
-    }
-
-
-    @TargetApi(14)
-    public Uri getPhotoUri(int contactId) {
-        try {
-            Cursor cur = MainActivity.this.getContentResolver().query(
-                    ContactsContract.Data.CONTENT_URI,
-                    null,
-                    ContactsContract.Data.CONTACT_ID + "=" + contactId + " AND "
-                            + ContactsContract.Data.MIMETYPE + "='"
-                            + ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE + "'", null,
-                    null);
-            if (cur != null) {
-                if (!cur.moveToFirst()) {
-                    return null; // no photo
-                }
-            } else {
-                return null; // error in cursor process
-            }
-
-            cur.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        Uri person = ContentUris.withAppendedId(ContactsContract.DisplayPhoto.CONTENT_MAX_DIMENSIONS_URI, contactId);
-        return Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
-    }
-
-    protected void initOneSeagull(LinearLayout layout, int i, int pixels_b, int pixels_m, String name, String ussd, int id, int color) {
-
-        LinearLayout row = new LinearLayout(this);
-        row.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-
-        Button btnTag = new Button(this);
-
-        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, pixels_b);
-
-        params.setMargins(-pixels_m, -pixels_m, -pixels_m, -pixels_m);
-
-        btnTag.setLayoutParams(params);
-        btnTag.setText(name);
-        btnTag.setId(i);
-        btnTag.setBackgroundColor(color);
-/*
-        Uri uri = getPhotoUri(608);
-        try {
-            btnTag.setGravity(Gravity.BOTTOM);
-            btnTag.setTextColor(Color.WHITE);
-            InputStream is = MainActivity.this.getContentResolver().openInputStream(uri);
-            btnTag.setBackgroundDrawable(Drawable.createFromStream(is, uri.toString()));
-        } catch(Exception e){}
-*/
-
-        phones[i] = ussd;
-        ids[i] = id;
-
-        btnTag.setOnLongClickListener(new View.OnLongClickListener() {
-            public boolean onLongClick(View v) {
-                seagullId = ids[v.getId()];
-                showDialog(SEAGULL_PROPS_DIALOG_ID);
-                return true;
-            }
-        });
-
-        btnTag.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                try {
-                    String cToSend = "tel:" + phones[v.getId()].replace("#", Uri.encode("#"));
-                    startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse(cToSend)), 1);
-
-                    // This works too
-                    //Intent intent = new Intent(Intent.ACTION_CALL).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);;
-                    //intent.setData(Uri.parse(cToSend));
-                    //getApplicationContext().startActivity(intent);
-                } catch (Exception e) {
-                    MainActivity.this.ShowToastT("EXCEPTION! " + e.toString() + " Message:" + e.getMessage(), Toast.LENGTH_LONG);
-                }
-
-            }
-
-        });
-
-        row.addView(btnTag);
-        layout.addView(row);
-    }
-
 
     protected void ManageAccounts() {
 
@@ -774,7 +538,6 @@ public class MainActivity extends ActionBarActivity {
             } else {
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
-
             }
 
         } catch (Exception e) {
@@ -782,7 +545,6 @@ public class MainActivity extends ActionBarActivity {
         }
 
     }
-
 
     // ------------------------------------------------------------------------------------------
 
@@ -818,14 +580,10 @@ public class MainActivity extends ActionBarActivity {
         // Dialog background is DIFFERENT in Android 2.1 and Android 2.3
         // That's why we use gray color everywhere for Android < 3.0
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-
             TextView tv1 = (TextView) layout.findViewById(R.id.textView1);
             TextView tv2 = (TextView) layout.findViewById(R.id.textView2);
-
-
             tv1.setTextColor(Color.parseColor("#9E9E9E"));
             tv2.setTextColor(Color.parseColor("#9E9E9E"));
-
         }
     }
 

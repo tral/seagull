@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<changelog>
+    <release version="2.0.2" versioncode="31">
+        <change>Теперь у «Чаек» отображаются фотографии. В меню нажмите «Добавить чайку из контакта» и выберите контакт с фото.</change>
+    </release>
+</changelog>
