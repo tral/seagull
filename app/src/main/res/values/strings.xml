@@ -2,14 +2,17 @@
 <resources>
 
     <string name="app_name">Чайка</string>
-    <string name="version_name">2.0.2</string>
+    <string name="version_name">2.0.3</string>
 
     <string name="seagull_name">Отображаемое имя чайки</string>
-    <string name="seagull_ussd">USSD-запрос</string>
+    <string name="seagull_ussd">USSD-запрос или номер для набора</string>
     <string name="seagull_order">Порядок</string>
 
     <string name="menu_item_seagull_from_contacts">Добавить чайку из контакта</string>
-    <string name="menu_item_settings">Добавить чайку вручную</string>
+    <string name="menu_item_add_call">Добавить вызов из контакта</string>
+    <string name="menu_item_settings">Добавить вручную</string>
+    <string name="menu_item_add">Добавить</string>
+
 
     <string name="menu_item_help">Помощь</string>
     <string name="menu_item_rate">Оценить приложение</string>
@@ -85,5 +88,10 @@
     <string name="donation_already_purchased">Вы уже сделали это пожертвование! Спасибо кстати!</string>
     <string name="donation_restore_purchases">Восстановить покупки</string>
     <string name="donation_billing_not_ready">Ваша биллинговая система не подключена!</string>
+
+    <string name="changelog_full_title">История изменений</string>
+    <string name="changelog_title">Что нового</string>
+    <string name="changelog_ok_button">OK</string>
+    <string name="changelog_show_full">Еще…</string>
 
 </resources>

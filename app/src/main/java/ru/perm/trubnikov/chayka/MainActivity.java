@@ -26,6 +26,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,10 +46,8 @@ import de.cketti.library.changelog.ChangeLog;
 public class MainActivity extends ActionBarActivity {
 
     // Menu
-    public static final int IDM_SEAGULL_PROPS = 101;
     public static final int IDM_HELP = 102;
     public static final int IDM_SEL_OP = 103;
-    public static final int IDM_SEAGULL_FROM_CONTACTS = 104;
     public static final int IDM_RATE = 105;
     public static final int IDM_DONATE = 106;
 
@@ -59,6 +58,7 @@ public class MainActivity extends ActionBarActivity {
     // Globals
     private int seagullId;
     GridView gvMain;
+    boolean addingSeagullFlag = true;
 
     // ------------------------------------------------------------------------------------------
 
@@ -135,20 +135,22 @@ public class MainActivity extends ActionBarActivity {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             Cursor gridCursor = getGridViewCursor(db);
 
-            String[] cols = new String[]{"name", "_id"};
-            int[] views = new int[]{R.id.tvText, R.id.Imageview};
+            String[] cols = new String[]{"name", "_id", "ussd"};
+            int[] views = new int[]{R.id.tvText, R.id.Imageview, R.id.SmallImageview};
 
             SimpleCursorAdapter gridAdapter = new SimpleCursorAdapter(this, R.layout.item, gridCursor, cols, views, 1);
 
             gridAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
                 @Override
                 public boolean setViewValue(View view, Cursor cursor, int column) {
-                   /* if (column == cursor.getColumnIndex("name")) {
-                        TextView tv = (TextView) view;
-                        String Str = cursor.getString(cursor.getColumnIndex("name"));
-                        tv.setText(Str + " !!! ");
+
+                    if (column == cursor.getColumnIndex("ussd")) {
+                        final ImageView sv = (ImageView) view;
+                        String lUssd = cursor.getString(cursor.getColumnIndex("ussd"));
+                        sv.setImageResource((lUssd.contains("*") || lUssd.contains("#")) ? R.drawable.empty : R.drawable.ic_call_white_24dp);
                         return true;
-                    }*/
+                    }
+
                     if (column == cursor.getColumnIndex("_id")) {
 
                         final ImageView tv = (ImageView) view;
@@ -195,7 +197,7 @@ public class MainActivity extends ActionBarActivity {
 
                 SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 SharedPreferences.Editor editor = settings.edit();
-                editor.putInt("prefImgSize", iv.getMeasuredHeight());
+                editor.putInt("prefImgSize", iv.getMeasuredWidth());
                 editor.commit();
 
                 //Log.d("chayka", "!!! cursor.isFirst() !!!");
@@ -268,8 +270,10 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        menu.add(Menu.NONE, IDM_SEAGULL_FROM_CONTACTS, Menu.NONE, R.string.menu_item_seagull_from_contacts);
-        menu.add(Menu.NONE, IDM_SEAGULL_PROPS, Menu.NONE, R.string.menu_item_settings);
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+
         menu.add(Menu.NONE, IDM_SEL_OP, Menu.NONE, R.string.menu_sel_op);
         menu.add(Menu.NONE, IDM_HELP, Menu.NONE, R.string.menu_item_help);
         menu.add(Menu.NONE, IDM_RATE, Menu.NONE, R.string.menu_item_rate);
@@ -406,15 +410,30 @@ public class MainActivity extends ActionBarActivity {
         return null;
     }
 
+    public void ShowManualAddDialog() {
+        seagullId = -1;
+        showDialog(SEAGULL_PROPS_DIALOG_ID);
+    }
+
+    public void ShowAddFromContactsDialog(boolean addingSeagull) {
+        addingSeagullFlag = addingSeagull;
+        DBHelper dbHelper = new DBHelper(MainActivity.this);
+        String op = dbHelper.getSettingsParamTxt("op");
+        dbHelper.close();
+        if (op.equalsIgnoreCase("")) {
+            MainActivity.this.ShowToastT(getString(R.string.err_empty_op), Toast.LENGTH_LONG);
+        } else {
+            Intent intent1 = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+            intent1.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
+            startActivityForResult(intent1, 1001);
+        }
+    }
+
     // Menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case IDM_SEAGULL_PROPS:
-                seagullId = -1;
-                showDialog(SEAGULL_PROPS_DIALOG_ID);
-                break;
             case IDM_RATE:
                 Intent int_rate = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getApplicationContext().getPackageName()));
                 int_rate.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -431,18 +450,9 @@ public class MainActivity extends ActionBarActivity {
                 Intent donate_intent = new Intent(MainActivity.this, DonateActivity.class);
                 startActivity(donate_intent);
                 break;
-            case IDM_SEAGULL_FROM_CONTACTS:
-
-                DBHelper dbHelper = new DBHelper(MainActivity.this);
-                String op = dbHelper.getSettingsParamTxt("op");
-                dbHelper.close();
-                if (op.equalsIgnoreCase("")) {
-                    MainActivity.this.ShowToastT(getString(R.string.err_empty_op), Toast.LENGTH_LONG);
-                } else {
-                    Intent intent1 = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-                    intent1.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
-                    startActivityForResult(intent1, 1001);
-                }
+            case R.id.action_add_entry:
+                AddDialog dlg = new AddDialog(MainActivity.this);
+                dlg.show();
                 break;
             default:
                 return false;
@@ -499,12 +509,13 @@ public class MainActivity extends ActionBarActivity {
                                     if (bm != null) {
                                         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                                         int imgSize = settings.getInt("prefImgSize", 512);
-                                        bm = Bitmap.createScaledBitmap(bm, imgSize, imgSize, false);
+                                        bm = Bitmap.createScaledBitmap(bm, imgSize, imgSize, false); // We store square image, ImageView scales it to Golden Ratio
                                         ByteArrayOutputStream bos = new ByteArrayOutputStream();
                                         bm.compress(Bitmap.CompressFormat.JPEG, 80, bos);
                                         bArray = bos.toByteArray();
+                                        Log.d("chayka", "!!! img size -----> " + imgSize + " * " + imgSize);
                                     }
-                                    dbHelper.InsertSeagull(name, op_prefix + nrml_number, "", bArray);
+                                    dbHelper.InsertSeagull(name, (addingSeagullFlag) ? op_prefix + nrml_number : number, "", bArray);
                                     dbHelper.close();
                                     refreshGrid();
                                 }

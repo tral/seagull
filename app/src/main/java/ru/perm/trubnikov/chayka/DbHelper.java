@@ -194,6 +194,10 @@ class DBHelper extends SQLiteOpenHelper {
         return Color.rgb(rc, g, b);
     }
 
+    public static int getRatio43Height(int width) {
+        //return (int)Math.round(2*width/(Math.sqrt(5) + 1));
+        return Math.round(3*width/4);
+    }
 
     public static String getNormalizedPhone(String phone, String op_num) {
 
