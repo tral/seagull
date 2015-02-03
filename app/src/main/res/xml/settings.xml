@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+       <PreferenceCategory android:title="@string/pref_common">
+
+        <Preference
+            android:key="prefOp"
+            android:summary="@string/menu_sel_op_summary"
+            android:title="@string/menu_sel_op" />
+
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/Clrs"
+            android:entryValues="@array/ClrsValues"
+            android:key="prefClrs"
+            android:summary="@string/pref_clrs_summary"
+            android:title="@string/pref_clrs" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_about">
+
+        <Preference
+            android:key="prefAbout"
+            android:summary="@string/pref_about_summary"
+            android:title="@string/app_name" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

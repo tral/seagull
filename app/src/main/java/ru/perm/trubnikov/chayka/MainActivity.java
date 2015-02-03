@@ -47,9 +47,12 @@ public class MainActivity extends ActionBarActivity {
 
     // Menu
     public static final int IDM_HELP = 102;
-    public static final int IDM_SEL_OP = 103;
+    public static final int IDM_SETTINGS = 103;
     public static final int IDM_RATE = 105;
     public static final int IDM_DONATE = 106;
+
+    private static final int ACT_RESULT_SETTINGS = 1002;
+    private static final int ACT_RESULT_CONTACT = 1001;
 
     // Dialogs
     private final static int SEAGULL_PROPS_DIALOG_ID = 1;
@@ -124,7 +127,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private Cursor getGridViewCursor(SQLiteDatabase db) {
-        return db.rawQuery("select id_ as _id , id_, name, ussd, color, order_by, image FROM seagulls ORDER BY order_by, name, id_", null);
+        return db.rawQuery("select id_ as _id, name, ussd, color, order_by, image FROM seagulls ORDER BY order_by, name, id_", null);
     }
 
     protected void initMainScreen() {
@@ -147,7 +150,19 @@ public class MainActivity extends ActionBarActivity {
                     if (column == cursor.getColumnIndex("ussd")) {
                         final ImageView sv = (ImageView) view;
                         String lUssd = cursor.getString(cursor.getColumnIndex("ussd"));
-                        sv.setImageResource((lUssd.contains("*") || lUssd.contains("#")) ? R.drawable.empty : R.drawable.ic_call_white_24dp);
+
+                        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                        int Img = R.drawable.ic_call_white;
+                        switch (sharedPrefs.getString("prefClrs", "1")) {
+                            case "2": Img = R.drawable.ic_call_grey;
+                                      break;
+                            case "3": Img = R.drawable.ic_call_black;
+                                      break;
+                            case "4": Img = R.drawable.ic_call_blue;
+                                      break;
+                        }
+
+                        sv.setImageResource((lUssd.contains("*") || lUssd.contains("#")) ? R.drawable.empty : Img);
                         return true;
                     }
 
@@ -274,7 +289,7 @@ public class MainActivity extends ActionBarActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
 
-        menu.add(Menu.NONE, IDM_SEL_OP, Menu.NONE, R.string.menu_sel_op);
+        menu.add(Menu.NONE, IDM_SETTINGS, Menu.NONE, R.string.menu_sett_item);
         menu.add(Menu.NONE, IDM_HELP, Menu.NONE, R.string.menu_item_help);
         menu.add(Menu.NONE, IDM_RATE, Menu.NONE, R.string.menu_item_rate);
         menu.add(Menu.NONE, IDM_DONATE, Menu.NONE, R.string.menu_item_donate);
@@ -425,15 +440,25 @@ public class MainActivity extends ActionBarActivity {
         } else {
             Intent intent1 = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
             intent1.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
-            startActivityForResult(intent1, 1001);
+            startActivityForResult(intent1, ACT_RESULT_CONTACT);
         }
     }
+
 
     // Menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
+            case IDM_SETTINGS:
+                Intent sett_intent;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                    sett_intent = new Intent(this, PreferencesActivity.class);
+                } else {
+                    sett_intent = new Intent(this, PreferencesLegacyActivity.class);
+                }
+                startActivityForResult(sett_intent, ACT_RESULT_SETTINGS);
+                break;
             case IDM_RATE:
                 Intent int_rate = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getApplicationContext().getPackageName()));
                 int_rate.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -441,10 +466,6 @@ public class MainActivity extends ActionBarActivity {
                 break;
             case IDM_HELP:
                 showDialog(HELP_DIALOG_ID);
-                break;
-            case IDM_SEL_OP:
-                Intent intent = new Intent(MainActivity.this, SelectOperatorActivity.class);
-                startActivity(intent);
                 break;
             case IDM_DONATE:
                 Intent donate_intent = new Intent(MainActivity.this, DonateActivity.class);
@@ -466,7 +487,10 @@ public class MainActivity extends ActionBarActivity {
         super.onActivityResult(reqCode, resultCode, data);
 
         switch (reqCode) {
-            case (1001):
+            case ACT_RESULT_SETTINGS:
+                refreshGrid();
+                break;
+            case (ACT_RESULT_CONTACT):
                 String number = "";
                 String nrml_number = "";
                 String name = "";

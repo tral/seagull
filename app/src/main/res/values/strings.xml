@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Чайка</string>
-    <string name="version_name">2.0.3</string>
+    <string name="version_name">2.0.4</string>
 
     <string name="seagull_name">Отображаемое имя чайки</string>
     <string name="seagull_ussd">USSD-запрос или номер для набора</string>
@@ -17,6 +17,7 @@
     <string name="menu_item_help">Помощь</string>
     <string name="menu_item_rate">Оценить приложение</string>
     <string name="menu_sel_op">Выбрать оператора</string>
+    <string name="menu_sel_op_summary">Необходимо для посылки «Чаек»</string>
     <string name="err_empty_op">Не выбран оператор!</string>
 
     <string name="help_str">Программа для отправки специальных сообщений «жду звонка» (в народе - «чаек»).\nВсе крупные операторы РФ позволяют бесплатно отправлять подобные сообщения, например, чтобы отправить «чайку» с сим-карты Билайн, нужно набрать USSD-запрос вида *144*номер абонента# и нажать кнопку вызова.\n\nЧтобы отредактировать или удалить «чайку», используйте долгое нажатие на нее.\n\n<b>Программа добавляет кнопку отправки чаек к контактам в телефоне, у которых есть хотя бы один телефонный номер.</b>\n\nВместо USSD-запроса «чайки» можно ввести любой другой USSD-запрос (например, запрос баланса) или телефонный номер (в этом случае будет выполнен звонок абоненту по тарифу оператора).</string>
@@ -93,5 +94,12 @@
     <string name="changelog_title">Что нового</string>
     <string name="changelog_ok_button">OK</string>
     <string name="changelog_show_full">Еще…</string>
+
+    <string name="menu_sett_item">Настройки</string>
+    <string name="pref_about">О приложении</string>
+    <string name="pref_about_summary">Версия</string>
+    <string name="pref_common">Основные</string>
+    <string name="pref_clrs">Цвет значка трубки</string>
+    <string name="pref_clrs_summary">Выберите цвет значка телефонной трубки на плитках</string>
 
 </resources>

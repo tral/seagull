@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ru.perm.trubnikov.chayka"
     android:installLocation="auto"
-    android:versionCode="32"
+    android:versionCode="33"
     android:versionName="@string/version_name">
 
     <uses-sdk
@@ -63,7 +63,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.PICK" />
                 <category android:name="android.intent.category.DEFAULT" />
-
             </intent-filter>
         </activity>
         <activity android:name="ru.perm.trubnikov.chayka.DonateActivity">
@@ -71,6 +70,8 @@
                 <category android:name="android.intent.category.CATEGORY_ALTERNATE" />
             </intent-filter>
         </activity>
+        <activity android:name=".PreferencesLegacyActivity"></activity>
+        <activity android:name=".PreferencesActivity"></activity>
 
         <service
             android:name="ru.perm.trubnikov.chayka.AccountAuthenticatorService"
