@@ -151,18 +151,21 @@ public class MainActivity extends ActionBarActivity {
                         final ImageView sv = (ImageView) view;
                         String lUssd = cursor.getString(cursor.getColumnIndex("ussd"));
 
-                        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-                        int Img = R.drawable.ic_call_white;
-                        switch (sharedPrefs.getString("prefClrs", "1")) {
-                            case "2": Img = R.drawable.ic_call_grey;
-                                      break;
-                            case "3": Img = R.drawable.ic_call_black;
-                                      break;
-                            case "4": Img = R.drawable.ic_call_blue;
-                                      break;
+                        if (lUssd.contains("*") || lUssd.contains("#")) {
+                            sv.setImageResource(R.drawable.empty);
+                        } else {
+                            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                            int Img = R.drawable.ic_call_white;
+                            switch (sharedPrefs.getString("prefClrs", "1")) {
+                                case "2": Img = R.drawable.ic_call_grey;
+                                    break;
+                                case "3": Img = R.drawable.ic_call_black;
+                                    break;
+                                case "4": Img = R.drawable.ic_call_blue;
+                                    break;
+                            }
+                            sv.setImageResource(Img);
                         }
-
-                        sv.setImageResource((lUssd.contains("*") || lUssd.contains("#")) ? R.drawable.empty : Img);
                         return true;
                     }
 
@@ -490,7 +493,7 @@ public class MainActivity extends ActionBarActivity {
             case ACT_RESULT_SETTINGS:
                 refreshGrid();
                 break;
-            case (ACT_RESULT_CONTACT):
+            case ACT_RESULT_CONTACT:
                 String number = "";
                 String nrml_number = "";
                 String name = "";
