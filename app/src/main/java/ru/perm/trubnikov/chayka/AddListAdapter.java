@@ -15,8 +15,8 @@ public class AddListAdapter extends ArrayAdapter<String> {
     private final String[] titles;
     private final Drawable[] icons;
 
-    public AddListAdapter(Context context, String[] product_ids, String[] titles,  Drawable[] icons) {
-        super(context, R.layout.choose_fav_list_item, product_ids); // !!!
+    public AddListAdapter(Context context, String[] titles,  Drawable[] icons) {
+        super(context, R.layout.choose_fav_list_item, titles); // !!!
         this.context = context;
         this.titles = titles;
         this.icons = icons;

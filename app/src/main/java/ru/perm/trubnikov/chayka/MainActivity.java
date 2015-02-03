@@ -509,11 +509,11 @@ public class MainActivity extends ActionBarActivity {
                                     if (bm != null) {
                                         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                                         int imgSize = settings.getInt("prefImgSize", 512);
-                                        bm = Bitmap.createScaledBitmap(bm, imgSize, imgSize, false); // We store square image, ImageView scales it to Golden Ratio
+                                        bm = Bitmap.createScaledBitmap(bm, imgSize, imgSize, false); // We store square image, ImageView scales it to needed Ratio
                                         ByteArrayOutputStream bos = new ByteArrayOutputStream();
                                         bm.compress(Bitmap.CompressFormat.JPEG, 80, bos);
                                         bArray = bos.toByteArray();
-                                        Log.d("chayka", "!!! img size -----> " + imgSize + " * " + imgSize);
+                                        //Log.d("chayka", "!!! img size -----> " + imgSize + " * " + imgSize);
                                     }
                                     dbHelper.InsertSeagull(name, (addingSeagullFlag) ? op_prefix + nrml_number : number, "", bArray);
                                     dbHelper.close();

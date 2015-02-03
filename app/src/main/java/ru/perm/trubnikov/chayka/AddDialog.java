@@ -7,18 +7,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 
-public class AddDialog extends Dialog implements
-        android.view.View.OnClickListener {
+public class AddDialog extends Dialog {
 
     public MainActivity activity;
-    public Dialog d;
-    public Button yes, no;
-
-    String[] names = {"Иван", "Марья", "Петр"};
-
 
     public AddDialog(Activity a) {
         super(a);
@@ -29,22 +22,11 @@ public class AddDialog extends Dialog implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //setTitle(R.string.menu_item_add);
         setContentView(R.layout.add_dialog);
-      /*  yes = (Button) findViewById(R.id.btn_yes);
-        no = (Button) findViewById(R.id.btn_no);
-        yes.setOnClickListener(this);
-        no.setOnClickListener(this);*/
-
-
-       /* ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity.getApplicationContext(),
-                android.R.layout.simple_list_item_1, names);
-*/
 
         ListView lvAdd = (ListView) findViewById(R.id.lvAdd);
         AddListAdapter adapter = new AddListAdapter(
                 activity.getApplicationContext(),
-                new String[]{"1", "2", "3"},
                 new String[]{activity.getResources().getString(R.string.menu_item_seagull_from_contacts),
                         activity.getResources().getString(R.string.menu_item_add_call),
                         activity.getResources().getString(R.string.menu_item_settings)},
@@ -54,18 +36,6 @@ public class AddDialog extends Dialog implements
         );
 
         lvAdd.setAdapter(adapter);
-
-     /*   lvAdd.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-                                    long arg3) {
-                // TODO Auto-generated method stub
-                Log.d("chayka", " arg2 " + arg2 + " arg3 " + arg3);
-
-            }
-
-        });*/
 
         lvAdd.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -86,27 +56,9 @@ public class AddDialog extends Dialog implements
                         activity.ShowManualAddDialog();
                         break;
                 }
-
                 // Log.d("chayka", " arg2 " + position + " arg3 " + id);
-
             }
         });
-
-
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-           /* case R.id.btn_yes:
-                c.finish();
-                break;
-            case R.id.btn_no:
-                dismiss();
-                break;*/
-            default:
-                break;
-        }
-        dismiss();
-    }
 }
