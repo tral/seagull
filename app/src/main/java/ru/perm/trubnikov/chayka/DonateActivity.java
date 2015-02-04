@@ -161,7 +161,7 @@ public class DonateActivity extends ActionBarActivity {
                 }
 
             } catch (Exception e) {
-                Log.d("gps2sms", "---> Cannot load priceText from Google Play ");
+                Log.d("chayka", "---> Cannot load priceText from Google Play ");
             }
             return null;
         }
@@ -169,9 +169,12 @@ public class DonateActivity extends ActionBarActivity {
         @Override
         protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);
-
-            DonateListFragment fragment = (DonateListFragment) getSupportFragmentManager().findFragmentById(R.id.frgmCont);
-            fragment.refreshListItemsDescs(values[0], values[1], values[2], values[3], values[4]);
+            try {
+                DonateListFragment fragment = (DonateListFragment) getSupportFragmentManager().findFragmentById(R.id.frgmCont);
+                fragment.refreshListItemsDescs(values[0], values[1], values[2], values[3], values[4]);
+            } catch (Exception e) {
+                Log.d("chayka", "---> Cannot set prices (onProgressUpdate)");
+            }
         }
 
     }
@@ -196,7 +199,7 @@ public class DonateActivity extends ActionBarActivity {
                 return res;
 
             } catch (Exception e) {
-                Log.d("gps2sms", "---> failed to retrieve purchases statuses from Google Play");
+                Log.d("chayka", "---> failed to retrieve purchases statuses from Google Play");
             }
             return null;
         }
@@ -204,20 +207,24 @@ public class DonateActivity extends ActionBarActivity {
         @Override
         protected void onPostExecute(WrapperStatuses result) {
             super.onPostExecute(result);
+            try {
+                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(DonateActivity.this);
+                SharedPreferences.Editor editor = settings.edit();
+                for (int i = 1; i <= 5; i++) {
+                    editor.putInt("prefDonate" + i, result.statuses[i - 1]);
+                }
+                editor.commit();
 
-            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(DonateActivity.this);
-            SharedPreferences.Editor editor = settings.edit();
-            for (int i = 1; i <= 5; i++) {
-                editor.putInt("prefDonate" + i, result.statuses[i - 1]);
+                DonateListFragment fragment = (DonateListFragment) getSupportFragmentManager().findFragmentById(R.id.frgmCont);
+                fragment.refreshListItemsStatus(settings.getInt("prefDonate1", 0),
+                        settings.getInt("prefDonate2", 0),
+                        settings.getInt("prefDonate3", 0),
+                        settings.getInt("prefDonate4", 0),
+                        settings.getInt("prefDonate5", 0));
+
+            } catch (Exception e) {
+                Log.d("gps2sms", "---> failed to refresh list (onPostExecute)");
             }
-            editor.commit();
-
-            DonateListFragment fragment = (DonateListFragment) getSupportFragmentManager().findFragmentById(R.id.frgmCont);
-            fragment.refreshListItemsStatus(settings.getInt("prefDonate1", 0),
-                    settings.getInt("prefDonate2", 0),
-                    settings.getInt("prefDonate3", 0),
-                    settings.getInt("prefDonate4", 0),
-                    settings.getInt("prefDonate5", 0));
         }
     }
 
