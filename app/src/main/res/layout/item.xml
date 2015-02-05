@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/zero_dp"
+    android:layout_marginLeft="@dimen/zero_dp"
+    android:layout_marginRight="@dimen/zero_dp"
+    android:layout_marginTop="@dimen/zero_dp"
+    android:paddingBottom="@dimen/zero_dp"
+    android:paddingLeft="@dimen/zero_dp"
+    android:paddingRight="@dimen/zero_dp"
+    android:paddingTop="@dimen/zero_dp">
 
     <ru.perm.trubnikov.chayka.Ratio43ImageView
         android:id="@+id/Imageview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        />
+        android:scaleType="centerCrop" />
 
     <TextView
         android:id="@+id/tvText"
@@ -16,30 +23,20 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/Imageview"
         android:layout_alignLeft="@+id/Imageview"
-        android:layout_marginLeft="8dp"
         android:layout_marginBottom="6dp"
+        android:layout_marginLeft="8dp"
+        android:text="TEST TEST TEST"
         android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        android:text="TEST TEST TEST"/>
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/SmallImageview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/ic_call_white"
         android:layout_alignLeft="@+id/Imageview"
         android:layout_alignTop="@+id/Imageview"
-        />
-    <!--
-    <TextView
-        android:id="@+id/tvText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:minHeight="40dp"
-        android:text=""
-        android:textSize="20sp"></TextView>
-        -->
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ic_call_white" />
+
 </RelativeLayout>
