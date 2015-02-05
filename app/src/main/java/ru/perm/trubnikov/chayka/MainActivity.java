@@ -6,7 +6,6 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentUris;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,9 +22,7 @@ import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -67,16 +64,6 @@ public class MainActivity extends ActionBarActivity {
     boolean addingSeagullFlag = true;
 
     // ------------------------------------------------------------------------------------------
-    public float convertDipToPixels(float dips)
-    {
-        return  (dips * getApplicationContext().getResources().getDisplayMetrics().density + 0.5f);
-    }
-
-    //!!!1 - 3px
-    public  float dipToPixels( float dipValue) {
-        DisplayMetrics metrics = getApplicationContext().getResources().getDisplayMetrics();
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,11 +157,14 @@ public class MainActivity extends ActionBarActivity {
                             SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
                             int Img = R.drawable.ic_call_white;
                             switch (sharedPrefs.getString("prefClrs", "1")) {
-                                case "2": Img = R.drawable.ic_call_grey;
+                                case "2":
+                                    Img = R.drawable.ic_call_grey;
                                     break;
-                                case "3": Img = R.drawable.ic_call_black;
+                                case "3":
+                                    Img = R.drawable.ic_call_black;
                                     break;
-                                case "4": Img = R.drawable.ic_call_blue;
+                                case "4":
+                                    Img = R.drawable.ic_call_blue;
                                     break;
                             }
                             sv.setImageResource(Img);
