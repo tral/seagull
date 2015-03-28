@@ -48,6 +48,9 @@ public class ContactsManager  {
 
 		try {
 			context.getContentResolver().applyBatch(ContactsContract.AUTHORITY, operationList);
+
+            context.getContentResolver().notifyChange(RawContacts.CONTENT_URI, null); // try to fix deletion of contacts after restart
+            context.getContentResolver().notifyChange(ContactsContract.Data.CONTENT_URI, null); // try to fix deletion of contacts after restart
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
