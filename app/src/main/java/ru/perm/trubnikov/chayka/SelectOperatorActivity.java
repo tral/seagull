@@ -50,6 +50,11 @@ public class SelectOperatorActivity extends ActionBarActivity {
                         op_num = "11_8";
                         op = getString(R.string.op4);
                         break;
+                    case R.id.radioButton24:
+                        op_prefix = "*118*";
+                        op_num = "11_8";
+                        op = getString(R.string.op24);
+                        break;
                     case R.id.radioButton5:
                         op_prefix = "*118*";
                         op_num = "10_9";
@@ -206,6 +211,8 @@ public class SelectOperatorActivity extends ActionBarActivity {
         rb22.setOnClickListener(radioListener);
         RadioButton rb23 = (RadioButton) findViewById(R.id.radioButton23);
         rb23.setOnClickListener(radioListener);
+        RadioButton rb24 = (RadioButton) findViewById(R.id.radioButton24);
+        rb24.setOnClickListener(radioListener);
 
         dbHelper = new DBHelper(SelectOperatorActivity.this);
         String op = dbHelper.getSettingsParamTxt("op");
@@ -257,6 +264,8 @@ public class SelectOperatorActivity extends ActionBarActivity {
             rb22.setChecked(true);
         if (op.equalsIgnoreCase(getString(R.string.op23)))
             rb23.setChecked(true);
+        if (op.equalsIgnoreCase(getString(R.string.op24)))
+            rb24.setChecked(true);
 
     }
 

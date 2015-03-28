@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
     <release
+        version="2.0.5"
+        versioncode="34">
+        <change>Добавлен оператор «Ростелеком (ЕТК)» («чайка» для него: *118*номер#)
+        </change>
+    </release>
+    <release
         version="2.0.4"
         versioncode="33">
         <change>Появился раздел Настройки, в котором теперь можно задать цвет значка телефонной
