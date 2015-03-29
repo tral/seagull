@@ -71,6 +71,16 @@
                 <category android:name="android.intent.category.CATEGORY_ALTERNATE" />
             </intent-filter>
         </activity>
+        <activity android:name="ru.perm.trubnikov.chayka.HelpActivity">
+            <intent-filter>
+                <category android:name="android.intent.category.CATEGORY_ALTERNATE" />
+            </intent-filter>
+        </activity>
+        <activity android:name="ru.perm.trubnikov.chayka.JournalActivity">
+            <intent-filter>
+                <category android:name="android.intent.category.CATEGORY_ALTERNATE" />
+            </intent-filter>
+        </activity>
         <activity android:name=".PreferencesActivity"></activity>
 
         <service

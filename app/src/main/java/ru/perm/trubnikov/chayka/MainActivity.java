@@ -1,5 +1,9 @@
 package ru.perm.trubnikov.chayka;
 
+/**
+ * @TODO Переделать Чайки и Журнал на фрагментах (дляя более плавной анимации при выборе этих пунктов в Drawer)
+ **/
+
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.TargetApi;
@@ -14,9 +18,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
@@ -41,23 +43,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mikepenz.google_material_typeface_library.GoogleMaterial;
-import com.mikepenz.iconics.typeface.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.model.DividerDrawerItem;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import de.cketti.library.changelog.ChangeLog;
+import utils.Utils;
 
 public class MainActivity extends ActionBarActivity {
 
     private static final int ACT_RESULT_CONTACT = 1001;
-    private static final int ACT_RESULT_SETTINGS = 1002;
 
     // Dialogs
     private final static int SEAGULL_PROPS_DIALOG_ID = 1;
@@ -96,88 +92,8 @@ public class MainActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        drawerResult = new Drawer()
-                .withActivity(this)
-                .withHeader(R.layout.drawer_header)
-                .withToolbar(toolbar)
-                .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.drawer_item_home).withIcon(GoogleMaterial.Icon.gmd_people).withIdentifier(1),
-                        new SecondaryDrawerItem().withName(R.string.drawer_item_journal).withIcon(GoogleMaterial.Icon.gmd_reorder).withIdentifier(2),
-                        new DividerDrawerItem(),
-                        new SecondaryDrawerItem().withName(R.string.drawer_item_settings).withIcon(GoogleMaterial.Icon.gmd_settings).withIdentifier(50),
-                        new SecondaryDrawerItem().withName(R.string.drawer_item_help).withIcon(FontAwesome.Icon.faw_question).withIdentifier(60),
-                        new DividerDrawerItem(),
-                        new SecondaryDrawerItem().withName(R.string.drawer_item_rate).withIdentifier(70),
-                        new SecondaryDrawerItem().withName(R.string.drawer_item_donate).withIdentifier(80)
-                )
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
-                        //check if the drawerItem is set.
-                        //there are different reasons for the drawerItem to be null
-                        //--> click on the header
-                        //--> click on the footer
-                        //those items don't contain a drawerItem
-
-                        if (drawerItem != null) {
-
-                            if (drawerItem.getIdentifier() == 1) {
-                                //Intent intent = new Intent(SimpleHeaderDrawerActivity.this, SimpleCompactHeaderDrawerActivity.class);
-                                //SimpleHeaderDrawerActivity.this.startActivity(intent);
-                            } else if (drawerItem.getIdentifier() == 60) {
-                                // Help
-                                showDialog(HELP_DIALOG_ID);
-                                drawerResult.setSelectionByIdentifier(1, false);
-                            } else if (drawerItem.getIdentifier() == 70) {
-                                // Rate App
-                                Intent int_rate = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getApplicationContext().getPackageName()));
-                                int_rate.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                getApplicationContext().startActivity(int_rate);
-                                drawerResult.setSelectionByIdentifier(1, false);
-                            } else if (drawerItem.getIdentifier() == 80) {
-                                // Donate
-                                Intent donate_intent = new Intent(MainActivity.this, DonateActivity.class);
-                                startActivity(donate_intent);
-                                drawerResult.setSelectionByIdentifier(1, false);
-                            } else if (drawerItem.getIdentifier() == 50) {
-                                // Settings
-                                Intent sett_intent;
-                                sett_intent = new Intent(MainActivity.this, PreferencesActivity.class);
-                                startActivityForResult(sett_intent, ACT_RESULT_SETTINGS);
-                                // Select "Home"
-                                drawerResult.setSelectionByIdentifier(1, false);
-                            }
-
-                        }
-                    }
-                })
-                .withOnDrawerListener(new Drawer.OnDrawerListener() {
-                    @Override
-                    public boolean equals(Object o) {
-                        return super.equals(o);
-                    }
-
-                    @Override
-                    public void onDrawerOpened(View drawerView) {
-                        //Toast.makeText(MainActivity.this, "onDrawerOpened", Toast.LENGTH_SHORT).show();
-                        hideSoftKeyboard(MainActivity.this);
-                    }
-
-                    @Override
-                    public void onDrawerClosed(View drawerView) {
-                        //Toast.makeText(MainActivity.this, "onDrawerClosed", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .build();
-
-        drawerResult.setSelectionByIdentifier(1, false);
-
-        //use the result object to get different views of the drawer or modify it's data
-        //some sample calls
-        //result.setSelectionByIdentifier(1);
-        //result.openDrawer();
-        // result.closeDrawer();
-        // result.isDrawerOpen();
+        drawerResult = Utils.createCommonDrawer(MainActivity.this, toolbar);
+        drawerResult.setSelectionByIdentifier(1, false); // Set proper selection
 
         // Grid
         gvMain = (GridView) findViewById(R.id.gvMain);
@@ -573,7 +489,7 @@ public class MainActivity extends ActionBarActivity {
         super.onActivityResult(reqCode, resultCode, data);
 
         switch (reqCode) {
-            case ACT_RESULT_SETTINGS:
+            case Utils.ACT_RESULT_SETTINGS:
                 refreshGrid();
                 break;
             case ACT_RESULT_CONTACT:

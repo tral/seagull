@@ -115,10 +115,6 @@ public class DonateActivity extends ActionBarActivity {
         }
     }
 
-    public void ShowBackButton() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
     /**
      * Restores purchases, refreshes purchases local cache
      */
