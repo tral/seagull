@@ -40,4 +40,13 @@ public class JournalActivity extends ActionBarActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        if (drawerResult.isDrawerOpen()) {
+            drawerResult.closeDrawer();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
 }

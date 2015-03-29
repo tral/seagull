@@ -70,25 +70,25 @@ public class Utils {
                         // Help
                         Intent help_intent = new Intent(activity, HelpActivity.class);
                         activity.startActivity(help_intent);
-                        drawerResult.setSelectionByIdentifier(1, false);
+                        setProperDrawerSelection(activity, drawerResult);
                     } else if (drawerItem.getIdentifier() == 70) {
                         // Rate App
                         Intent int_rate = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + activity.getApplicationContext().getPackageName()));
                         int_rate.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         activity.getApplicationContext().startActivity(int_rate);
-                        drawerResult.setSelectionByIdentifier(1, false);
+                        setProperDrawerSelection(activity, drawerResult);
                     } else if (drawerItem.getIdentifier() == 80) {
                         // Donate
                         Intent donate_intent = new Intent(activity, DonateActivity.class);
                         activity.startActivity(donate_intent);
-                        drawerResult.setSelectionByIdentifier(1, false);
+                        setProperDrawerSelection(activity, drawerResult);
                     } else if (drawerItem.getIdentifier() == 50) {
                         // Settings
                         Intent sett_intent;
                         sett_intent = new Intent(activity, PreferencesActivity.class);
                         activity.startActivityForResult(sett_intent, ACT_RESULT_SETTINGS);
                         // Select "Home"
-                        drawerResult.setSelectionByIdentifier(1, false);
+                        setProperDrawerSelection(activity, drawerResult);
                     }
 
                 }
@@ -96,6 +96,14 @@ public class Utils {
         };
     }
 
+
+    public static void setProperDrawerSelection(Activity activity, Drawer.Result drawerResult) {
+        if (activity.getLocalClassName().equalsIgnoreCase("MainActivity")) {
+            drawerResult.setSelectionByIdentifier(1, false);
+        } else if (activity.getLocalClassName().equalsIgnoreCase("JournalActivity")) {
+            drawerResult.setSelectionByIdentifier(2, false);
+        }
+    }
 
     public static Drawer.Result createCommonDrawer(final Activity activity, Toolbar toolbar) {
         Drawer.Result drawerResult = new Drawer()
