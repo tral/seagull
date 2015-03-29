@@ -115,7 +115,7 @@ public class Utils {
                         new SecondaryDrawerItem().withName(R.string.drawer_item_journal).withIcon(GoogleMaterial.Icon.gmd_reorder).withIdentifier(2),
                         new DividerDrawerItem(),
                         new SecondaryDrawerItem().withName(R.string.drawer_item_settings).withIcon(GoogleMaterial.Icon.gmd_settings).withIdentifier(50),
-                        new SecondaryDrawerItem().withName(R.string.drawer_item_help).withIcon(FontAwesome.Icon.faw_question).withIdentifier(60),
+                        new SecondaryDrawerItem().withName(R.string.drawer_item_help).withIcon(GoogleMaterial.Icon.gmd_help).withIdentifier(60),
                         new DividerDrawerItem(),
                         new SecondaryDrawerItem().withName(R.string.drawer_item_rate).withIdentifier(70),
                         new SecondaryDrawerItem().withName(R.string.drawer_item_donate).withIdentifier(80)
