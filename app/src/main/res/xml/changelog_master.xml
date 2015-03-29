@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
     <release
+        version="2.0.7"
+        versioncode="36">
+        <change>Добавлено боковое меню
+        </change>
+        <change>Добавлен «Журнал вызовов»
+        </change>
+        <change>Изменена цветовая гамма
+        </change>
+    </release>
+    <release
         version="2.0.5"
         versioncode="34">
         <change>Добавлен оператор «Ростелеком (ЕТК)» («чайка» для него: *118*номер#)
