@@ -24,11 +24,6 @@ import ru.perm.trubnikov.chayka.MainActivity;
 import ru.perm.trubnikov.chayka.PreferencesActivity;
 import ru.perm.trubnikov.chayka.R;
 
-/**
- * Created by A on 29.03.2015.
- */
-
-
 public class Utils {
 
     public static final int ACT_RESULT_SETTINGS = 1002;
@@ -37,7 +32,6 @@ public class Utils {
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
-
 
     public static Drawer.OnDrawerItemClickListener handlerOnClick(final Drawer.Result drawerResult, final Activity activity) {
         return new Drawer.OnDrawerItemClickListener() {

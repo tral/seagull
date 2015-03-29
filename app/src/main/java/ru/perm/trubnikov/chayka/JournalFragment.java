@@ -8,7 +8,6 @@ import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -18,15 +17,10 @@ import utils.Utils;
 
 public class JournalFragment extends ListFragment {
 
-    protected static final int ACT_RESULT_FAV = 1003;
-
     protected String[] mFirstLines;
     protected String[] mSecondLines;
     protected String[] mContactIds;
     protected String[] mTypes;
-
-    protected ImageButton btnFav;
-
 
     protected void rebuildList() {
 
@@ -34,14 +28,7 @@ public class JournalFragment extends ListFragment {
         ArrayList<String> mSecondLine = new ArrayList<String>();
         ArrayList<String> mContactId = new ArrayList<String>();
         ArrayList<String> mType = new ArrayList<String>();
-/*
-        Cursor cursor = getActivity().getContentResolver()
-                .query(Uri.parse("content://sms/inbox"),
-                        new String[]{"DISTINCT strftime('%d.%m.%Y %H:%M:%S', date/1000, 'unixepoch',  'localtime')", "address", "body"},
-                        // "thread_id","address","person","date","body","type"
-                        "body  like '%__._______,__._______' ", null,
-                        "date DESC, _id DESC LIMIT 500"); // LIMIT 5
-*/
+
         String[] strFields = {
                 android.provider.CallLog.Calls.NUMBER,
                 android.provider.CallLog.Calls.TYPE,
@@ -58,19 +45,12 @@ public class JournalFragment extends ListFragment {
                 strOrder
         );
 
-
-        int i = 0;
         if (cursor.moveToFirst()) {
-
             do {
-                // Имена контактов (и фото) показываем для 10-ти верхних СМС, т.к. алгоритм сопоставления номеров телефонов контактам найден только O(n^2)
-                //mFirstLine.add((i < 10 ? getContactName(getActivity().getApplicationContext(), cursor.getString(1)) : cursor.getString(1)));
                 mSecondLine.add(cursor.getString(0));
                 mType.add(cursor.getString(1));
                 mFirstLine.add(cursor.getString(2));
                 mContactId.add(cursor.getString(3));
-                i++;
-
             } while (cursor.moveToNext());
         }
 
@@ -102,7 +82,6 @@ public class JournalFragment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
 
         rebuildList();
-        //setLongClickHandler();
     }
 
 
@@ -111,7 +90,7 @@ public class JournalFragment extends ListFragment {
 
         final int lPosition = position;
 
-        Utils.confirm(getActivity(), R.string.confirm,R.string.title,
+        Utils.confirm(getActivity(), R.string.confirm, R.string.title,
                 R.string.yes, R.string.no,
                 new Runnable() {
                     public void run() {
@@ -138,12 +117,6 @@ public class JournalFragment extends ListFragment {
                     }
                 },
                 null);
-
-
-
-
-
     }
-
 
 }
