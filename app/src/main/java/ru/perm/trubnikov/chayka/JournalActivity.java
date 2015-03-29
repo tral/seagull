@@ -30,11 +30,10 @@ public class JournalActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_journal);
 
-        // Drawer
+        // Toolbar & Drawer
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         drawerResult = Utils.createCommonDrawer(JournalActivity.this, toolbar);
         drawerResult.setSelectionByIdentifier(2, false); // Set proper selection
 

@@ -2,6 +2,7 @@ package ru.perm.trubnikov.chayka;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.RadioButton;
@@ -16,9 +17,15 @@ public class SelectOperatorActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        setTheme(R.style.MaterialDrawerTheme_Light);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.select_operator);
 
+        // Toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         radioListener = new OnClickListener() {
             @Override
