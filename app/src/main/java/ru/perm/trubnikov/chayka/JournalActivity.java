@@ -37,6 +37,11 @@ public class JournalActivity extends ActionBarActivity {
         drawerResult = Utils.createCommonDrawer(JournalActivity.this, toolbar);
         drawerResult.setSelectionByIdentifier(2, false); // Set proper selection
 
+
+        // ListView on Fragments
+        JournalFragment fragment = new JournalFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.jrnl_container, fragment).commit();
+
     }
 
     @Override

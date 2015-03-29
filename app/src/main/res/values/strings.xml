@@ -105,5 +105,10 @@
 
     <string name="help_screen_header">Помощь по работе с программой</string>
     <string name="select_operator_header">Выберите вашего оператора</string>
+    <string name="unknown_contact">Неизвестный номер</string>
+    <string name="confirm">Подтверждение</string>
+    <string name="title">Отправить «чайку» на выбранный номер?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
 
 </resources>

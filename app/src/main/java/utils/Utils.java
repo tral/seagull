@@ -1,16 +1,16 @@
 package utils;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
-import com.mikepenz.iconics.typeface.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
@@ -144,4 +144,37 @@ public class Utils {
 
         return drawerResult;
     }
+
+
+    public static final void confirm(
+            final Activity activity,
+            final int title,
+            final int message,
+            final int positiveLabel,
+            final int negativeLabel,
+            final Runnable onPositiveClick,
+            final Runnable onNegativeClick) {
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
+        dialog.setTitle(title);
+        dialog.setMessage(message);
+        dialog.setCancelable(false);
+        dialog.setPositiveButton(positiveLabel,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int buttonId) {
+                        if (onPositiveClick != null) onPositiveClick.run();
+                    }
+                });
+        dialog.setNegativeButton(negativeLabel,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int buttonId) {
+                        if (onNegativeClick != null) onNegativeClick.run();
+                    }
+                });
+        //dialog.setIcon(android.R.drawable.ic_dialog_alert);
+        dialog.show();
+
+    }
+
+
 }
