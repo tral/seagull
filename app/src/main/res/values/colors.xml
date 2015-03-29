@@ -2,13 +2,13 @@
 
 <resources>
     <!-- 500 -->
-    <color name="lolli_primary">#9E9E9E</color>
+    <color name="lolli_primary">#03A9F4</color>
     <!-- 700 -->
-    <color name="lolli_top">#616161</color>
+    <color name="lolli_top">#0288D1</color>
     <!-- A200/A400/A700 -->
-    <color name="accent">#40C4FF</color>
+    <color name="accent">#F50057</color>
     <!-- 50 light / 900 dark -->
-    <color name="lolli_background">#FAFAFA</color>
+    <color name="lolli_background">#E1F5FE</color>
     <!-- 300 -->
-    <color name="lolli_btn">#E0E0E0</color>
+    <color name="lolli_btn">#4FC3F7</color>
 </resources>

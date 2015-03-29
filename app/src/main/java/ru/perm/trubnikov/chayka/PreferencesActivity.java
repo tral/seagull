@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 @TargetApi(11)
@@ -14,13 +15,23 @@ public class PreferencesActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        setTitle(R.string.menu_sett_item); // otherwise it's not changed
-        super.onCreate(savedInstanceState);
+        setTitle(R.string.drawer_item_settings); // otherwise it's not changed
+        setTheme(R.style.MaterialDrawerTheme_Light);
 
-        getFragmentManager().beginTransaction().replace(android.R.id.content,
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.pref_activity);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        //set the back arrow in the toolbar
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(false);
+
+        getFragmentManager().beginTransaction().replace(R.id.frame_container,
                 new PrefsFragment()).commit();
 
-        ShowBackButton();
+
 
     }
 
@@ -35,12 +46,6 @@ public class PreferencesActivity extends ActionBarActivity {
         }
     }
 
-    public void ShowBackButton() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            // call something for API Level 11+
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-    }
 
 
 }

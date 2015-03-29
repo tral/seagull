@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "ru.perm.trubnikov.chayka"
-        minSdkVersion 8
+        minSdkVersion 11
         targetSdkVersion 21
     }
 
@@ -25,4 +25,11 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.anjlab.android.iab.v3:library:1.0.+@aar'
     compile 'de.cketti.library.changelog:ckchangelog:1.2.2'
+    compile('com.mikepenz.iconics:library:0.8.4@aar') {
+        transitive = true
+    }
+
+    compile('com.mikepenz.materialdrawer:library:2.6.6@aar') {
+        transitive = true
+    }
 }

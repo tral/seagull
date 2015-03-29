@@ -14,8 +14,6 @@
     <string name="menu_item_add">Добавить</string>
 
 
-    <string name="menu_item_help">Помощь</string>
-    <string name="menu_item_rate">Оценить приложение</string>
     <string name="menu_sel_op">Выбрать оператора</string>
     <string name="menu_sel_op_summary">Необходимо для посылки «Чаек»</string>
     <string name="err_empty_op">Не выбран оператор!</string>
@@ -79,8 +77,6 @@
     <string name="donate_title_4">Билет в кино</string>
     <string name="donate_title_5">Оплатить вечеринку! Тусэ!</string>
 
-    <string name="menu_item_donate">Пожертвование</string>
-
     <string name="donation_title">Спасибо за пожертвование!</string>
     <string name="donation_desc">
         \nВы можете помочь разработчику купить что-то из этого списка:
@@ -96,11 +92,16 @@
     <string name="changelog_ok_button">OK</string>
     <string name="changelog_show_full">Еще…</string>
 
-    <string name="menu_sett_item">Настройки</string>
     <string name="pref_about">О приложении</string>
     <string name="pref_about_summary">Версия</string>
     <string name="pref_common">Основные</string>
     <string name="pref_clrs">Цвет значка трубки</string>
     <string name="pref_clrs_summary">Выберите цвет значка телефонной трубки на плитках</string>
+    <string name="drawer_item_home">Чайки</string>
+    <string name="drawer_item_settings">Настройки</string>
+    <string name="drawer_item_help">Помощь</string>
+    <string name="drawer_item_journal">Журнал звонков</string>
+    <string name="drawer_item_rate">Оценить приложение</string>
+    <string name="drawer_item_donate">Пожертвование</string>
 
 </resources>

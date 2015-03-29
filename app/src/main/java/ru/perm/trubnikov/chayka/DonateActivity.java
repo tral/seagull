@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,11 +43,23 @@ public class DonateActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        setTheme(R.style.MaterialDrawerTheme_Light);
+
         super.onCreate(savedInstanceState);
 
-        ShowBackButton();
+//        ShowBackButton();
 
         setContentView(R.layout.activity_donate);
+
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        //set the back arrow in the toolbar
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(false);
+
 
         bp = new BillingProcessor(DonateActivity.this, LICENSE_KEY, new BillingProcessor.IBillingHandler() {
             @Override

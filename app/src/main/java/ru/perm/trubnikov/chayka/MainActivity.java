@@ -3,6 +3,7 @@ package ru.perm.trubnikov.chayka;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentUris;
@@ -22,6 +23,7 @@ import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -31,12 +33,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.typeface.FontAwesome;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -45,14 +56,8 @@ import de.cketti.library.changelog.ChangeLog;
 
 public class MainActivity extends ActionBarActivity {
 
-    // Menu
-    public static final int IDM_HELP = 102;
-    public static final int IDM_SETTINGS = 103;
-    public static final int IDM_RATE = 105;
-    public static final int IDM_DONATE = 106;
-
-    private static final int ACT_RESULT_SETTINGS = 1002;
     private static final int ACT_RESULT_CONTACT = 1001;
+    private static final int ACT_RESULT_SETTINGS = 1002;
 
     // Dialogs
     private final static int SEAGULL_PROPS_DIALOG_ID = 1;
@@ -62,8 +67,23 @@ public class MainActivity extends ActionBarActivity {
     private int seagullId;
     GridView gvMain;
     boolean addingSeagullFlag = true;
+    private Drawer.Result drawerResult = null;
 
     // ------------------------------------------------------------------------------------------
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerResult.isDrawerOpen()) {
+            drawerResult.closeDrawer();
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +91,95 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Drawer
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        drawerResult = new Drawer()
+                .withActivity(this)
+                .withHeader(R.layout.drawer_header)
+                .withToolbar(toolbar)
+                .addDrawerItems(
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_home).withIcon(GoogleMaterial.Icon.gmd_people).withIdentifier(1),
+                        new SecondaryDrawerItem().withName(R.string.drawer_item_journal).withIcon(GoogleMaterial.Icon.gmd_reorder).withIdentifier(2),
+                        new DividerDrawerItem(),
+                        new SecondaryDrawerItem().withName(R.string.drawer_item_settings).withIcon(GoogleMaterial.Icon.gmd_settings).withIdentifier(50),
+                        new SecondaryDrawerItem().withName(R.string.drawer_item_help).withIcon(FontAwesome.Icon.faw_question).withIdentifier(60),
+                        new DividerDrawerItem(),
+                        new SecondaryDrawerItem().withName(R.string.drawer_item_rate).withIdentifier(70),
+                        new SecondaryDrawerItem().withName(R.string.drawer_item_donate).withIdentifier(80)
+                )
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
+                        //check if the drawerItem is set.
+                        //there are different reasons for the drawerItem to be null
+                        //--> click on the header
+                        //--> click on the footer
+                        //those items don't contain a drawerItem
+
+                        if (drawerItem != null) {
+
+                            if (drawerItem.getIdentifier() == 1) {
+                                //Intent intent = new Intent(SimpleHeaderDrawerActivity.this, SimpleCompactHeaderDrawerActivity.class);
+                                //SimpleHeaderDrawerActivity.this.startActivity(intent);
+                            } else if (drawerItem.getIdentifier() == 60) {
+                                // Help
+                                showDialog(HELP_DIALOG_ID);
+                                drawerResult.setSelectionByIdentifier(1, false);
+                            } else if (drawerItem.getIdentifier() == 70) {
+                                // Rate App
+                                Intent int_rate = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getApplicationContext().getPackageName()));
+                                int_rate.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                getApplicationContext().startActivity(int_rate);
+                                drawerResult.setSelectionByIdentifier(1, false);
+                            } else if (drawerItem.getIdentifier() == 80) {
+                                // Donate
+                                Intent donate_intent = new Intent(MainActivity.this, DonateActivity.class);
+                                startActivity(donate_intent);
+                                drawerResult.setSelectionByIdentifier(1, false);
+                            } else if (drawerItem.getIdentifier() == 50) {
+                                // Settings
+                                Intent sett_intent;
+                                sett_intent = new Intent(MainActivity.this, PreferencesActivity.class);
+                                startActivityForResult(sett_intent, ACT_RESULT_SETTINGS);
+                                // Select "Home"
+                                drawerResult.setSelectionByIdentifier(1, false);
+                            }
+
+                        }
+                    }
+                })
+                .withOnDrawerListener(new Drawer.OnDrawerListener() {
+                    @Override
+                    public boolean equals(Object o) {
+                        return super.equals(o);
+                    }
+
+                    @Override
+                    public void onDrawerOpened(View drawerView) {
+                        //Toast.makeText(MainActivity.this, "onDrawerOpened", Toast.LENGTH_SHORT).show();
+                        hideSoftKeyboard(MainActivity.this);
+                    }
+
+                    @Override
+                    public void onDrawerClosed(View drawerView) {
+                        //Toast.makeText(MainActivity.this, "onDrawerClosed", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .build();
+
+        drawerResult.setSelectionByIdentifier(1, false);
+
+        //use the result object to get different views of the drawer or modify it's data
+        //some sample calls
+        //result.setSelectionByIdentifier(1);
+        //result.openDrawer();
+        // result.closeDrawer();
+        // result.isDrawerOpen();
+
+        // Grid
         gvMain = (GridView) findViewById(R.id.gvMain);
         gvMain.setNumColumns(2);
 
@@ -295,11 +404,6 @@ public class MainActivity extends ActionBarActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
 
-        menu.add(Menu.NONE, IDM_SETTINGS, Menu.NONE, R.string.menu_sett_item);
-        menu.add(Menu.NONE, IDM_HELP, Menu.NONE, R.string.menu_item_help);
-        menu.add(Menu.NONE, IDM_RATE, Menu.NONE, R.string.menu_item_rate);
-        menu.add(Menu.NONE, IDM_DONATE, Menu.NONE, R.string.menu_item_donate);
-
         return (super.onCreateOptionsMenu(menu));
     }
 
@@ -310,7 +414,6 @@ public class MainActivity extends ActionBarActivity {
 
         AlertDialog.Builder builder_help = new AlertDialog.Builder(this);
         builder_help.setView(layout_help);
-        AdjustHelpDialogColors(layout_help);
 
         TextView rulesView = (TextView) layout_help.findViewById(R.id.textView1);
         rulesView.setText(R.string.help_str);
@@ -333,8 +436,6 @@ public class MainActivity extends ActionBarActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(layout);
-
-        AdjustAddDialogColors(layout);
 
         final EditText nameEdit = (EditText) layout.findViewById(R.id.seagull_name);
         final EditText ussdEdit = (EditText) layout.findViewById(R.id.seagull_ussd);
@@ -456,27 +557,6 @@ public class MainActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case IDM_SETTINGS:
-                Intent sett_intent;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                    sett_intent = new Intent(this, PreferencesActivity.class);
-                } else {
-                    sett_intent = new Intent(this, PreferencesLegacyActivity.class);
-                }
-                startActivityForResult(sett_intent, ACT_RESULT_SETTINGS);
-                break;
-            case IDM_RATE:
-                Intent int_rate = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getApplicationContext().getPackageName()));
-                int_rate.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getApplicationContext().startActivity(int_rate);
-                break;
-            case IDM_HELP:
-                showDialog(HELP_DIALOG_ID);
-                break;
-            case IDM_DONATE:
-                Intent donate_intent = new Intent(MainActivity.this, DonateActivity.class);
-                startActivity(donate_intent);
-                break;
             case R.id.action_add_entry:
                 AddDialog dlg = new AddDialog(MainActivity.this);
                 dlg.show();
@@ -585,47 +665,6 @@ public class MainActivity extends ActionBarActivity {
             Log.d("chayka", "ManageAccounts(): EXCEPTION! " + e.toString() + " Message:" + e.getMessage());
         }
 
-    }
-
-    // ------------------------------------------------------------------------------------------
-
-    protected void AdjustAddDialogColors(View layout) {
-        // Only for Android LOWER than 3.0 !
-        // Hack for lower Android versions to make text visible
-        // Dialog background is DIFFERENT in Android 2.1 and Android 2.3
-        // That's why we use gray color everywhere for Android < 3.0
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-
-            TextView tv1 = (TextView) layout.findViewById(R.id.textView1);
-            TextView tv2 = (TextView) layout.findViewById(R.id.textView2);
-            TextView tv3 = (TextView) layout.findViewById(R.id.textView3);
-            EditText et1 = (EditText) layout.findViewById(R.id.seagull_name);
-            EditText et2 = (EditText) layout.findViewById(R.id.seagull_ussd);
-            EditText et3 = (EditText) layout.findViewById(R.id.seagull_order);
-
-            tv1.setTextColor(Color.parseColor("#9E9E9E"));
-            tv2.setTextColor(Color.parseColor("#9E9E9E"));
-            tv3.setTextColor(Color.parseColor("#9E9E9E"));
-            et1.setTextColor(Color.parseColor("#9E9E9E"));
-            et2.setTextColor(Color.parseColor("#9E9E9E"));
-            et3.setTextColor(Color.parseColor("#9E9E9E"));
-            et1.setHintTextColor(Color.parseColor("#9E9E9E"));
-            et2.setHintTextColor(Color.parseColor("#9E9E9E"));
-            et3.setHintTextColor(Color.parseColor("#9E9E9E"));
-        }
-    }
-
-    protected void AdjustHelpDialogColors(View layout) {
-        // Only for Android LOWER than 3.0 !
-        // Hack for lower Android versions to make text visible
-        // Dialog background is DIFFERENT in Android 2.1 and Android 2.3
-        // That's why we use gray color everywhere for Android < 3.0
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            TextView tv1 = (TextView) layout.findViewById(R.id.textView1);
-            TextView tv2 = (TextView) layout.findViewById(R.id.textView2);
-            tv1.setTextColor(Color.parseColor("#9E9E9E"));
-            tv2.setTextColor(Color.parseColor("#9E9E9E"));
-        }
     }
 
 }
