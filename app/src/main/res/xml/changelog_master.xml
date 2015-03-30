@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
     <release
+        version="2.0.9"
+        versioncode="38">
+        <change>Контакты в журнале звонков теперь группируются
+        </change>
+    </release>
+    <release
         version="2.0.8"
         versioncode="37">
         <change>Добавлен оператор «Yota» («чайка» для него: *144*номер#)

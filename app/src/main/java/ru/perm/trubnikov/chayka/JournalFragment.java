@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ListView;
@@ -20,14 +19,18 @@ public class JournalFragment extends ListFragment {
     protected String[] mFirstLines;
     protected String[] mSecondLines;
     protected String[] mContactIds;
-    protected String[] mTypes;
+    protected Integer[] mIncomings;
+    protected Integer[] mOutgoings;
+    protected Integer[] mMisseds;
 
     protected void rebuildList() {
 
         ArrayList<String> mFirstLine = new ArrayList<String>();
         ArrayList<String> mSecondLine = new ArrayList<String>();
         ArrayList<String> mContactId = new ArrayList<String>();
-        ArrayList<String> mType = new ArrayList<String>();
+        ArrayList<Integer> mIncoming = new ArrayList<>();
+        ArrayList<Integer> mOutgoing = new ArrayList<>();
+        ArrayList<Integer> mMissed = new ArrayList<>();
 
         String[] strFields = {
                 android.provider.CallLog.Calls.NUMBER,
@@ -45,12 +48,33 @@ public class JournalFragment extends ListFragment {
                 strOrder
         );
 
+        String lastPhone = "-1";
         if (cursor.moveToFirst()) {
             do {
-                mSecondLine.add(cursor.getString(0));
-                mType.add(cursor.getString(1));
-                mFirstLine.add(cursor.getString(2));
-                mContactId.add(cursor.getString(3));
+
+                if (lastPhone.equalsIgnoreCase(cursor.getString(0))) {
+                    // do nothing
+                } else {
+                    mSecondLine.add(cursor.getString(0));
+                    mFirstLine.add(cursor.getString(2));
+                    mContactId.add(cursor.getString(3));
+
+                    lastPhone = cursor.getString(0);
+                    mIncoming.add(0);
+                    mOutgoing.add(0);
+                    mMissed.add(0);
+                }
+
+                if (cursor.getString(1).equalsIgnoreCase("1")) {
+                    mIncoming.set(mIncoming.size() - 1, 1);
+                }
+                if (cursor.getString(1).equalsIgnoreCase("2")) {
+                    mOutgoing.set(mOutgoing.size() - 1, 1);
+                }
+                if (cursor.getString(1).equalsIgnoreCase("3")) {
+                    mMissed.set(mMissed.size() - 1, 1);
+                }
+
             } while (cursor.moveToNext());
         }
 
@@ -59,14 +83,18 @@ public class JournalFragment extends ListFragment {
         mFirstLines = mFirstLine.toArray(new String[mFirstLine.size()]);
         mSecondLines = mSecondLine.toArray(new String[mSecondLine.size()]);
         mContactIds = mContactId.toArray(new String[mContactId.size()]);
-        mTypes = mType.toArray(new String[mType.size()]);
+        mIncomings = mIncoming.toArray(new Integer[mIncoming.size()]);
+        mOutgoings = mOutgoing.toArray(new Integer[mOutgoing.size()]);
+        mMisseds = mMissed.toArray(new Integer[mMissed.size()]);
 
         setListAdapter(new JournalListAdapter(
                 getActivity(),
                 mFirstLines,
                 mSecondLines,
                 mContactIds,
-                mTypes
+                mIncomings,
+                mOutgoings,
+                mMisseds
         ));
 
     }

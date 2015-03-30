@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Чайка</string>
-    <string name="version_name">2.0.8</string>
+    <string name="version_name">2.0.9</string>
 
     <string name="seagull_name">Отображаемое имя чайки</string>
     <string name="seagull_ussd">USSD-запрос или номер для набора</string>

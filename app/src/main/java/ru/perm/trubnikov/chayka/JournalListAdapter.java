@@ -18,22 +18,26 @@ public class JournalListAdapter extends ArrayAdapter<String> {
     protected final Context context;
     protected final String[] firstlines;
     protected final String[] secondlines;
-    protected final String[] types;
+    protected final Integer[] incomings;
+    protected final Integer[] outgoings;
+    protected final Integer[] misseds;
 
-    public JournalListAdapter(Context context, String[] firstlines, String[] secondlines, String[] contactids, String[] types) {
-        super(context, R.layout.choose_fav_list_item, secondlines); // !!!
+    public JournalListAdapter(Context context, String[] firstlines, String[] secondlines, String[] contactids, Integer[] incomings, Integer[] outgoings, Integer[] misseds) {
+        super(context, R.layout.journal_list_item, secondlines); // !!!
         this.context = context;
         this.firstlines = firstlines;
         this.secondlines = secondlines;
         this.contactids = contactids;
-        this.types = types;
+        this.incomings = incomings;
+        this.outgoings = outgoings;
+        this.misseds = misseds;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.choose_fav_list_item, parent, false);
+        View rowView = inflater.inflate(R.layout.journal_list_item, parent, false);
         TextView firstLine = (TextView) rowView.findViewById(R.id.firstLine);
         TextView secondLine = (TextView) rowView.findViewById(R.id.secondLine);
 
@@ -48,6 +52,8 @@ public class JournalListAdapter extends ArrayAdapter<String> {
         // Картинки
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
         ImageView imageView2 = (ImageView) rowView.findViewById(R.id.icon2);
+        ImageView imageView3 = (ImageView) rowView.findViewById(R.id.icon3);
+        ImageView imageView4 = (ImageView) rowView.findViewById(R.id.icon4);
 
         try {
             if (contactids[position] != null) {
@@ -62,12 +68,43 @@ public class JournalListAdapter extends ArrayAdapter<String> {
                 }
             }
 
-            if (types[position].equalsIgnoreCase("1"))
+            if (incomings[position] > 0) {
                 imageView2.setImageResource(R.drawable.incoming);
-            if (types[position].equalsIgnoreCase("2"))
+                incomings[position] = 0;
+            } else if (outgoings[position] > 0) {
                 imageView2.setImageResource(R.drawable.outgoing);
-            if (types[position].equalsIgnoreCase("3"))
+                outgoings[position] = 0;
+            } else if (misseds[position] > 0) {
                 imageView2.setImageResource(R.drawable.missed);
+                misseds[position] = 0;
+            }
+
+            if (incomings[position] > 0) {
+                imageView3.setImageResource(R.drawable.incoming);
+                incomings[position] = 0;
+            } else if (outgoings[position] > 0) {
+                imageView3.setImageResource(R.drawable.outgoing);
+                outgoings[position] = 0;
+            } else if (misseds[position] > 0) {
+                imageView3.setImageResource(R.drawable.missed);
+                misseds[position] = 0;
+            }
+
+            if (incomings[position] > 0) {
+                imageView4.setImageResource(R.drawable.incoming);
+                incomings[position] = 0;
+            } else if (outgoings[position] > 0) {
+                imageView4.setImageResource(R.drawable.outgoing);
+                outgoings[position] = 0;
+            } else if (misseds[position] > 0) {
+                imageView4.setImageResource(R.drawable.missed);
+                misseds[position] = 0;
+            }
+
+
+
+       //     imageView3.setImageResource(R.drawable.incoming);
+          //  imageView4.setImageResource(R.drawable.incoming);
 
         } catch (Exception e) {
             //
