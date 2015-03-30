@@ -84,7 +84,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d("chayka", "OnCreate MainActivity -----------");
+        //Log.d("chayka", "OnCreate MainActivity -----------");
 
         // Drawer
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

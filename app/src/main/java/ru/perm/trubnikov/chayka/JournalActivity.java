@@ -30,7 +30,7 @@ public class JournalActivity extends ActionBarActivity {
         JournalFragment fragment = new JournalFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.jrnl_container, fragment).commit();
 
-        Log.d("chayka", "OnCreate JournalActivity -----------");
+        //Log.d("chayka", "OnCreate JournalActivity -----------");
 
     }
 
