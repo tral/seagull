@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Чайка</string>
-    <string name="version_name">2.0.7</string>
+    <string name="version_name">2.0.8</string>
 
     <string name="seagull_name">Отображаемое имя чайки</string>
     <string name="seagull_ussd">USSD-запрос или номер для набора</string>
@@ -67,6 +67,7 @@
     <string name="op22">Life Беларусь</string>
     <string name="op23">МТС Беларусь</string>
     <string name="op24">Ростелеком (ЕТК)</string>
+    <string name="op25">Yota</string>
 
     <string name="header_choose_number">Выберите номер</string>
 
@@ -110,5 +111,7 @@
     <string name="title">Отправить «чайку» на выбранный номер?</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
+    <string name="pref_conf_summary">При попытке послать «чайку», будет выдаваться предупреждение (защита от случайного нажатия)</string>
+    <string name="pref_conf">Подтверждать посылку чайки</string>
 
 </resources>

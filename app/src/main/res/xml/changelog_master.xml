@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
     <release
+        version="2.0.8"
+        versioncode="37">
+        <change>Добавлен оператор «Yota» («чайка» для него: *144*номер#)
+        </change>
+        <change>Уменьшен расход памяти
+        </change>
+        <change>Опция для выдачи предупреждения перед отправкой «чайки»
+        </change>
+    </release>
+    <release
         version="2.0.7"
         versioncode="36">
         <change>Добавлено боковое меню

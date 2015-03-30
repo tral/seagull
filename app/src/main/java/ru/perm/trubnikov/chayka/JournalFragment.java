@@ -88,35 +88,35 @@ public class JournalFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
 
-        final int lPosition = position;
+        DBHelper dbHelper = new DBHelper(getActivity());
+        String op_prefix = dbHelper.getSettingsParamTxt("op_prefix");
+        String op_num = dbHelper.getSettingsParamTxt("op_num");
+        dbHelper.close();
 
-        Utils.confirm(getActivity(), R.string.confirm, R.string.title,
-                R.string.yes, R.string.no,
-                new Runnable() {
-                    public void run() {
-                        DBHelper dbHelper = new DBHelper(getActivity());
-                        String op_prefix = dbHelper.getSettingsParamTxt("op_prefix");
-                        String op_num = dbHelper.getSettingsParamTxt("op_num");
-                        dbHelper.close();
+        String lNumber = (String) getListAdapter().getItem(position);
+        lNumber = lNumber.replace("-", "").replace(" ", "").replace("(", "").replace(")", "");
+        String nrml_number = DBHelper.getNormalizedPhone(lNumber, op_num);
 
-                        String lNumber = (String) getListAdapter().getItem(lPosition);
-                        lNumber = lNumber.replace("-", "").replace(" ", "").replace("(", "").replace(")", "");
-                        String nrml_number = DBHelper.getNormalizedPhone(lNumber, op_num);
+        if (nrml_number.equalsIgnoreCase("")) {
+            Toast toast = Toast.makeText(getActivity(), "Некорректный телефонный номер! (" + lNumber + ")", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.TOP, 0, 0);
+            toast.show();
+        } else {
 
-                        if (nrml_number.equalsIgnoreCase("")) {
-                            Toast toast = Toast.makeText(getActivity(), "Некорректный телефонный номер! (" + lNumber + ")", Toast.LENGTH_LONG);
-                            toast.setGravity(Gravity.TOP, 0, 0);
-                            toast.show();
-                        } else {
+            //Log.d("chayka", " sending ---> " + op_prefix + nrml_number);
 
-                            Log.d("chayka", " sending ---> " + op_prefix + nrml_number);
-
-                            String cToSend = "tel:" + op_prefix + nrml_number.replace("#", Uri.encode("#"));
+            final String cToSend = "tel:" + op_prefix + nrml_number.replace("#", Uri.encode("#"));
+            Utils.confirm(getActivity(), R.string.confirm, R.string.title,
+                    R.string.yes, R.string.no,
+                    new Runnable() {
+                        public void run() {
                             startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse(cToSend)), 1);
                         }
-                    }
-                },
-                null);
+                    },
+                    null);
+        }
+
+
     }
 
 }

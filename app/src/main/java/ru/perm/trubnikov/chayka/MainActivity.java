@@ -2,14 +2,13 @@ package ru.perm.trubnikov.chayka;
 
 /**
  * @TODO Переделать Чайки и Журнал на фрагментах (дляя более плавной анимации при выборе этих пунктов в Drawer)
- * @TODO Опция подтверждения отправки чайки
+ * @TODO Группировка звонков в Журнале звонков
  * @TODO Опция выбора лимита журнала звонков
  **/
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentUris;
@@ -37,7 +36,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -107,8 +105,24 @@ public class MainActivity extends ActionBarActivity {
                 SimpleCursorAdapter gridAdapter = (SimpleCursorAdapter) gvMain.getAdapter();
                 Cursor gridCursor = gridAdapter.getCursor();
                 gridCursor.moveToPosition(position);
-                String cToSend = "tel:" + gridCursor.getString(gridCursor.getColumnIndex("ussd")).replace("#", Uri.encode("#"));
-                startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse(cToSend)), 1);
+                final String cToSend = "tel:" + gridCursor.getString(gridCursor.getColumnIndex("ussd")).replace("#", Uri.encode("#"));
+
+                SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                if (sharedPrefs.getBoolean("prefConfirmSeagull", true) && (cToSend.contains("*") || cToSend.contains("#")) ) {
+                    // Подтверждение отправки чайки
+                    Utils.confirm(MainActivity.this, R.string.confirm, R.string.title,
+                            R.string.yes, R.string.no,
+                            new Runnable() {
+                                public void run() {
+                                    startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse(cToSend)), 1);
+                                }
+                            },
+                            null);
+                } else {
+                    // Если в настройках отключено подтверждение, просто отсылаем
+                    startActivityForResult(new Intent("android.intent.action.CALL", Uri.parse(cToSend)), 1);
+                }
+
                 //Log.d("chayka", "-----> position " + position + " id:" + id + " ussd" + gridCursor.getString(gridCursor.getColumnIndex("ussd")));
             }
         });
