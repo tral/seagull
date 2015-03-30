@@ -51,6 +51,7 @@ public class Utils {
                         } else {
                             Intent main_intent = new Intent(activity, MainActivity.class);
                             activity.startActivity(main_intent);
+                            activity.finish(); // иначе можно назапускать 100 копий Activity
                         }
                     } else if (drawerItem.getIdentifier() == 2) {
                         // Journal (of calls)
@@ -59,6 +60,7 @@ public class Utils {
                         } else {
                             Intent journal_intent = new Intent(activity, JournalActivity.class);
                             activity.startActivity(journal_intent);
+                            activity.finish(); // иначе можно назапускать 100 копий Activity
                         }
                     } else if (drawerItem.getIdentifier() == 60) {
                         // Help
