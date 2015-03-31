@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
     <release
+        version="2.0.10"
+        versioncode="39">
+        <change>Исправления в журнале звонков
+        </change>
+    </release>
+    <release
         version="2.0.9"
         versioncode="38">
         <change>Контакты в журнале звонков теперь группируются

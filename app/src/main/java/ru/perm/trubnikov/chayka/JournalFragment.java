@@ -18,7 +18,7 @@ public class JournalFragment extends ListFragment {
 
     protected String[] mFirstLines;
     protected String[] mSecondLines;
-    protected String[] mContactIds;
+    protected String[] mPhotoIds;
     protected Integer[] mIncomings;
     protected Integer[] mOutgoings;
     protected Integer[] mMisseds;
@@ -27,7 +27,7 @@ public class JournalFragment extends ListFragment {
 
         ArrayList<String> mFirstLine = new ArrayList<String>();
         ArrayList<String> mSecondLine = new ArrayList<String>();
-        ArrayList<String> mContactId = new ArrayList<String>();
+        ArrayList<String> mPhotoId = new ArrayList<String>();
         ArrayList<Integer> mIncoming = new ArrayList<>();
         ArrayList<Integer> mOutgoing = new ArrayList<>();
         ArrayList<Integer> mMissed = new ArrayList<>();
@@ -57,7 +57,7 @@ public class JournalFragment extends ListFragment {
                 } else {
                     mSecondLine.add(cursor.getString(0));
                     mFirstLine.add(cursor.getString(2));
-                    mContactId.add(cursor.getString(3));
+                    mPhotoId.add(cursor.getString(3));
 
                     lastPhone = cursor.getString(0);
                     mIncoming.add(0);
@@ -82,7 +82,7 @@ public class JournalFragment extends ListFragment {
 
         mFirstLines = mFirstLine.toArray(new String[mFirstLine.size()]);
         mSecondLines = mSecondLine.toArray(new String[mSecondLine.size()]);
-        mContactIds = mContactId.toArray(new String[mContactId.size()]);
+        mPhotoIds = mPhotoId.toArray(new String[mPhotoId.size()]);
         mIncomings = mIncoming.toArray(new Integer[mIncoming.size()]);
         mOutgoings = mOutgoing.toArray(new Integer[mOutgoing.size()]);
         mMisseds = mMissed.toArray(new Integer[mMissed.size()]);
@@ -91,7 +91,7 @@ public class JournalFragment extends ListFragment {
                 getActivity(),
                 mFirstLines,
                 mSecondLines,
-                mContactIds,
+                mPhotoIds,
                 mIncomings,
                 mOutgoings,
                 mMisseds

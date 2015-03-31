@@ -36,8 +36,7 @@ public class ContactsManager  {
 		builder.withValue(ContactsContract.Data.DATA3, "Кинуть чайку немедленно");
 		//builder.withValue(ContactsContract.Data.DATA4, "+79777777777");
 		operationList.add(builder.build());
-		
-		
+
 		// Merging
 		builder = ContentProviderOperation.newUpdate(ContactsContract.AggregationExceptions.CONTENT_URI);
 		builder.withValue(AggregationExceptions.TYPE, AggregationExceptions.TYPE_KEEP_TOGETHER);
@@ -48,9 +47,8 @@ public class ContactsManager  {
 
 		try {
 			context.getContentResolver().applyBatch(ContactsContract.AUTHORITY, operationList);
-
-            context.getContentResolver().notifyChange(RawContacts.CONTENT_URI, null); // try to fix deletion of contacts after restart
-            context.getContentResolver().notifyChange(ContactsContract.Data.CONTENT_URI, null); // try to fix deletion of contacts after restart
+            //context.getContentResolver().notifyChange(RawContacts.CONTENT_URI, null); // try to fix deletion of contacts after restart
+            //context.getContentResolver().notifyChange(ContactsContract.Data.CONTENT_URI, null); // try to fix deletion of contacts after restart
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

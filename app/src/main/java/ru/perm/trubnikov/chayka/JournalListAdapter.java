@@ -68,43 +68,39 @@ public class JournalListAdapter extends ArrayAdapter<String> {
                 }
             }
 
-            if (incomings[position] > 0) {
+            int incoming = incomings[position];
+            int outgoing = outgoings[position];
+            int missed = misseds[position];
+
+            if (incoming > 0) {
                 imageView2.setImageResource(R.drawable.incoming);
-                incomings[position] = 0;
-            } else if (outgoings[position] > 0) {
+                incoming = 0;
+            } else if (outgoing > 0) {
                 imageView2.setImageResource(R.drawable.outgoing);
-                outgoings[position] = 0;
-            } else if (misseds[position] > 0) {
+                outgoing = 0;
+            } else if (missed > 0) {
                 imageView2.setImageResource(R.drawable.missed);
-                misseds[position] = 0;
+                missed = 0;
             }
 
-            if (incomings[position] > 0) {
+            if (incoming > 0) {
                 imageView3.setImageResource(R.drawable.incoming);
-                incomings[position] = 0;
-            } else if (outgoings[position] > 0) {
+                incoming = 0;
+            } else if (outgoing > 0) {
                 imageView3.setImageResource(R.drawable.outgoing);
-                outgoings[position] = 0;
-            } else if (misseds[position] > 0) {
+                outgoing = 0;
+            } else if (missed > 0) {
                 imageView3.setImageResource(R.drawable.missed);
-                misseds[position] = 0;
+                missed = 0;
             }
 
-            if (incomings[position] > 0) {
+            if (incoming > 0) {
                 imageView4.setImageResource(R.drawable.incoming);
-                incomings[position] = 0;
-            } else if (outgoings[position] > 0) {
+            } else if (outgoing > 0) {
                 imageView4.setImageResource(R.drawable.outgoing);
-                outgoings[position] = 0;
-            } else if (misseds[position] > 0) {
+            } else if (missed > 0) {
                 imageView4.setImageResource(R.drawable.missed);
-                misseds[position] = 0;
             }
-
-
-
-       //     imageView3.setImageResource(R.drawable.incoming);
-          //  imageView4.setImageResource(R.drawable.incoming);
 
         } catch (Exception e) {
             //
