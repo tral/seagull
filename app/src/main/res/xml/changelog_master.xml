@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
     <release
+        version="2.0.11"
+        versioncode="40">
+        <change>Обновлены версии используемых библиотек
+        </change>
+        <change>Теперь поддерживается Android 2.3.3 и Android 2.3.4 (API 10)
+        </change>
+    </release>
+    <release
         version="2.0.10"
         versioncode="39">
         <change>Исправления в журнале звонков

@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
+    compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
     defaultConfig {
         applicationId "ru.perm.trubnikov.chayka"
-        minSdkVersion 11
+        minSdkVersion 10
         targetSdkVersion 22
     }
 
@@ -25,11 +25,10 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.0.+'
     compile 'com.anjlab.android.iab.v3:library:1.0.+@aar'
     compile 'de.cketti.library.changelog:ckchangelog:1.2.2'
-    compile('com.mikepenz.iconics:library:0.8.4@aar') {
+    compile('com.mikepenz.iconics:library:0.9.0@aar') {
         transitive = true
     }
-
-    compile('com.mikepenz.materialdrawer:library:2.6.6@aar') {
+    compile('com.mikepenz.materialdrawer:library:2.7.0@aar') {
         transitive = true
     }
 }
