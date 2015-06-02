@@ -22,13 +22,10 @@ repositories {
 
 }
 dependencies {
-    compile 'com.android.support:appcompat-v7:22.0.+'
+    compile 'com.android.support:appcompat-v7:22.1.0'
     compile 'com.anjlab.android.iab.v3:library:1.0.+@aar'
     compile 'de.cketti.library.changelog:ckchangelog:1.2.2'
-    compile('com.mikepenz.iconics:library:0.9.0@aar') {
-        transitive = true
-    }
-    compile('com.mikepenz.materialdrawer:library:2.7.0@aar') {
+    compile('com.mikepenz.materialdrawer:library:2.8.0@aar') {
         transitive = true
     }
 }

@@ -24,7 +24,7 @@ class DBHelper extends SQLiteOpenHelper {
 
     public DBHelper(Context context) {
         // конструктор суперкласса
-        super(context, "rupermtrubnikovchaykaDB", null, 3);
+        super(context, "rupermtrubnikovchaykaDB", null, 4);
         s_name1 = context.getString(R.string.default_seagull_name1);
         s_name2 = context.getString(R.string.default_seagull_name2);
         s_name3 = context.getString(R.string.default_seagull_name3);
@@ -196,7 +196,7 @@ class DBHelper extends SQLiteOpenHelper {
 
     public static int getRatio43Height(int width) {
         //return (int)Math.round(2*width/(Math.sqrt(5) + 1));
-        return Math.round(3*width/4);
+        return Math.round(3 * width / 4);
     }
 
     public static String getNormalizedPhone(String phone, String op_num) {
@@ -309,6 +309,7 @@ class DBHelper extends SQLiteOpenHelper {
 
         Upgrade_1_to_2(db);
         Upgrade_2_to_3(db);
+        Upgrade_3_to_4(db);
 
     }
 
@@ -320,6 +321,10 @@ class DBHelper extends SQLiteOpenHelper {
 
         if (oldVersion <= 2) {
             Upgrade_2_to_3(db);
+        }
+
+        if (oldVersion <= 3) {
+            Upgrade_3_to_4(db);
         }
     }
 
@@ -359,6 +364,10 @@ class DBHelper extends SQLiteOpenHelper {
 
     public void Upgrade_2_to_3(SQLiteDatabase db) {
         db.execSQL("ALTER TABLE seagulls ADD COLUMN image BLOB");
+    }
+
+    public void Upgrade_3_to_4(SQLiteDatabase db) {
+        db.execSQL("UPDATE seagulls SET ussd='"+s_ussd1+"' WHERE name='" + s_name1 + "' and order_by=0 ");
     }
 
 }

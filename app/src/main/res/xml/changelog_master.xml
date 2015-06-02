@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
     <release
+        version="2.0.12"
+        versioncode="41">
+        <change>Обновлены версии используемых библиотек
+        </change>
+        <change>Изменен USSD-код по умолчанию для запроса баланса Ростелеком
+        </change>
+    </release>
+    <release
         version="2.0.11"
         versioncode="40">
         <change>Обновлены версии используемых библиотек

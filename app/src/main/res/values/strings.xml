@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Чайка</string>
-    <string name="version_name">2.0.11</string>
+    <string name="version_name">2.0.12</string>
 
     <string name="seagull_name">Отображаемое имя чайки</string>
     <string name="seagull_ussd">USSD-запрос или номер для набора</string>
@@ -24,7 +24,7 @@
     <string name="default_seagull_name2">Баланс «МТС»</string>
     <string name="default_seagull_name3">Баланс «Билайн»</string>
     <string name="default_seagull_name4">Баланс «Мегафон»</string>
-    <string name="default_seagull_ussd1">*102#</string>
+    <string name="default_seagull_ussd1">*105#</string>
     <string name="default_seagull_ussd2">*100#</string>
     <string name="default_seagull_ussd3">*102#</string>
     <string name="default_seagull_ussd4">*100#</string>
