@@ -251,8 +251,6 @@ public class MainActivity extends ActionBarActivity {
             public boolean onPreDraw() {
                 // Remove after the first run so it doesn't fire forever
                 iv.getViewTreeObserver().removeOnPreDrawListener(this);
-                //gridImageHeight = tv.getMeasuredHeight();
-                //gridImageWidth = tv.getMeasuredWidth();
 
                 SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 SharedPreferences.Editor editor = settings.edit();
@@ -597,3 +595,4 @@ public class MainActivity extends ActionBarActivity {
     }
 
 }
+
