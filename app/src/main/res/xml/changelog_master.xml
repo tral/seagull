@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
     <release
+        version="2.0.19"
+        versioncode="45">
+        <change>Вернул прежний значок приложения
+        </change>
+    </release>
+    <release
         version="2.0.17"
         versioncode="44">
         <change>Изменен значок приложения
